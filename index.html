@@ -1,0 +1,1678 @@
+<!doctype html>
+<html lang="nl">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <title>Ripasso — Italiaans oefenen</title>
+        <style>
+            :root {
+                --bg: #e9e7e0;
+                --surface: #f6f4ef;
+                --ink: #222019;
+                --muted: #75716a;
+                --line: #d6d2c8;
+                --accent: #2f6f66;
+                --accent-weak: #dce7e4;
+                --good: #3c7a53;
+                --good-weak: #dcebe0;
+                --bad: #9e4a3a;
+                --bad-weak: #f0ded9;
+                --radius: 12px;
+                --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
+                --sans:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+                    Roboto, sans-serif;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                background: var(--bg);
+                color: var(--ink);
+                font-family: var(--sans);
+                line-height: 1.5;
+                -webkit-font-smoothing: antialiased;
+                padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+            }
+            .wrap {
+                max-width: 480px;
+                margin: 0 auto;
+                padding: 22px 18px 64px;
+            }
+
+            .masthead {
+                display: flex;
+                align-items: baseline;
+                justify-content: space-between;
+                gap: 12px;
+                margin-bottom: 4px;
+            }
+            .brand {
+                font-family: var(--serif);
+                font-style: italic;
+                font-size: 26px;
+                letter-spacing: 0.2px;
+            }
+            .brand small {
+                font-style: normal;
+                font-family: var(--sans);
+                font-size: 12px;
+                color: var(--muted);
+                display: block;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                margin-top: 2px;
+            }
+            .data-summary {
+                font-size: 12px;
+                color: var(--muted);
+                text-align: right;
+            }
+
+            .card-pane {
+                background: var(--surface);
+                border: 1px solid var(--line);
+                border-radius: var(--radius);
+                padding: 18px;
+                margin-top: 18px;
+            }
+
+            .field {
+                margin-bottom: 18px;
+            }
+            .field:last-child {
+                margin-bottom: 0;
+            }
+            .field > .label {
+                font-size: 12px;
+                font-weight: 600;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: var(--muted);
+                margin-bottom: 8px;
+            }
+
+            .seg-group {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .seg-group--3 {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .seg {
+                position: relative;
+                flex: 1 1 auto;
+                min-width: 120px;
+            }
+            .seg input {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+            .seg span {
+                display: block;
+                text-align: center;
+                padding: 10px 12px;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                background: #fff;
+                font-size: 14px;
+                cursor: pointer;
+                transition:
+                    background 0.12s,
+                    border-color 0.12s;
+            }
+            .seg input:checked + span {
+                background: var(--accent-weak);
+                border-color: var(--accent);
+                color: var(--accent);
+                font-weight: 600;
+            }
+            .seg input:focus-visible + span {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+
+            .check-group {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .chk {
+                position: relative;
+            }
+            .chk input {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+            .chk span {
+                display: inline-block;
+                padding: 7px 12px;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                background: #fff;
+                font-size: 13px;
+                cursor: pointer;
+            }
+            .chk input:checked + span {
+                background: var(--accent-weak);
+                border-color: var(--accent);
+                color: var(--accent);
+            }
+            .chk input:focus-visible + span {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+            .chk input:disabled + span {
+                opacity: 0.4;
+                cursor: not-allowed;
+            }
+
+            .count-row {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .count-row input {
+                width: 80px;
+                padding: 9px 10px;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                font-size: 15px;
+                font-family: var(--sans);
+                background: #fff;
+            }
+            .count-row .hint-inline {
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            .btn {
+                font-family: var(--sans);
+                font-size: 15px;
+                font-weight: 600;
+                cursor: pointer;
+                border: 1px solid transparent;
+                border-radius: 10px;
+                padding: 12px 16px;
+                transition:
+                    filter 0.12s,
+                    background 0.12s;
+            }
+            .btn:active {
+                transform: translateY(1px);
+            }
+            .btn-primary {
+                background: var(--accent);
+                color: #fff;
+            }
+            .btn-primary:hover {
+                filter: brightness(1.06);
+            }
+            .btn-block {
+                display: block;
+                width: 100%;
+            }
+            .btn-good {
+                background: var(--good-weak);
+                color: var(--good);
+                border-color: #b9d6c1;
+                flex: 1;
+            }
+            .btn-bad {
+                background: var(--bad-weak);
+                color: var(--bad);
+                border-color: #e3bdb2;
+                flex: 1;
+            }
+            .btn-ghost {
+                background: transparent;
+                border-color: var(--line);
+                color: var(--ink);
+            }
+
+            .start-wrap {
+                margin-top: 20px;
+            }
+            .menu-warning {
+                color: var(--bad);
+                font-size: 13px;
+                margin-top: 10px;
+                min-height: 16px;
+            }
+
+            .reset-row {
+                margin-top: 16px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .linkbtn {
+                background: none;
+                border: none;
+                color: var(--muted);
+                font-size: 12px;
+                text-decoration: underline;
+                cursor: pointer;
+                padding: 0;
+                font-family: var(--sans);
+            }
+            .reset-note {
+                font-size: 12px;
+                color: var(--good);
+            }
+
+            /* sessie */
+            .topbar {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .progress {
+                flex: 1;
+            }
+            .progress-track {
+                height: 6px;
+                background: var(--line);
+                border-radius: 99px;
+                overflow: hidden;
+            }
+            .progress-fill {
+                height: 100%;
+                width: 0;
+                background: var(--accent);
+                transition: width 0.25s ease;
+            }
+            .progress-text {
+                font-size: 12px;
+                color: var(--muted);
+                margin-top: 5px;
+            }
+
+            .chips {
+                display: flex;
+                gap: 8px;
+                margin-bottom: 18px;
+                min-height: 24px;
+            }
+            .chip {
+                font-size: 12px;
+                padding: 4px 10px;
+                border-radius: 999px;
+                letter-spacing: 0.02em;
+            }
+            .chip-accent {
+                background: var(--accent);
+                color: #fff;
+            }
+            .chip-ghost {
+                background: #fff;
+                border: 1px solid var(--line);
+                color: var(--muted);
+            }
+
+            .prompt {
+                text-align: center;
+                padding: 18px 8px 26px;
+            }
+            .prompt-label {
+                font-size: 12px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--muted);
+                margin-bottom: 12px;
+            }
+            .prompt-word {
+                font-size: 34px;
+                line-height: 1.2;
+            }
+            .lang-it {
+                font-family: var(--serif);
+                font-style: italic;
+            }
+            .lang-nl {
+                font-family: var(--sans);
+                font-weight: 600;
+            }
+
+            .options {
+                display: grid;
+                gap: 10px;
+            }
+            .option {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                text-align: left;
+                background: #fff;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 14px 14px;
+                font-size: 18px;
+                cursor: pointer;
+                color: var(--ink);
+                transition:
+                    border-color 0.12s,
+                    background 0.12s;
+            }
+            .option:hover:not(:disabled) {
+                border-color: var(--accent);
+            }
+            .option:focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 2px;
+            }
+            .option .opt-key {
+                font-family: var(--sans);
+                font-style: normal;
+                font-weight: 600;
+                font-size: 12px;
+                color: var(--muted);
+                background: var(--bg);
+                border-radius: 6px;
+                width: 22px;
+                height: 22px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                flex: none;
+            }
+            .option.is-correct {
+                background: var(--good-weak);
+                border-color: var(--good);
+            }
+            .option.is-wrong {
+                background: var(--bad-weak);
+                border-color: var(--bad);
+            }
+            .option:disabled {
+                cursor: default;
+            }
+
+            .reveal-hint {
+                font-size: 13px;
+                color: var(--muted);
+                text-align: center;
+                margin: 0 0 14px;
+            }
+            .answer-reveal {
+                text-align: center;
+                font-size: 30px;
+                padding: 6px 0 18px;
+            }
+            .grade-row {
+                display: flex;
+                gap: 10px;
+            }
+            .grade-row .btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+            }
+            .grade-row kbd {
+                font-family: var(--sans);
+                font-size: 11px;
+                opacity: 0.65;
+                border: 1px solid currentColor;
+                border-radius: 5px;
+                padding: 0 5px;
+                line-height: 1.5;
+            }
+            @media (pointer: coarse) {
+                .grade-row kbd {
+                    display: none;
+                }
+            }
+
+            .feedback {
+                text-align: center;
+                font-size: 13px;
+                min-height: 18px;
+                margin: 12px 0 4px;
+            }
+            .feedback-good {
+                color: var(--good);
+            }
+            .feedback-bad {
+                color: var(--bad);
+            }
+            .next-btn {
+                margin-top: 14px;
+            }
+
+            .hint-bar {
+                margin-top: 16px;
+            }
+            #hint-btn {
+                width: 100%;
+            }
+            .hint-panel {
+                margin-top: 10px;
+                background: #fff;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 14px 16px;
+            }
+            .hint-dl {
+                display: grid;
+                grid-template-columns: auto 1fr;
+                gap: 4px 14px;
+                margin: 0;
+            }
+            .hint-dl dt {
+                font-size: 12px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+            }
+            .hint-dl dd {
+                margin: 0;
+                font-size: 14px;
+            }
+            .hint-note {
+                font-size: 13px;
+                color: var(--muted);
+                border-top: 1px solid var(--line);
+                margin: 12px 0 0;
+                padding-top: 10px;
+            }
+
+            /* paper list */
+            .pl-intro {
+                font-size: 13px;
+                color: var(--muted);
+                margin: 0 0 14px;
+            }
+            .pl-rows {
+                display: grid;
+                gap: 8px;
+            }
+            .plrow {
+                display: grid;
+                grid-template-columns: 20px 20px 1fr auto;
+                align-items: center;
+                gap: 10px;
+                background: #fff;
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 10px 12px;
+                cursor: pointer;
+            }
+            .plrow:has(.pl-check:checked) {
+                background: var(--good-weak);
+                border-color: var(--good);
+            }
+            .pl-check {
+                width: 18px;
+                height: 18px;
+                margin: 0;
+                accent-color: var(--good);
+                cursor: pointer;
+            }
+            .pl-num {
+                font-size: 12px;
+                color: var(--muted);
+                text-align: right;
+            }
+            .pl-pair {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                min-width: 0;
+            }
+            .pl-chips {
+                font-size: 11px;
+                color: var(--muted);
+            }
+            .pl-line {
+                font-size: 16px;
+                line-height: 1.35;
+            }
+            .pl-arrow {
+                color: var(--muted);
+            }
+            .pl-mark {
+                font-size: 12px;
+                color: var(--muted);
+            }
+            .plrow:has(.pl-check:checked) .pl-mark {
+                color: var(--good);
+                font-weight: 600;
+            }
+            .pl-counter {
+                text-align: center;
+                font-size: 13px;
+                color: var(--muted);
+                margin-top: 10px;
+            }
+
+            /* summary */
+            .summary {
+                text-align: center;
+            }
+            .summary-score {
+                font-family: var(--serif);
+                font-size: 34px;
+                margin: 6px 0 4px;
+            }
+            .summary-sub {
+                font-size: 13px;
+                color: var(--muted);
+                margin-bottom: 20px;
+            }
+            .boxes {
+                display: grid;
+                gap: 8px;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+            .boxbar {
+                display: grid;
+                grid-template-columns: 54px 1fr 28px;
+                align-items: center;
+                gap: 10px;
+            }
+            .boxbar-label {
+                font-size: 12px;
+                color: var(--muted);
+            }
+            .boxbar-track {
+                height: 8px;
+                background: var(--line);
+                border-radius: 99px;
+                overflow: hidden;
+            }
+            .boxbar-fill {
+                display: block;
+                height: 100%;
+                background: var(--accent);
+            }
+            .boxbar-count {
+                font-size: 12px;
+                color: var(--muted);
+                text-align: right;
+            }
+            .summary-storage {
+                font-size: 12px;
+                color: var(--muted);
+                margin: 14px 0 18px;
+            }
+            .summary-actions {
+                display: flex;
+                gap: 10px;
+            }
+            .summary-actions .btn {
+                flex: 1;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                * {
+                    transition: none !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="masthead">
+                <div class="brand">Ripasso<small>Italiaans oefenen</small></div>
+                <div class="data-summary" id="data-summary"></div>
+            </div>
+
+            <!-- MENU -->
+            <section id="screen-menu">
+                <div class="card-pane">
+                    <div class="field">
+                        <div class="label">Richting</div>
+                        <div class="seg-group seg-group--3">
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="dir"
+                                    value="nl_it"
+                                    checked
+                                /><span>Nederlands → Italiaans</span></label
+                            >
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="dir"
+                                    value="it_nl"
+                                /><span>Italiaans → Nederlands</span></label
+                            >
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="dir"
+                                    value="mix"
+                                /><span>Door elkaar</span></label
+                            >
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="label">Wat oefenen</div>
+                        <div class="check-group" style="margin-bottom: 10px">
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="inc_verbs"
+                                    checked
+                                /><span>Werkwoorden</span></label
+                            >
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="inc_words"
+                                    checked
+                                /><span>Woorden</span></label
+                            >
+                        </div>
+                        <div class="check-group" id="tense-group">
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="tense_presente"
+                                    checked
+                                /><span>presente</span></label
+                            >
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="tense_passato_prossimo"
+                                    checked
+                                /><span>passato prossimo</span></label
+                            >
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="tense_imperfetto"
+                                    checked
+                                /><span>imperfetto</span></label
+                            >
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="tense_futuro_semplice"
+                                /><span>futuro semplice</span></label
+                            >
+                            <label class="chk"
+                                ><input
+                                    type="checkbox"
+                                    id="tense_condizionale_presente"
+                                /><span>condizionale</span></label
+                            >
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="label">Sessie</div>
+                        <div class="seg-group" style="margin-bottom: 10px">
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="stype"
+                                    value="smart"
+                                    checked
+                                /><span>Slimme review</span></label
+                            >
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="stype"
+                                    value="free"
+                                /><span>Vrije sessie</span></label
+                            >
+                        </div>
+                        <div class="count-row">
+                            <input
+                                type="number"
+                                id="count"
+                                value="15"
+                                min="1"
+                                max="200"
+                                inputmode="numeric"
+                            />
+                            <span class="hint-inline"
+                                >aantal kaarten per sessie</span
+                            >
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="label">Nakijken</div>
+                        <div class="seg-group">
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="flow"
+                                    value="direct"
+                                    checked
+                                /><span>Direct per kaart</span></label
+                            >
+                            <label class="seg"
+                                ><input
+                                    type="radio"
+                                    name="flow"
+                                    value="paper"
+                                /><span>Achteraf op papier</span></label
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="start-wrap">
+                    <button class="btn btn-primary btn-block" id="start-btn">
+                        Start sessie
+                    </button>
+                    <div class="menu-warning" id="menu-warning"></div>
+                </div>
+
+                <div class="reset-row">
+                    <button class="linkbtn" id="reset-btn">
+                        Voortgang wissen
+                    </button>
+                    <span class="reset-note" id="reset-note"></span>
+                </div>
+            </section>
+
+            <!-- SESSIE -->
+            <section id="screen-session" hidden>
+                <div class="topbar">
+                    <button
+                        class="btn btn-ghost"
+                        id="menu-btn"
+                        style="padding: 8px 12px; font-size: 13px"
+                    >
+                        Menu
+                    </button>
+                    <div class="progress">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <div class="progress-text" id="progress-text"></div>
+                    </div>
+                </div>
+
+                <div class="card-pane">
+                    <div class="chips" id="chips"></div>
+                    <div class="prompt">
+                        <div class="prompt-label" id="prompt-label"></div>
+                        <div class="prompt-word" id="prompt-word"></div>
+                    </div>
+                    <div id="answer-area"></div>
+                    <div class="hint-bar">
+                        <button
+                            class="btn btn-ghost"
+                            id="hint-btn"
+                            aria-expanded="false"
+                        >
+                            Hint / uitleg
+                        </button>
+                        <div class="hint-panel" id="hint-panel" hidden></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NAKIJKEN OP PAPIER -->
+            <section id="screen-paperlist" hidden>
+                <div class="topbar">
+                    <button
+                        class="btn btn-ghost"
+                        id="paper-menu-btn"
+                        style="padding: 8px 12px; font-size: 13px"
+                    >
+                        Menu
+                    </button>
+                    <div class="progress">
+                        <div class="progress-text" id="paper-progress"></div>
+                    </div>
+                </div>
+                <div class="card-pane">
+                    <p class="pl-intro">
+                        Vink aan wat je goed had. De rest telt als fout.
+                    </p>
+                    <div class="pl-rows" id="paperlist-rows"></div>
+                </div>
+                <div class="start-wrap">
+                    <button
+                        class="btn btn-primary btn-block"
+                        id="paper-process-btn"
+                    >
+                        Verwerk resultaat
+                    </button>
+                    <div class="pl-counter" id="paper-counter"></div>
+                </div>
+            </section>
+
+            <!-- SAMENVATTING -->
+            <section id="screen-summary" hidden>
+                <div class="card-pane summary">
+                    <div class="summary-score" id="summary-score"></div>
+                    <div class="summary-sub" id="summary-sub"></div>
+                    <div class="boxes" id="summary-boxes"></div>
+                    <div class="summary-storage" id="summary-storage"></div>
+                    <div class="summary-actions">
+                        <button class="btn btn-ghost" id="again-btn">
+                            Naar menu
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script src="data.js"></script>
+        <script>
+            /* Ripasso PoC — app logica (vanilla JS, geen dependencies) */
+            (function () {
+                "use strict";
+
+                var DATA = { verbs: [], words: [] };
+
+                var PERSONS = ["io", "tu", "lui_lei", "noi", "voi", "loro"];
+                var TENSES = [
+                    "presente",
+                    "passato_prossimo",
+                    "imperfetto",
+                    "futuro_semplice",
+                    "condizionale_presente",
+                ];
+
+                var TENSE_LABEL = {
+                    presente: "presente",
+                    passato_prossimo: "passato prossimo",
+                    imperfetto: "imperfetto",
+                    futuro_semplice: "futuro semplice",
+                    condizionale_presente: "condizionale",
+                };
+                var TENSE_NL = {
+                    presente: "tegenwoordige tijd",
+                    passato_prossimo:
+                        "voltooid tegenwoordige tijd — samengesteld: hulpwerkwoord + voltooid deelwoord",
+                    imperfetto:
+                        "onvoltooid verleden tijd — 'ik deed / was aan het...'",
+                    futuro_semplice: "toekomende tijd",
+                    condizionale_presente: "voorwaardelijke wijs — 'ik zou...'",
+                };
+                var PERSON_LABEL = {
+                    io: "io — 1e pers. enkelvoud",
+                    tu: "tu — 2e pers. enkelvoud",
+                    lui_lei: "lui/lei — 3e pers. enkelvoud",
+                    noi: "noi — 1e pers. meervoud",
+                    voi: "voi — 2e pers. meervoud",
+                    loro: "loro — 3e pers. meervoud",
+                };
+                var PERSON_SHORT = {
+                    io: "io",
+                    tu: "tu",
+                    lui_lei: "lui/lei",
+                    noi: "noi",
+                    voi: "voi",
+                    loro: "loro",
+                };
+                var WORDTYPE_NL = {
+                    noun: "zelfstandig naamwoord",
+                    adverb: "bijwoord",
+                    interjection: "tussenwerpsel / uitdrukking",
+                    adjective: "bijvoeglijk naamwoord",
+                    verb: "werkwoord",
+                };
+                var GENDER_NL = { m: "mannelijk", f: "vrouwelijk" };
+                var NUMBER_NL = { singular: "enkelvoud", plural: "meervoud" };
+
+                /* ---------- kaarten opbouwen ---------- */
+                function buildAllCards() {
+                    var cards = [];
+                    (DATA.verbs || []).forEach(function (v) {
+                        TENSES.forEach(function (t) {
+                            var ft = (v.forms || {})[t];
+                            if (!ft) return;
+                            PERSONS.forEach(function (p) {
+                                var f = ft[p];
+                                if (!f) return;
+                                cards.push({
+                                    id: "verb:" + v.lemma + ":" + t + ":" + p,
+                                    type: "verb",
+                                    lemma: v.lemma,
+                                    lemmaNl: v.nl,
+                                    regularity: v.regularity,
+                                    auxiliary: v.auxiliary,
+                                    note: v.note,
+                                    tense: t,
+                                    person: p,
+                                    it: f.it,
+                                    nl: f.nl,
+                                });
+                            });
+                        });
+                    });
+                    (DATA.words || []).forEach(function (w) {
+                        cards.push({
+                            id: "word:" + w.it,
+                            type: "word",
+                            it: w.it,
+                            nl: w.nl,
+                            wordType: w.wordType,
+                            gender: w.gender,
+                            number: w.number,
+                            article: w.article,
+                        });
+                    });
+                    return cards;
+                }
+                var ALL = [];
+
+                /* ---------- SRS (Leitner-lite) ---------- */
+                var SKEY = "ripasso_poc_v1";
+                var srs = loadSrs();
+                var storageOk = true;
+                function loadSrs() {
+                    try {
+                        var r = localStorage.getItem(SKEY);
+                        return r ? JSON.parse(r) : {};
+                    } catch (e) {
+                        storageOk = false;
+                        return {};
+                    }
+                }
+                function saveSrs() {
+                    try {
+                        localStorage.setItem(SKEY, JSON.stringify(srs));
+                    } catch (e) {
+                        storageOk = false;
+                    }
+                }
+                function boxOf(id) {
+                    return (srs[id] && srs[id].box) || 1;
+                }
+                function record(id, ok) {
+                    var s = srs[id] || {
+                        box: 1,
+                        seen: 0,
+                        correct: 0,
+                        wrong: 0,
+                        last: 0,
+                    };
+                    s.seen++;
+                    if (ok) {
+                        s.correct++;
+                        s.box = Math.min(5, (s.box || 1) + 1);
+                    } else {
+                        s.wrong++;
+                        s.box = 1;
+                    }
+                    s.last = Date.now();
+                    srs[id] = s;
+                    saveSrs();
+                }
+
+                /* ---------- helpers ---------- */
+                function shuffle(a) {
+                    for (var i = a.length - 1; i > 0; i--) {
+                        var j = Math.floor(Math.random() * (i + 1));
+                        var t = a[i];
+                        a[i] = a[j];
+                        a[j] = t;
+                    }
+                    return a;
+                }
+                function el(id) {
+                    return document.getElementById(id);
+                }
+                function escapeHtml(s) {
+                    return String(s).replace(/[&<>"']/g, function (c) {
+                        return {
+                            "&": "&amp;",
+                            "<": "&lt;",
+                            ">": "&gt;",
+                            '"': "&quot;",
+                            "'": "&#39;",
+                        }[c];
+                    });
+                }
+
+                /* ---------- hint samenstellen (richting-afhankelijk) ---------- */
+                // Toont een zelfstandig naamwoord mét lidwoord ("la casa", "l'ora"); andere woorden blijven kaal.
+                function itDisplay(card) {
+                    if (
+                        card.type === "word" &&
+                        card.wordType === "noun" &&
+                        card.article
+                    ) {
+                        var a = card.article;
+                        return a.charAt(a.length - 1) === "'"
+                            ? a + card.it
+                            : a + " " + card.it;
+                    }
+                    return card.it;
+                }
+
+                function composeHint(card, dir) {
+                    var rows = [];
+                    if (card.type === "verb") {
+                        rows.push(["soort", WORDTYPE_NL.verb]);
+                        if (dir === "nl_it") {
+                            rows.push([
+                                "infinitief",
+                                card.lemma + " — " + card.lemmaNl,
+                            ]);
+                        } else {
+                            rows.push(["infinitief", card.lemma]);
+                        }
+                        rows.push(["regelmaat", card.regularity]);
+                        rows.push([
+                            "tijd",
+                            TENSE_LABEL[card.tense] +
+                                " · " +
+                                TENSE_NL[card.tense],
+                        ]);
+                        rows.push(["persoon", PERSON_LABEL[card.person]]);
+                        rows.push(["hulpwerkwoord", card.auxiliary]);
+                    } else {
+                        rows.push([
+                            "soort",
+                            WORDTYPE_NL[card.wordType] || card.wordType,
+                        ]);
+                        if (card.wordType === "noun") {
+                            if (card.gender)
+                                rows.push([
+                                    "geslacht",
+                                    GENDER_NL[card.gender] || card.gender,
+                                ]);
+                            if (card.number)
+                                rows.push([
+                                    "getal",
+                                    NUMBER_NL[card.number] || card.number,
+                                ]);
+                        }
+                    }
+                    var html = '<dl class="hint-dl">';
+                    rows.forEach(function (r) {
+                        html +=
+                            "<dt>" +
+                            r[0] +
+                            "</dt><dd>" +
+                            escapeHtml(r[1]) +
+                            "</dd>";
+                    });
+                    html += "</dl>";
+                    if (card.type === "verb" && card.note) {
+                        html +=
+                            '<p class="hint-note">' +
+                            escapeHtml(card.note) +
+                            "</p>";
+                    }
+                    return html;
+                }
+
+                function vakjeLabel(card) {
+                    if (card.type === "verb")
+                        return (
+                            TENSE_LABEL[card.tense] +
+                            " · " +
+                            PERSON_SHORT[card.person]
+                        );
+                    return WORDTYPE_NL[card.wordType] || card.wordType;
+                }
+
+                /* ---------- sessie-opbouw ---------- */
+                function readMenu() {
+                    var tenses = {};
+                    TENSES.forEach(function (t) {
+                        var c = el("tense_" + t);
+                        if (c && c.checked && !c.disabled) tenses[t] = true;
+                    });
+                    return {
+                        dir: document.querySelector('input[name="dir"]:checked')
+                            .value,
+                        sessionType: document.querySelector(
+                            'input[name="stype"]:checked',
+                        ).value,
+                        flow: document.querySelector(
+                            'input[name="flow"]:checked',
+                        ).value,
+                        includeVerbs: el("inc_verbs").checked,
+                        includeWords: el("inc_words").checked,
+                        tenses: tenses,
+                        count: Math.max(
+                            1,
+                            parseInt(el("count").value, 10) || 15,
+                        ),
+                    };
+                }
+
+                function resolveDir(state) {
+                    if (state.dir === "mix")
+                        return Math.random() < 0.5 ? "nl_it" : "it_nl";
+                    return state.dir;
+                }
+
+                function buildItems(state) {
+                    var cards = ALL.filter(function (c) {
+                        if (c.type === "verb") {
+                            if (!state.includeVerbs) return false;
+                            return !!state.tenses[c.tense];
+                        }
+                        return state.includeWords;
+                    });
+                    if (cards.length === 0) return [];
+                    cards = cards.slice();
+                    if (state.sessionType === "smart") {
+                        cards.sort(function (a, b) {
+                            var ba = boxOf(a.id),
+                                bb = boxOf(b.id);
+                            if (ba !== bb) return ba - bb;
+                            var la = (srs[a.id] && srs[a.id].last) || 0,
+                                lb = (srs[b.id] && srs[b.id].last) || 0;
+                            if (la !== lb) return la - lb;
+                            return Math.random() - 0.5;
+                        });
+                    } else {
+                        shuffle(cards);
+                    }
+                    cards = cards.slice(0, Math.min(cards.length, state.count));
+                    // richting per kaart vastzetten (consistent tussen vraag- en nakijkfase)
+                    return cards.map(function (c) {
+                        return { card: c, dir: resolveDir(state) };
+                    });
+                }
+
+                /* ---------- sessie-state ---------- */
+                var session = null;
+
+                function startSession() {
+                    var state = readMenu();
+                    var items = buildItems(state);
+                    if (items.length === 0) {
+                        el("menu-warning").textContent =
+                            "Geen kaarten met deze keuzes. Zet minstens één tijd aan, of vink woorden aan.";
+                        return;
+                    }
+                    el("menu-warning").textContent = "";
+                    session = {
+                        state: state,
+                        items: items,
+                        idx: 0,
+                        correct: 0,
+                        phase: "prompt",
+                    };
+                    show("session");
+                    if (state.flow === "paper") {
+                        renderPaperPrompt();
+                    } else {
+                        renderCard();
+                    }
+                }
+
+                /* ---------- gedeelde prompt-kop ---------- */
+                function renderPromptHead(item) {
+                    var card = item.card,
+                        dir = item.dir;
+
+                    el("progress-text").textContent =
+                        session.idx + 1 + " / " + session.items.length;
+                    el("progress-fill").style.width =
+                        (session.idx / session.items.length) * 100 + "%";
+
+                    var chips = el("chips");
+                    chips.innerHTML = "";
+                    if (card.type === "verb") {
+                        chips.appendChild(
+                            makeChip(TENSE_LABEL[card.tense], "chip-accent"),
+                        );
+                        chips.appendChild(
+                            makeChip(PERSON_SHORT[card.person], "chip-ghost"),
+                        );
+                    } else {
+                        chips.appendChild(
+                            makeChip(
+                                WORDTYPE_NL[card.wordType] || card.wordType,
+                                "chip-ghost",
+                            ),
+                        );
+                    }
+
+                    var promptLabel = el("prompt-label");
+                    var promptWord = el("prompt-word");
+                    if (dir === "nl_it") {
+                        promptLabel.textContent = "vertaal naar het Italiaans";
+                        promptWord.textContent = card.nl;
+                        promptWord.className = "prompt-word lang-nl";
+                    } else {
+                        promptLabel.textContent = "wat betekent dit?";
+                        promptWord.textContent = itDisplay(card);
+                        promptWord.className = "prompt-word lang-it";
+                    }
+
+                    var hp = el("hint-panel");
+                    hp.hidden = true;
+                    hp.innerHTML = composeHint(card, dir);
+                    el("hint-btn").setAttribute("aria-expanded", "false");
+                    el("hint-btn").textContent = "Hint / uitleg";
+                }
+
+                function makeChip(text, cls) {
+                    var s = document.createElement("span");
+                    s.className = "chip " + (cls || "");
+                    s.textContent = text;
+                    return s;
+                }
+
+                /* ---------- modus: direct nakijken ---------- */
+                function renderCard() {
+                    var item = session.items[session.idx];
+                    session.phase = "prompt";
+                    renderPromptHead(item);
+                    renderReveal(item.card, item.dir);
+                }
+
+                function renderReveal(card, dir) {
+                    var area = el("answer-area");
+                    area.innerHTML = "";
+
+                    var hint = document.createElement("p");
+                    hint.className = "reveal-hint";
+                    hint.textContent =
+                        "Zeg of schrijf je antwoord — toon het dan.";
+                    area.appendChild(hint);
+
+                    var revealBtn = document.createElement("button");
+                    revealBtn.className = "btn btn-primary btn-block";
+                    revealBtn.type = "button";
+                    revealBtn.textContent = "Toon antwoord";
+                    area.appendChild(revealBtn);
+
+                    var answerKey = dir === "nl_it" ? "it" : "nl";
+                    var langCls = answerKey === "it" ? "lang-it" : "lang-nl";
+
+                    session.reveal = function () {
+                        if (session.phase !== "prompt") return;
+                        session.phase = "revealed";
+                        revealBtn.remove();
+                        hint.remove();
+
+                        var ans = document.createElement("div");
+                        ans.className = "answer-reveal " + langCls;
+                        ans.textContent =
+                            answerKey === "it" ? itDisplay(card) : card.nl;
+                        area.appendChild(ans);
+
+                        var grade = document.createElement("div");
+                        grade.className = "grade-row";
+                        var bad = document.createElement("button");
+                        bad.className = "btn btn-bad";
+                        bad.type = "button";
+                        bad.innerHTML = "Fout <kbd>&larr;</kbd>";
+                        var good = document.createElement("button");
+                        good.className = "btn btn-good";
+                        good.type = "button";
+                        good.innerHTML = "Goed <kbd>&rarr;</kbd>";
+                        bad.addEventListener("click", function () {
+                            session.grade(false);
+                        });
+                        good.addEventListener("click", function () {
+                            session.grade(true);
+                        });
+                        grade.appendChild(bad);
+                        grade.appendChild(good);
+                        area.appendChild(grade);
+                    };
+
+                    session.grade = function (ok) {
+                        if (session.phase !== "revealed") return;
+                        session.phase = "grading";
+                        if (ok) session.correct++;
+                        record(card.id, ok);
+                        advance();
+                    };
+
+                    revealBtn.addEventListener("click", function () {
+                        session.reveal();
+                    });
+                }
+
+                function advance() {
+                    session.idx++;
+                    if (session.idx >= session.items.length) {
+                        renderSummary();
+                    } else {
+                        renderCard();
+                    }
+                }
+
+                /* ---------- modus: op papier ---------- */
+                function renderPaperPrompt() {
+                    var item = session.items[session.idx];
+                    session.phase = "paper-prompt";
+                    renderPromptHead(item);
+
+                    var area = el("answer-area");
+                    area.innerHTML = "";
+                    var note = document.createElement("p");
+                    note.className = "reveal-hint";
+                    note.textContent =
+                        "Schrijf je antwoord op (nummer " +
+                        (session.idx + 1) +
+                        ").";
+                    area.appendChild(note);
+
+                    var last = session.idx + 1 >= session.items.length;
+                    var next = document.createElement("button");
+                    next.className = "btn btn-primary btn-block";
+                    next.type = "button";
+                    next.textContent = last
+                        ? "Naar nakijken"
+                        : "Volgende vraag";
+                    next.addEventListener("click", paperNext);
+                    area.appendChild(next);
+                    session._paperNext = next;
+                }
+
+                function paperNext() {
+                    session.idx++;
+                    if (session.idx >= session.items.length) {
+                        renderPaperList();
+                    } else {
+                        renderPaperPrompt();
+                    }
+                }
+
+                function renderPaperList() {
+                    show("paperlist");
+                    el("paper-progress").textContent =
+                        "Nakijken — " + session.items.length + " kaarten";
+                    var box = el("paperlist-rows");
+                    box.innerHTML = "";
+
+                    session.items.forEach(function (item, i) {
+                        var card = item.card,
+                            dir = item.dir;
+                        var leftText, leftCls, rightText, rightCls;
+                        if (dir === "nl_it") {
+                            leftText = card.nl;
+                            leftCls = "lang-nl";
+                            rightText = itDisplay(card);
+                            rightCls = "lang-it";
+                        } else {
+                            leftText = itDisplay(card);
+                            leftCls = "lang-it";
+                            rightText = card.nl;
+                            rightCls = "lang-nl";
+                        }
+                        var row = document.createElement("label");
+                        row.className = "plrow";
+                        row.innerHTML =
+                            '<input type="checkbox" class="pl-check" data-i="' +
+                            i +
+                            '" />' +
+                            '<span class="pl-num">' +
+                            (i + 1) +
+                            "</span>" +
+                            '<span class="pl-pair">' +
+                            '<span class="pl-chips">' +
+                            escapeHtml(vakjeLabel(card)) +
+                            "</span>" +
+                            '<span class="pl-line"><span class="' +
+                            leftCls +
+                            '">' +
+                            escapeHtml(leftText) +
+                            '</span> <span class="pl-arrow">&rarr;</span> <span class="' +
+                            rightCls +
+                            '">' +
+                            escapeHtml(rightText) +
+                            "</span></span>" +
+                            "</span>" +
+                            '<span class="pl-mark">goed</span>';
+                        box.appendChild(row);
+                    });
+
+                    box.onchange = updatePaperCounter;
+                    updatePaperCounter();
+                }
+
+                function updatePaperCounter() {
+                    var checks =
+                        el("paperlist-rows").querySelectorAll(".pl-check");
+                    var total = checks.length,
+                        good = 0;
+                    Array.prototype.forEach.call(checks, function (c) {
+                        if (c.checked) good++;
+                    });
+                    el("paper-counter").textContent =
+                        good + " goed · " + (total - good) + " fout";
+                    el("paper-process-btn").textContent =
+                        "Verwerk: " +
+                        good +
+                        " goed, " +
+                        (total - good) +
+                        " fout";
+                }
+
+                function processPaper() {
+                    var checks =
+                        el("paperlist-rows").querySelectorAll(".pl-check");
+                    session.correct = 0;
+                    Array.prototype.forEach.call(checks, function (chk) {
+                        var i = parseInt(chk.getAttribute("data-i"), 10);
+                        var card = session.items[i].card;
+                        var ok = chk.checked;
+                        if (ok) session.correct++;
+                        record(card.id, ok);
+                    });
+                    renderSummary();
+                }
+
+                /* ---------- samenvatting ---------- */
+                function renderSummary() {
+                    show("summary");
+                    var n = session.items.length;
+                    el("summary-score").textContent =
+                        session.correct + " / " + n + " goed";
+                    var pct = Math.round((session.correct / n) * 100);
+                    el("summary-sub").textContent =
+                        pct + "% in deze sessie · " + n + " kaarten";
+                    var boxes = [0, 0, 0, 0, 0];
+                    session.items.forEach(function (it) {
+                        boxes[boxOf(it.card.id) - 1]++;
+                    });
+                    var bd = el("summary-boxes");
+                    bd.innerHTML = "";
+                    boxes.forEach(function (cnt, i) {
+                        var d = document.createElement("div");
+                        d.className = "boxbar";
+                        d.innerHTML =
+                            '<span class="boxbar-label">box ' +
+                            (i + 1) +
+                            "</span>" +
+                            '<span class="boxbar-track"><span class="boxbar-fill" style="width:' +
+                            (n ? (cnt / n) * 100 : 0) +
+                            '%"></span></span>' +
+                            '<span class="boxbar-count">' +
+                            cnt +
+                            "</span>";
+                        bd.appendChild(d);
+                    });
+                    el("summary-storage").textContent = storageOk
+                        ? "Voortgang opgeslagen in deze browser."
+                        : "Let op: opslag werkt hier niet (bv. in een preview-venster). Download het bestand en open het lokaal om voortgang te bewaren.";
+                }
+
+                /* ---------- schermen ---------- */
+                function show(name) {
+                    ["menu", "session", "paperlist", "summary"].forEach(
+                        function (s) {
+                            el("screen-" + s).hidden = s !== name;
+                        },
+                    );
+                    window.scrollTo(0, 0);
+                }
+
+                /* ---------- toetsenbord ---------- */
+                document.addEventListener("keydown", function (e) {
+                    if (!session || el("screen-session").hidden) return;
+                    if (session.phase === "prompt") {
+                        if (
+                            e.key === "Enter" ||
+                            e.key === " " ||
+                            e.key === "ArrowDown"
+                        ) {
+                            e.preventDefault();
+                            session.reveal();
+                        }
+                    } else if (session.phase === "revealed") {
+                        if (
+                            e.key === "ArrowRight" ||
+                            e.key === "g" ||
+                            e.key === "G"
+                        ) {
+                            e.preventDefault();
+                            session.grade(true);
+                        } else if (
+                            e.key === "ArrowLeft" ||
+                            e.key === "f" ||
+                            e.key === "F"
+                        ) {
+                            e.preventDefault();
+                            session.grade(false);
+                        }
+                    } else if (session.phase === "paper-prompt") {
+                        if (
+                            e.key === "Enter" ||
+                            e.key === " " ||
+                            e.key === "ArrowRight"
+                        ) {
+                            e.preventDefault();
+                            if (session._paperNext) session._paperNext.click();
+                        }
+                    }
+                });
+
+                /* ---------- init ---------- */
+                function syncTenseEnabled() {
+                    var on = el("inc_verbs").checked;
+                    TENSES.forEach(function (t) {
+                        var c = el("tense_" + t);
+                        if (c) c.disabled = !on;
+                    });
+                    var g = el("tense-group");
+                    if (g) g.classList.toggle("is-disabled", !on);
+                }
+
+                function init() {
+                    el("start-btn").addEventListener("click", startSession);
+                    el("inc_verbs").addEventListener(
+                        "change",
+                        syncTenseEnabled,
+                    );
+                    syncTenseEnabled();
+
+                    el("hint-btn").addEventListener("click", function () {
+                        var hp = el("hint-panel");
+                        hp.hidden = !hp.hidden;
+                        var open = !hp.hidden;
+                        el("hint-btn").setAttribute(
+                            "aria-expanded",
+                            open ? "true" : "false",
+                        );
+                        el("hint-btn").textContent = open
+                            ? "Verberg hint"
+                            : "Hint / uitleg";
+                    });
+                    el("menu-btn").addEventListener("click", function () {
+                        show("menu");
+                    });
+                    el("paper-menu-btn").addEventListener("click", function () {
+                        show("menu");
+                    });
+                    el("paper-process-btn").addEventListener(
+                        "click",
+                        processPaper,
+                    );
+                    el("again-btn").addEventListener("click", function () {
+                        show("menu");
+                    });
+                    el("reset-btn").addEventListener("click", function () {
+                        if (confirm("Alle voortgang in deze browser wissen?")) {
+                            srs = {};
+                            saveSrs();
+                            el("reset-note").textContent = "Voortgang gewist.";
+                            setTimeout(function () {
+                                el("reset-note").textContent = "";
+                            }, 2000);
+                        }
+                    });
+
+                    var verbCards = ALL.filter(function (c) {
+                        return c.type === "verb";
+                    }).length;
+                    var wordCards = ALL.filter(function (c) {
+                        return c.type === "word";
+                    }).length;
+                    el("data-summary").textContent =
+                        verbCards +
+                        " werkwoordskaarten (" +
+                        DATA.verbs.length +
+                        " werkwoorden × 5 tijden) + " +
+                        wordCards +
+                        " woorden";
+                }
+
+                /* ---------- data laden ---------- */
+                // Op een host (http/https) laadt de app de canonieke data.json.
+                // Lokaal geopend (file://) valt 'ie terug op window.DATA uit data.js, zodat dubbelklikken blijft werken.
+                function loadData() {
+                    if (location.protocol === "file:") {
+                        return Promise.resolve(window.DATA || null);
+                    }
+                    return fetch("data.json", { cache: "no-store" })
+                        .then(function (r) {
+                            if (!r.ok) throw new Error("HTTP " + r.status);
+                            return r.json();
+                        })
+                        .catch(function () {
+                            return window.DATA || null;
+                        });
+                }
+
+                function boot() {
+                    loadData().then(function (d) {
+                        var ok =
+                            d &&
+                            ((d.verbs && d.verbs.length) ||
+                                (d.words && d.words.length));
+                        if (!ok) {
+                            var warn = el("menu-warning");
+                            if (warn) {
+                                warn.textContent =
+                                    "Kon de dataset niet laden. Serveer dit via een (lokale) server, bijv. python3 -m http.server.";
+                            }
+                            return;
+                        }
+                        DATA = d;
+                        ALL = buildAllCards();
+                        init();
+                    });
+                }
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", boot);
+                } else {
+                    boot();
+                }
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+// Local development configuration. `database_id` is a placeholder: a human replaces it with the
+// ID from `wrangler d1 create ripasso` before deploying (see README, "Deployment").
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ripasso",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ripasso",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

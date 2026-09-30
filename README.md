@@ -31,6 +31,21 @@ bun run dev
 
 The development server is available at `http://localhost:5173` by default.
 
+### Database
+
+The server side uses Cloudflare D1 through Drizzle ORM. `wrangler.jsonc` binds a D1 database as
+`DB`; locally it lives in `.wrangler/` (gitignored) and needs no Cloudflare account.
+
+```sh
+bun run db:migrate:local   # create or update the local database, including the base content
+bun run db:generate        # after editing src/lib/server/db/schema.ts: write a new migration
+bun run db:seed            # after editing static/data.json: regenerate migrations/0001_seed.sql
+```
+
+The schema is in `src/lib/server/db/schema.ts` and migrations are SQL files in `migrations/`.
+The seed migration inserts every built-in entry and a "Basis" list containing all of them, owned
+by the `system` user. Row mapping (`entryToRow` / `rowToEntry`) is in `src/lib/server/db/`.
+
 ## Verification
 
 ```sh
@@ -49,6 +64,17 @@ bunx playwright install chromium
 
 The production build uses SvelteKit's Cloudflare adapter, but the application currently needs no
 Cloudflare services at runtime.
+
+## Deployment
+
+Deployment is done by a human; agents never touch remote Cloudflare resources. Before the app is
+deployed with the database:
+
+1. Create the database with `wrangler d1 create ripasso` and put the returned ID in
+   `database_id` in `wrangler.jsonc` (the committed value is a placeholder). If the app is
+   deployed with Cloudflare Pages, also bind the database as `DB` in the Pages project settings.
+2. Apply migrations remotely: `wrangler d1 migrations apply ripasso --remote`.
+3. Deploy to Cloudflare.
 
 ## CI
 

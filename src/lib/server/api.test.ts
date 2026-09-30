@@ -129,6 +129,12 @@ describe("authenticated API", () => {
     const lists = (await call(listsApi.GET, { user: alice })).body as { id: string }[];
     expect(lists.find((l) => l.id === list.id)).toEqual(reordered);
 
+    const big = { id: "list-alice-big", name: "Groot", entryRefs: Array.from({ length: 60 }, (_, i) => ({ entryId: `word:n${i}` })) };
+    expect((await call(listsApi.POST, { user: alice, body: big })).status).toBe(201);
+    expect((await call(listApi.PUT, { user: alice, params: { id: big.id }, body: big })).status).toBe(200);
+    const withBig = (await call(listsApi.GET, { user: alice })).body as { id: string }[];
+    expect(withBig.find((l) => l.id === big.id)).toEqual(big);
+
     expect((await call(entryApi.DELETE, { user: alice, params: { id: word.id } })).status).toBe(204);
     expect((await call(listApi.DELETE, { user: alice, params: { id: list.id } })).status).toBe(204);
     expect((await call(listApi.DELETE, { user: alice, params: { id: list.id } })).status).toBe(404);

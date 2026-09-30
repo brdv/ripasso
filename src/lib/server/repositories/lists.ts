@@ -1,6 +1,7 @@
 import { and, asc, desc, eq, inArray, or } from "drizzle-orm";
 import type { PracticeList } from "$lib/domain/types";
 import type { Db } from "../db";
+import { chunkRows } from "../db/chunk";
 import { listEntries, lists } from "../db/schema";
 
 export function createListStore(db: Db) {
@@ -59,19 +60,18 @@ export function createListStore(db: Db) {
         .onConflictDoNothing()
         .run();
       if (result.meta.changes === 0) return false;
-      const rows = entryRows(list, now);
-      if (rows.length > 0) await db.insert(listEntries).values(rows).run();
+      const inserts = chunkRows(entryRows(list, now), 4).map((rows) => db.insert(listEntries).values(rows));
+      if (inserts.length > 0) await db.batch(inserts as [(typeof inserts)[number], ...typeof inserts]);
       return true;
     },
 
     /** Replaces name and entries of one of the user's own lists. Returns false when not theirs. */
     async update(userId: string, list: PracticeList, now = Date.now()): Promise<boolean> {
       if (!(await this.getOwn(userId, list.id))) return false;
-      const rows = entryRows(list, now);
       await db.batch([
         db.update(lists).set({ name: list.name, updatedAt: now }).where(eq(lists.id, list.id)),
         db.delete(listEntries).where(eq(listEntries.listId, list.id)),
-        ...(rows.length > 0 ? [db.insert(listEntries).values(rows)] : []),
+        ...chunkRows(entryRows(list, now), 4).map((rows) => db.insert(listEntries).values(rows)),
       ]);
       return true;
     },

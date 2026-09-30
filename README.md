@@ -18,6 +18,7 @@ The development server is available at `http://localhost:5173` by default.
 ## Verification
 
 ```sh
+bun run lint
 bun run check
 bun run test
 bun run test:e2e
@@ -32,6 +33,15 @@ bunx playwright install chromium
 
 The production build uses SvelteKit's Cloudflare adapter, but the application currently needs no
 Cloudflare services at runtime.
+
+## CI
+
+`.github/workflows/ci.yml` runs on every pull request and on pushes to `main`. A single job on
+`ubuntu-latest` installs dependencies with Bun 1.4.2 (`bun install --frozen-lockfile`), installs
+Playwright's Chromium (cached per Playwright version), and then runs `bun run lint`,
+`bun run check`, `bun run test`, `bun run test:e2e -- --workers=1`, and `bun run build` as
+separate steps. When a step fails, the Playwright report and test results are uploaded as the
+`playwright-results` artifact. A newer run on the same branch cancels the one in progress.
 
 ## Roadmap
 

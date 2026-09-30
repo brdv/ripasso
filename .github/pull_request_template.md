@@ -8,7 +8,7 @@
 
 ## Checklist
 
-- [ ] `bun run check`, `bun run test`, `bun run test:e2e -- --workers=1`, and `bun run build` pass
+- [ ] `bun run lint`, `bun run check`, `bun run test`, `bun run test:e2e -- --workers=1`, and `bun run build` pass
 - [ ] Status table in `docs/roadmap.md` updated
 - [ ] Roadmap text matches what was built
 - [ ] `README.md` updated where users or developers are affected

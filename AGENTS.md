@@ -44,20 +44,24 @@ Use Bun for everything.
 ```sh
 bun install
 bun run dev          # http://localhost:5173
+bun run lint         # ESLint
 bun run check        # svelte-check + TypeScript
 bun run test         # Vitest: node unit tests and browser component tests
 bun run test:e2e     # Playwright, desktop and mobile projects
 bun run build        # production build with the Cloudflare adapter
 ```
 
-Before opening a PR, all four must pass:
+Before opening a PR, all five must pass:
 
 ```sh
-bun run check && bun run test && bun run test:e2e -- --workers=1 && bun run build
+bun run lint && bun run check && bun run test && bun run test:e2e -- --workers=1 && bun run build
 ```
 
 `bun run test` includes browser tests, so Playwright's Chromium must be installed
 (`bunx playwright install chromium`). The cloud setup script does this.
+
+The same commands run in GitHub Actions on every PR and push to `main`
+(`.github/workflows/ci.yml`). A PR is not done until that workflow is green.
 
 ## Code conventions
 

@@ -1,11 +1,12 @@
 import { TENSES } from "./constants";
+import { expandEntriesToCards } from "./cards";
 import { boxOf } from "./srs";
 import type {
-  Card,
   MenuState,
   Progress,
   ResolvedDirection,
   SessionItem,
+  StudyEntry,
   StudySession,
 } from "./types";
 
@@ -54,19 +55,17 @@ export function resolveDirection(menu: MenuState, rng = Math.random): ResolvedDi
 }
 
 export function buildSessionItems(
-  cards: Card[],
+  entries: StudyEntry[],
   menu: MenuState,
   progress: Progress,
   rng = Math.random,
 ): SessionItem[] {
   const state = cloneMenuState(menu);
-  let selected = cards.filter((card) => {
-    if (card.type === "verb") {
-      return state.includeVerbs && state.tenses[card.tense];
-    }
-
-    return state.includeWords;
-  });
+  const selectedEntries = entries.filter((entry) =>
+    entry.type === "verb" ? state.includeVerbs : state.includeWords,
+  );
+  const enabledTenses = TENSES.filter((tense) => state.tenses[tense]);
+  let selected = expandEntriesToCards(selectedEntries, enabledTenses);
 
   if (state.sessionType === "smart") {
     selected = shuffle(selected, rng).sort((a, b) => {

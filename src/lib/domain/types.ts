@@ -16,6 +16,7 @@ export interface VerbForm {
 }
 
 export interface VerbSource {
+  id?: string;
   lemma: string;
   nl: string;
   regularity?: string | null;
@@ -26,6 +27,7 @@ export interface VerbSource {
 }
 
 export interface WordSource {
+  id?: string;
   it: string;
   nl: string;
   wordType?: string | null;
@@ -40,8 +42,33 @@ export interface Deck {
   words?: WordSource[];
 }
 
+export type EntryId = string;
+
+export interface VerbEntry extends Omit<VerbSource, "id"> {
+  id: EntryId;
+  type: "verb";
+}
+
+export interface WordEntry extends Omit<WordSource, "id"> {
+  id: EntryId;
+  type: "word";
+}
+
+export type StudyEntry = VerbEntry | WordEntry;
+
+export interface EntryReference {
+  entryId: EntryId;
+}
+
+export interface PracticeList {
+  id: string;
+  name: string;
+  entryRefs: EntryReference[];
+}
+
 export interface VerbCard {
   id: string;
+  entryId: EntryId;
   type: "verb";
   lemma: string;
   lemmaNl: string;
@@ -56,6 +83,7 @@ export interface VerbCard {
 
 export interface WordCard {
   id: string;
+  entryId: EntryId;
   type: "word";
   it: string;
   nl: string;

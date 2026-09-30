@@ -6,51 +6,52 @@ import {
   PERSONS,
   TENSE_LABEL,
   TENSE_NL,
-  TENSES,
   WORDTYPE_NL,
 } from "./constants";
-import type { Card, Deck, Hint, ResolvedDirection } from "./types";
+import type { Card, Hint, ResolvedDirection, StudyEntry, Tense } from "./types";
 
-export function buildAllCards(data: Deck): Card[] {
+export function expandEntriesToCards(entries: StudyEntry[], tenses: Tense[]): Card[] {
   const cards: Card[] = [];
 
-  for (const verb of data.verbs ?? []) {
-    for (const tense of TENSES) {
-      const forms = verb.forms?.[tense];
-      if (!forms) continue;
+  for (const entry of entries) {
+    if (entry.type === "verb") {
+      for (const tense of tenses) {
+        const forms = entry.forms?.[tense];
+        if (!forms) continue;
 
-      for (const person of PERSONS) {
-        const form = forms[person];
-        if (!form) continue;
+        for (const person of PERSONS) {
+          const form = forms[person];
+          if (!form) continue;
 
-        cards.push({
-          id: `verb:${verb.lemma}:${tense}:${person}`,
-          type: "verb",
-          lemma: verb.lemma,
-          lemmaNl: verb.nl,
-          regularity: verb.regularity,
-          auxiliary: verb.auxiliary,
-          note: verb.note,
-          tense,
-          person,
-          it: form.it,
-          nl: form.nl,
-        });
+          cards.push({
+            id: `card:${entry.id}:${tense}:${person}`,
+            entryId: entry.id,
+            type: "verb",
+            lemma: entry.lemma,
+            lemmaNl: entry.nl,
+            regularity: entry.regularity,
+            auxiliary: entry.auxiliary,
+            note: entry.note,
+            tense,
+            person,
+            it: form.it,
+            nl: form.nl,
+          });
+        }
       }
+    } else {
+      cards.push({
+        id: `card:${entry.id}`,
+        entryId: entry.id,
+        type: "word",
+        it: entry.it,
+        nl: entry.nl,
+        wordType: entry.wordType,
+        gender: entry.gender,
+        number: entry.number,
+        article: entry.article,
+      });
     }
-  }
-
-  for (const word of data.words ?? []) {
-    cards.push({
-      id: `word:${word.it}`,
-      type: "word",
-      it: word.it,
-      nl: word.nl,
-      wordType: word.wordType,
-      gender: word.gender,
-      number: word.number,
-      article: word.article,
-    });
   }
 
   return cards;

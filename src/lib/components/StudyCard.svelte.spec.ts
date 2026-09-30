@@ -5,7 +5,8 @@ import StudyCard from "./StudyCard.svelte";
 
 const item = {
   card: {
-    id: "word:ora",
+    id: "card:word:ora",
+    entryId: "word:ora",
     type: "word" as const,
     it: "ora",
     nl: "uur",

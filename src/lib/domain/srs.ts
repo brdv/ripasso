@@ -1,6 +1,6 @@
 import type { Progress, ProgressEntry } from "./types";
 
-export const SRS_KEY = "ripasso_poc_v1";
+export const SRS_KEY = "ripasso_progress_v2";
 
 interface StorageLike {
   getItem(key: string): string | null;

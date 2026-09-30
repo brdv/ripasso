@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildAllCards, composeHint, italianDisplay } from "./cards";
+import { composeHint, expandEntriesToCards, italianDisplay } from "./cards";
+import { entriesFromDeck } from "./entries";
 import type { Deck } from "./types";
 
 const deck: Deck = {
@@ -26,19 +27,22 @@ const deck: Deck = {
 };
 
 describe("card building", () => {
-  it("creates stable IDs for verb forms and words", () => {
-    expect(buildAllCards(deck).map((card) => card.id)).toEqual([
-      "verb:essere:presente:io",
-      "word:ora",
+  const cards = expandEntriesToCards(entriesFromDeck(deck), ["presente"]);
+
+  it("creates card IDs derived from their source entry", () => {
+    expect(cards.map((card) => card.id)).toEqual([
+      "card:verb:essere:presente:io",
+      "card:word:ora",
     ]);
+    expect(cards.map((card) => card.entryId)).toEqual(["verb:essere", "word:ora"]);
   });
 
   it("includes a noun's article in its Italian display value", () => {
-    expect(italianDisplay(buildAllCards(deck)[1])).toBe("l'ora");
+    expect(italianDisplay(cards[1])).toBe("l'ora");
   });
 
   it("does not reveal the Dutch meaning in an Italian-to-Dutch verb hint", () => {
-    const verb = buildAllCards(deck)[0];
+    const verb = cards[0];
     expect(composeHint(verb, "it_nl").rows).toContainEqual(["infinitief", "essere"]);
   });
 });

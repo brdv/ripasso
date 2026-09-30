@@ -2,7 +2,9 @@
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
   import AppHeader from "$lib/components/AppHeader.svelte";
-  import { buildAllCards, cardCounts } from "$lib/domain/cards";
+  import { cardCounts, expandEntriesToCards } from "$lib/domain/cards";
+  import { entriesFromDeck } from "$lib/domain/entries";
+  import { TENSES } from "$lib/domain/constants";
   import { buildSessionItems, createSession, defaultMenuState } from "$lib/domain/session";
   import { clearSrs, loadSrs, record, saveSrs } from "$lib/domain/srs";
   import type { Progress, StudySession } from "$lib/domain/types";
@@ -16,7 +18,8 @@
 
   let { data }: PageProps = $props();
 
-  const cards = $derived(buildAllCards(data.deck));
+  const entries = $derived(entriesFromDeck(data.deck));
+  const cards = $derived(expandEntriesToCards(entries, TENSES));
   const counts = $derived(cardCounts(cards));
   const dataSummary = $derived(
     `${counts.verbCards} werkwoordskaarten (${counts.verbCount} werkwoorden × 5 tijden) + ${counts.wordCards} woorden`,
@@ -29,12 +32,14 @@
   let session = $state<StudySession | null>(null);
   let menuWarning = $state("");
   let resetNote = $state("");
+  let ready = $state(false);
   let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
   onMount(() => {
     const loaded = loadSrs(window.localStorage);
     progress = loaded.progress;
     storageOk = loaded.ok;
+    ready = true;
 
     return () => clearTimeout(resetTimer);
   });
@@ -44,7 +49,7 @@
   }
 
   function startSession() {
-    const items = buildSessionItems(cards, menu, progress);
+    const items = buildSessionItems(entries, menu, progress);
 
     if (items.length === 0) {
       menuWarning =
@@ -162,7 +167,7 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="wrap">
+<div class="wrap" data-ready={ready}>
   <AppHeader summary={dataSummary} />
 
   {#if view === "menu"}

@@ -21,7 +21,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` | #8  |
 | 6   | Accounts                               | in review   | `claude/roadmap-step-6-accounts` | #9  |
 | 7   | Guest-to-account sync                  | in review   | `claude/roadmap-step-7-sync` | #10 |
-| 8   | Sharing lists                          | not started |        |     |
+| 8   | Sharing lists                          | in review   | `claude/roadmap-step-8-sharing` |     |
 | 9   | Cleanup and final docs pass            | not started |        |     |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
@@ -404,6 +404,15 @@ In scope:
   (`GET /api/shared/[slug]`) even when they are the owner's private entries. They are not
   readable any other way.
 - Copy follows the decisions log.
+- Endpoints added for this: `POST /api/lists/[id]/share` (returns `{ shareSlug }`; sharing an
+  already shared list keeps its slug), `DELETE /api/lists/[id]/share`, and
+  `POST /api/shared/[slug]/copy`. `GET /api/shared/[slug]` returns
+  `{ list, entries, isOwner }`. Slugs are 24 URL-safe characters (144 random bits).
+- Sharing needs an account (only server lists have a link); the lists view shows "Deel lijst"
+  only to logged-in users. Own lists carry an optional `shareSlug` on `PracticeList`.
+- "Oefen deze lijst" opens the main page with `?gedeeld=<slug>`, which adds the list to the
+  "Oefenen uit" select as "Gedeeld: <name>" and selects it, so the usual menu settings apply.
+  The shared list is not stored; progress is stored as usual (locally for guests).
 
 Acceptance criteria:
 

@@ -438,6 +438,31 @@ textarea.text-input {
 .form-table tr.has-error .text-input {
     border-color: var(--bad);
 }
+a.btn-primary {
+    color: #fff;
+    text-align: center;
+}
+.shared-name {
+    font-size: 26px;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+.share-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+}
+.share-row .text-input {
+    flex: 1;
+    font-size: 13px;
+}
+.list-row-wrap {
+    flex-wrap: wrap;
+}
+.list-row-wrap .share-block {
+    flex-basis: 100%;
+}
 .storage-warning {
     color: var(--bad);
     font-size: 13px;

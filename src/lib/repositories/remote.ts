@@ -42,6 +42,16 @@ export class RemoteListRepository implements ListRepository {
     await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}`, "DELETE");
     this.known.delete(id);
   }
+
+  /** Shares a list by link and returns its slug. Server-only, so not part of `ListRepository`. */
+  async share(id: string): Promise<string> {
+    const response = await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}/share`, "POST");
+    return ((await response.json()) as { shareSlug: string }).shareSlug;
+  }
+
+  async unshare(id: string): Promise<void> {
+    await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}/share`, "DELETE");
+  }
 }
 
 export class RemoteEntryRepository implements EntryRepository {

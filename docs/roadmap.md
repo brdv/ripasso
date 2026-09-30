@@ -21,7 +21,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` | #8  |
 | 6   | Accounts                               | in review   | `claude/roadmap-step-6-accounts` | #9  |
 | 7   | Guest-to-account sync                  | in review   | `claude/roadmap-step-7-sync` | #10 |
-| 8   | Sharing lists                          | in review   | `claude/roadmap-step-8-sharing` |     |
+| 8   | Sharing lists                          | in review   | `claude/roadmap-step-8-sharing` | #11 |
 | 9   | Cleanup and final docs pass            | not started |        |     |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.

@@ -18,7 +18,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 2   | Custom words (local)                   | in review   | `claude/roadmap-step-2-custom-words` | #5  |
 | 3   | Custom verbs (local)                   | in review   | `claude/roadmap-step-3-custom-verbs` | #6  |
 | 4   | D1 schema, migrations, and seed        | in review   | `claude/roadmap-step-4-d1-schema` | #7  |
-| 5   | Server repositories and entries API    | not started |        |     |
+| 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` |     |
 | 6   | Accounts                               | not started |        |     |
 | 7   | Guest-to-account sync                  | not started |        |     |
 | 8   | Sharing lists                          | not started |        |     |
@@ -298,8 +298,9 @@ In scope:
 - Server repositories in `src/lib/server/repositories/` taking a `D1Database` and an optional
   current user ID: `entries.listVisible(userId?)` returns public entries plus the user's own.
 - Integration tests for server repositories against a local D1 created through wrangler's
-  `getPlatformProxy()` (or Miniflare directly) with migrations applied to a temporary
-  persistence directory. Document the chosen approach in `AGENTS.md`.
+  `getPlatformProxy()` with migrations applied to a temporary persistence directory
+  (`createTestDatabase()` in `src/lib/server/testing/d1.ts`, which runs each migration's
+  statements in a batch). Documented in `AGENTS.md`.
 - `GET /api/entries` returning `StudyEntry[]` visible to the caller (no auth yet, so public
   entries).
 - `+page.ts` loads entries from `/api/entries`. Guest custom entries from step 2 are still merged

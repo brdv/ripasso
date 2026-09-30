@@ -13,7 +13,7 @@ branch name, and correct anything below that the implementation made untrue.
 
 | #   | Step                                   | Status      | Branch | PR  |
 | --- | -------------------------------------- | ----------- | ------ | --- |
-| 0   | Agent setup, roadmap, and docs         | in review   | `prep/agent-setup` | —   |
+| 0   | Agent setup, roadmap, and docs         | merged      | `prep/agent-setup` | #2  |
 | 1   | Local practice lists                   | not started |        |     |
 | 2   | Custom words (local)                   | not started |        |     |
 | 3   | Custom verbs (local)                   | not started |        |     |

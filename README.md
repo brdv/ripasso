@@ -94,10 +94,13 @@ deployed with the database:
 1. Create the database with `wrangler d1 create ripasso` and put the returned ID in
    `database_id` in `wrangler.jsonc` (the committed value is a placeholder). If the app is
    deployed with Cloudflare Pages, also bind the database as `DB` in the Pages project settings.
-2. Apply migrations remotely: `wrangler d1 migrations apply ripasso --remote`.
-3. Set `BETTER_AUTH_SECRET` (a long random string) and `BETTER_AUTH_URL` (the public URL of the
+2. Enable the `nodejs_compat` compatibility flag for the deployed app (for Cloudflare Pages: in the
+   project's runtime settings, for production and preview). Better Auth imports `node:crypto`, so
+   builds fail to deploy without it. `wrangler.jsonc` sets it for local development only.
+3. Apply migrations remotely: `wrangler d1 migrations apply ripasso --remote`.
+4. Set `BETTER_AUTH_SECRET` (a long random string) and `BETTER_AUTH_URL` (the public URL of the
    app) as secrets or environment variables of the deployed app.
-4. Deploy to Cloudflare.
+5. Deploy to Cloudflare.
 
 ## CI
 

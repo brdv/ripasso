@@ -22,7 +22,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 6   | Accounts                               | in review   | `claude/roadmap-step-6-accounts` | #9  |
 | 7   | Guest-to-account sync                  | in review   | `claude/roadmap-step-7-sync` | #10 |
 | 8   | Sharing lists                          | in review   | `claude/roadmap-step-8-sharing` | #11 |
-| 9   | Cleanup and final docs pass            | in review   | `claude/roadmap-step-9-cleanup` |     |
+| 9   | Cleanup and final docs pass            | in review   | `claude/roadmap-step-9-cleanup` | #12 |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
 

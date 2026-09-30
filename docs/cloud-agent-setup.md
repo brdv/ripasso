@@ -17,7 +17,21 @@ the loop for running each step. Agent instructions themselves live in `AGENTS.md
      for Bun and Playwright, and `archive.ubuntu.com` / `security.ubuntu.com` for the system
      libraries that `--with-deps` installs.
    - Setup script: the contents of `scripts/cloud-setup.sh`.
-   - No environment variables or secrets are needed. Local D1 needs no Cloudflare account.
+   - Environment variables:
+
+     ```text
+     CI=true
+     PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
+     BASH_DEFAULT_TIMEOUT_MS=300000
+     BASH_MAX_TIMEOUT_MS=600000
+     ```
+
+     `CI=true` keeps Vitest out of watch mode if an agent runs it directly.
+     `PLAYWRIGHT_BROWSERS_PATH` points sessions at the Chromium the setup script cached.
+     The timeouts give the full verification run room once the stack adds D1 and auth tests.
+   - No secrets. Local D1 needs no Cloudflare account, and step 6 generates a local auth secret
+     from `.dev.vars.example`. Environment variables are visible to anyone using the environment,
+     so never put real credentials there.
 3. **Dry run.** Start a session on `main` (or on `prep/agent-setup` before it merges) with a throwaway task, for example:
 
    > Read `AGENTS.md`. Add one sentence to the README's Verification section saying that

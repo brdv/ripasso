@@ -9,7 +9,9 @@
 npm install -g bun@1.4.2 || true
 
 # Chromium and its system libraries for Vitest browser tests and Playwright end-to-end tests.
-# Keep the version in sync with "playwright" in bun.lock.
+# Keep the version in sync with "playwright" in bun.lock. The fixed browsers path must match the
+# PLAYWRIGHT_BROWSERS_PATH environment variable so sessions find the cached browser.
+export PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright
 npx -y playwright@1.61.1 install --with-deps chromium || true
 
 git config --global user.name "Bram"

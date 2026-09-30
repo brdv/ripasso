@@ -7,11 +7,13 @@
     session,
     progress,
     storageOk,
+    inAccount = false,
     onAgain,
   }: {
     session: StudySession;
     progress: Progress;
     storageOk: boolean;
+    inAccount?: boolean;
     onAgain: () => void;
   } = $props();
 
@@ -26,8 +28,12 @@
     <div class="summary-sub">{percentage}% in deze sessie · {total} kaarten</div>
     <BoxDistribution {boxes} />
     <div class="summary-storage">
-      {#if storageOk}
+      {#if storageOk && inAccount}
+        Voortgang opgeslagen in je account.
+      {:else if storageOk}
         Voortgang opgeslagen in deze browser.
+      {:else if inAccount}
+        Let op: opslaan op de server lukte niet. Je kunt wel blijven oefenen, maar de voortgang is misschien niet bewaard.
       {:else}
         Let op: opslag werkt niet in deze browser. Je kunt wel blijven oefenen, maar de voortgang blijft niet bewaard.
       {/if}

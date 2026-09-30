@@ -3,7 +3,7 @@
 Ripasso is a SvelteKit app for practising Italian vocabulary and verb conjugations. The built-in
 deck lives in a Cloudflare D1 database (seeded from `static/data.json`) and is served by
 `GET /api/entries`. Guests keep study progress, lists, and own entries in the browser; logged-in
-users store lists and own entries on the server.
+users store them on the server.
 
 ## Features
 
@@ -23,7 +23,12 @@ users store lists and own entries on the server.
 - **Accounts.** "Account aanmaken" (`/account-aanmaken`) and "Inloggen" (`/inloggen`) use e-mail
   and password (minimum 8 characters). Logged-in users' lists and own entries are stored on the
   server and they also see the read-only "Basis" list. Logging out keeps the browser's guest
-  data untouched. Progress is still stored per browser.
+  data untouched.
+- **Guest-to-account sync.** The first time an account logs in on a browser, that browser's guest
+  words, verbs, lists, and progress are copied into the account in one request (progress merges
+  per card; the most recently practised row wins). The browser remembers this in
+  `ripasso_sync_v1`, so it happens once per account per browser. After that, progress is saved
+  to the account after every graded card, and "Voortgang wissen" clears the account's progress.
 
 ## Development
 

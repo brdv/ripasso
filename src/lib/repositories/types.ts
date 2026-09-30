@@ -1,4 +1,4 @@
-import type { EntryId, PracticeList, StudyEntry } from "$lib/domain/types";
+import type { EntryId, PracticeList, Progress, ProgressEntry, StudyEntry } from "$lib/domain/types";
 
 export interface ListRepository {
   list(): Promise<PracticeList[]>;
@@ -13,4 +13,10 @@ export interface EntryRepository {
   listOwn(): Promise<StudyEntry[]>;
   save(entry: StudyEntry): Promise<void>;
   remove(id: EntryId): Promise<void>;
+}
+
+export interface ProgressRepository {
+  load(): Promise<Progress>;
+  record(cardId: string, entry: ProgressEntry): Promise<void>;
+  clear(): Promise<void>;
 }

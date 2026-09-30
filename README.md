@@ -4,6 +4,15 @@ Ripasso is a SvelteKit app for practising Italian vocabulary and verb conjugatio
 deck is loaded from `static/data.json`; study progress is kept locally in the browser. There is no
 database or account system yet.
 
+## Features
+
+- Practise verb conjugations and vocabulary in both directions, with a simple Leitner-box review
+  or a free session, graded directly or afterwards "on paper".
+- **Practice lists.** "Lijsten beheren" in the menu opens an overview where you create, rename,
+  and delete lists and add or remove words and verbs through a search box. The "Oefenen uit"
+  select in the menu picks the whole dataset or one list; the menu's content and tense filters
+  still apply. Lists are stored in the browser (`ripasso_lists_v1`).
+
 ## Development
 
 Install dependencies and run the local app with Bun:

@@ -14,7 +14,7 @@ branch name, and correct anything below that the implementation made untrue.
 | #   | Step                                   | Status      | Branch | PR  |
 | --- | -------------------------------------- | ----------- | ------ | --- |
 | 0   | Agent setup, roadmap, and docs         | merged      | `prep/agent-setup` | #2  |
-| 1   | Local practice lists                   | not started |        |     |
+| 1   | Local practice lists                   | in review   | `claude/roadmap-step-1-local-lists` |     |
 | 2   | Custom words (local)                   | not started |        |     |
 | 3   | Custom verbs (local)                   | not started |        |     |
 | 4   | D1 schema, migrations, and seed        | not started |        |     |
@@ -141,11 +141,12 @@ In scope:
   (`{ version: 1, lists: PracticeList[] }`), taking a storage object like `srs.ts` does so it is
   unit-testable.
 - Menu: the "Oefenen uit" select and a "Lijsten beheren" button.
-- Lists view: all lists with name and "X werkwoorden · Y woorden", a "Nieuwe lijst" action, and
-  per list "Bewerken" and "Verwijderen" (with `window.confirm`).
+- Lists view: all lists with name and "X werkwoorden · Y woorden", a "Nieuwe lijst" action (a
+  name field; creating a list opens it in the editor), and per list "Bewerken" and "Verwijderen"
+  (with `window.confirm`). Unreadable list storage shows the storage warning here.
 - List editor view: rename field, a search box that filters available entries by Italian, Dutch,
-  or lemma (case- and accent-insensitive), and an add/remove toggle per entry. The list's current
-  entries are shown first. Each entry appears at most once.
+  or lemma (case- and accent-insensitive, `src/lib/domain/search.ts`), and an add/remove toggle
+  per entry. The list's current entries are shown first. Each entry appears at most once.
 - Starting a session with a selected list passes only the list's resolved entries to
   `buildSessionItems`.
 

@@ -4,17 +4,22 @@
   import AppHeader from "$lib/components/AppHeader.svelte";
   import { cardCounts, expandEntriesToCards } from "$lib/domain/cards";
   import { entriesFromDeck } from "$lib/domain/entries";
+  import { addEntry, createList, listEntries, removeEntry, renameList } from "$lib/domain/lists";
   import { TENSES } from "$lib/domain/constants";
   import { buildSessionItems, createSession, defaultMenuState } from "$lib/domain/session";
   import { clearSrs, loadSrs, record, saveSrs } from "$lib/domain/srs";
-  import type { Progress, StudySession } from "$lib/domain/types";
+  import type { EntryId, PracticeList, Progress, StudySession } from "$lib/domain/types";
+  import { LocalListRepository } from "$lib/repositories/local-lists";
+  import type { ListRepository } from "$lib/repositories/types";
+  import ListEditorView from "$lib/views/ListEditorView.svelte";
+  import ListsView from "$lib/views/ListsView.svelte";
   import MenuView from "$lib/views/MenuView.svelte";
   import PaperReviewView from "$lib/views/PaperReviewView.svelte";
   import StudyView from "$lib/views/StudyView.svelte";
   import SummaryView from "$lib/views/SummaryView.svelte";
   import type { PageProps } from "./$types";
 
-  type AppView = "menu" | "session" | "paper-review" | "summary";
+  type AppView = "menu" | "session" | "paper-review" | "summary" | "lists" | "list-editor";
 
   let { data }: PageProps = $props();
 
@@ -35,11 +40,25 @@
   let ready = $state(false);
   let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
+  let listRepository: ListRepository | undefined;
+  let lists = $state<PracticeList[]>([]);
+  let listsStorageOk = $state(true);
+  let selectedListId = $state("");
+  let editingListId = $state<string | null>(null);
+  const editingList = $derived(lists.find((list) => list.id === editingListId) ?? null);
+
   onMount(() => {
     const loaded = loadSrs(window.localStorage);
     progress = loaded.progress;
     storageOk = loaded.ok;
-    ready = true;
+
+    const localLists = new LocalListRepository(window.localStorage);
+    listRepository = localLists;
+    localLists.list().then((stored) => {
+      lists = stored;
+      listsStorageOk = localLists.ok;
+      ready = true;
+    });
 
     return () => clearTimeout(resetTimer);
   });
@@ -49,7 +68,9 @@
   }
 
   function startSession() {
-    const items = buildSessionItems(entries, menu, progress);
+    const selectedList = lists.find((list) => list.id === selectedListId);
+    const sessionEntries = selectedList ? listEntries(selectedList, entries) : entries;
+    const items = buildSessionItems(sessionEntries, menu, progress);
 
     if (items.length === 0) {
       menuWarning =
@@ -66,6 +87,61 @@
   function goToMenu() {
     view = "menu";
     scrollTop();
+  }
+
+  function openLists() {
+    view = "lists";
+    scrollTop();
+  }
+
+  function persistList(list: PracticeList) {
+    lists = lists.some((existing) => existing.id === list.id)
+      ? lists.map((existing) => (existing.id === list.id ? list : existing))
+      : [...lists, list];
+    listRepository?.save(list).then(
+      () => (listsStorageOk = true),
+      () => (listsStorageOk = false),
+    );
+  }
+
+  function handleCreateList(name: string): string | void {
+    let list: PracticeList;
+    try {
+      list = createList(name);
+    } catch (error) {
+      return (error as Error).message;
+    }
+    persistList(list);
+    editList(list.id);
+  }
+
+  function editList(id: string) {
+    editingListId = id;
+    view = "list-editor";
+    scrollTop();
+  }
+
+  function handleRenameList(name: string): string | void {
+    if (!editingList) return;
+    try {
+      persistList(renameList(editingList, name));
+    } catch (error) {
+      return (error as Error).message;
+    }
+  }
+
+  function handleToggleEntry(entryId: EntryId, include: boolean) {
+    if (!editingList) return;
+    persistList(include ? addEntry(editingList, entryId) : removeEntry(editingList, entryId));
+  }
+
+  function handleDeleteList(id: string) {
+    lists = lists.filter((list) => list.id !== id);
+    if (selectedListId === id) selectedListId = "";
+    listRepository?.remove(id).then(
+      () => (listsStorageOk = true),
+      () => (listsStorageOk = false),
+    );
   }
 
   function reveal() {
@@ -173,11 +249,34 @@
   {#if view === "menu"}
     <MenuView
       bind:menu
+      bind:selectedListId
+      {lists}
       warning={menuWarning}
       {resetNote}
       onStart={startSession}
       onReset={resetProgress}
+      onManageLists={openLists}
     />
+  {:else if view === "lists"}
+    <ListsView
+      {lists}
+      {entries}
+      storageOk={listsStorageOk}
+      onBack={goToMenu}
+      onCreate={handleCreateList}
+      onEdit={editList}
+      onDelete={handleDeleteList}
+    />
+  {:else if view === "list-editor" && editingList}
+    {#key editingList.id}
+      <ListEditorView
+        list={editingList}
+        {entries}
+        onBack={openLists}
+        onRename={handleRenameList}
+        onToggle={handleToggleEntry}
+      />
+    {/key}
   {:else if view === "session" && session}
     <StudyView
       {session}

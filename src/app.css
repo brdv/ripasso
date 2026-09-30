@@ -243,6 +243,103 @@ body {
     font-size: 13px;
 }
 
+.field > label.label {
+    display: block;
+}
+.text-input {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: var(--sans);
+    background: #fff;
+    color: var(--ink);
+}
+.text-input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+.source-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+.source-row .text-input {
+    flex: 1;
+}
+.source-row .btn {
+    flex: none;
+}
+
+/* lijsten */
+.view-title {
+    flex: 1;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: normal;
+}
+.list-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+}
+.search-results {
+    margin-top: 10px;
+}
+.list-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+.list-row-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.list-row-name {
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+.list-row-meta {
+    font-size: 12px;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+.list-row-actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--accent-weak);
+    color: var(--accent);
+    font-size: 11px;
+    font-family: var(--sans);
+    font-style: normal;
+    vertical-align: middle;
+}
+.storage-warning {
+    color: var(--bad);
+    font-size: 13px;
+    margin: 14px 0 0;
+}
+
 .start-wrap {
     margin-top: 20px;
 }

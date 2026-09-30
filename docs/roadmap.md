@@ -18,7 +18,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 2   | Custom words (local)                   | in review   | `claude/roadmap-step-2-custom-words` | #5  |
 | 3   | Custom verbs (local)                   | in review   | `claude/roadmap-step-3-custom-verbs` | #6  |
 | 4   | D1 schema, migrations, and seed        | in review   | `claude/roadmap-step-4-d1-schema` | #7  |
-| 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` |     |
+| 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` | #8  |
 | 6   | Accounts                               | not started |        |     |
 | 7   | Guest-to-account sync                  | not started |        |     |
 | 8   | Sharing lists                          | not started |        |     |

@@ -9,10 +9,13 @@ the loop for running each step. Agent instructions themselves live in `AGENTS.md
    Do not enable Auto-fix on the stack's PRs: its GitHub replies are labelled as Claude Code.
 2. **Cloud environment.** At claude.ai/code, create an environment named `ripasso`:
    - Network access: **Custom**, with "Also include default list of common package managers"
-     checked, plus these domains for Playwright's browser download:
-     - `cdn.playwright.dev`
-     - `playwright.download.prss.microsoft.com`
-     - `playwright.azureedge.net`
+     checked, plus these domains for Playwright's browser download (Playwright 1.61):
+     - `cdn.playwright.dev` (Chromium builds come from here)
+     - `playwright.download.prss.microsoft.com` (fallback mirror for other downloads)
+
+     The rest of what the setup script fetches is already on the default list: the npm registry
+     for Bun and Playwright, and `archive.ubuntu.com` / `security.ubuntu.com` for the system
+     libraries that `--with-deps` installs.
    - Setup script: the contents of `scripts/cloud-setup.sh`.
    - No environment variables or secrets are needed. Local D1 needs no Cloudflare account.
 3. **Dry run.** Start a session on `main` (or on `prep/agent-setup` before it merges) with a throwaway task, for example:

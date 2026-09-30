@@ -32,3 +32,9 @@ bunx playwright install chromium
 
 The production build uses SvelteKit's Cloudflare adapter, but the application currently needs no
 Cloudflare services at runtime.
+
+## Roadmap
+
+Planned work and its design decisions are in [`docs/roadmap.md`](docs/roadmap.md). Coding agents
+follow [`AGENTS.md`](AGENTS.md); running the roadmap with cloud agents is described in
+[`docs/cloud-agent-setup.md`](docs/cloud-agent-setup.md).

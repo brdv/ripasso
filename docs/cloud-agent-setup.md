@@ -15,7 +15,7 @@ the loop for running each step. Agent instructions themselves live in `AGENTS.md
      - `playwright.azureedge.net`
    - Setup script: the contents of `scripts/cloud-setup.sh`.
    - No environment variables or secrets are needed. Local D1 needs no Cloudflare account.
-3. **Dry run.** Start a session on `main` with a throwaway task, for example:
+3. **Dry run.** Start a session on `main` (or on `prep/agent-setup` before it merges) with a throwaway task, for example:
 
    > Read `AGENTS.md`. Add one sentence to the README's Verification section saying that
    > `AGENTS.md` lists the pre-PR checks. Run all verification commands and open a draft PR.

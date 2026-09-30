@@ -15,7 +15,7 @@ branch name, and correct anything below that the implementation made untrue.
 | --- | -------------------------------------- | ----------- | ------ | --- |
 | 0   | Agent setup, roadmap, and docs         | merged      | `prep/agent-setup` | #2  |
 | 1   | Local practice lists                   | in review   | `claude/roadmap-step-1-local-lists` | #4  |
-| 2   | Custom words (local)                   | not started |        |     |
+| 2   | Custom words (local)                   | in review   | `claude/roadmap-step-2-custom-words` |     |
 | 3   | Custom verbs (local)                   | not started |        |     |
 | 4   | D1 schema, migrations, and seed        | not started |        |     |
 | 5   | Server repositories and entries API    | not started |        |     |
@@ -75,6 +75,7 @@ These hold for every step.
    ```ts
    interface EntryRepository {
      list(): Promise<StudyEntry[]>; // everything the current user may practise
+     listOwn(): Promise<StudyEntry[]>; // the current user's own, editable entries (step 2)
      save(entry: StudyEntry): Promise<void>; // own entries only
      remove(id: EntryId): Promise<void>;
    }
@@ -176,7 +177,8 @@ In scope:
 - `EntryRepository` with a local implementation over `ripasso_entries_v1`
   (`{ version: 1, entries: StudyEntry[] }`) that returns shared entries plus custom ones. Custom
   entries are stored alongside a local `origin: "custom"` marker kept only in the repository
-  layer, never on `StudyEntry` itself, so the editor can show which entries are editable.
+  layer, never on `StudyEntry` itself. The repository's `listOwn()` returns the custom entries so
+  the UI can show which entries are editable (the only method added to the interface).
 - `src/lib/domain/entry-validation.ts`: pure validation returning Dutch error messages per field.
   - `it` and `nl` required after trimming.
   - `wordType` one of the keys of `WORDTYPE_NL` except `verb`.
@@ -184,8 +186,8 @@ In scope:
     `article` is one of `il`, `lo`, `la`, `l'`, `i`, `gli`, `le`, or empty.
   - A non-blocking warning if an entry with the same Italian text and word type already exists.
 - A word form (create and edit) and a "Mijn woorden" view listing custom words with edit and
-  delete. Reachable from the lists view and from the list editor ("Nieuw woord", which adds the
-  new word to the list being edited).
+  delete. "Mijn woorden" is reachable from the lists view; the list editor has "Nieuw woord",
+  which opens the form and adds the new word to the list being edited.
 - Custom words appear in list editor search with a small "eigen" badge.
 
 Acceptance criteria:

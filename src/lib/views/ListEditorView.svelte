@@ -8,13 +8,17 @@
   let {
     list,
     entries,
+    ownIds = new Set(),
     onBack,
+    onCreateWord,
     onRename,
     onToggle,
   }: {
     list: PracticeList;
     entries: StudyEntry[];
+    ownIds?: Set<EntryId>;
     onBack: () => void;
+    onCreateWord: () => void;
     onRename: (name: string) => string | void;
     onToggle: (entryId: EntryId, include: boolean) => void;
   } = $props();
@@ -62,7 +66,7 @@
       {:else}
         <ul class="list-rows" aria-label="In deze lijst">
           {#each current as entry (entry.id)}
-            <EntryRow {entry}>
+            <EntryRow {entry} badge={ownIds.has(entry.id) ? "eigen" : undefined}>
               <button
                 class="btn btn-ghost compact-button"
                 type="button"
@@ -84,9 +88,12 @@
         autocomplete="off"
         bind:value={query}
       />
+      <div class="action-row search-actions">
+        <button class="btn btn-ghost compact-button" type="button" onclick={onCreateWord}>Nieuw woord</button>
+      </div>
       <ul class="list-rows search-results" aria-label="Zoekresultaten">
         {#each available as entry (entry.id)}
-          <EntryRow {entry}>
+          <EntryRow {entry} badge={ownIds.has(entry.id) ? "eigen" : undefined}>
             <button
               class="btn btn-ghost compact-button"
               type="button"

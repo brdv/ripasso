@@ -356,6 +356,52 @@ body {
     font-size: 13px;
     margin: 0 0 12px;
 }
+textarea.text-input {
+    resize: vertical;
+}
+.tense-block {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    margin-bottom: 8px;
+}
+.tense-block summary {
+    cursor: pointer;
+    padding: 10px 12px;
+    font-family: var(--serif);
+    font-style: italic;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+.grid-scroll {
+    overflow-x: auto;
+    padding: 0 8px 8px;
+}
+.form-table {
+    width: 100%;
+    min-width: 300px;
+    border-collapse: collapse;
+}
+.form-table th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: left;
+    padding: 2px 4px;
+    white-space: nowrap;
+}
+.form-table td {
+    padding: 2px;
+}
+.form-table .text-input {
+    padding: 7px 8px;
+    font-size: 14px;
+}
+.form-table tr.has-error .text-input {
+    border-color: var(--bad);
+}
 .storage-warning {
     color: var(--bad);
     font-size: 13px;

@@ -14,7 +14,6 @@
     Progress,
     StudyEntry,
     StudySession,
-    WordEntry,
   } from "$lib/domain/types";
   import { LocalEntryRepository } from "$lib/repositories/local-entries";
   import { LocalListRepository } from "$lib/repositories/local-lists";
@@ -23,6 +22,7 @@
   import ListsView from "$lib/views/ListsView.svelte";
   import MenuView from "$lib/views/MenuView.svelte";
   import MyEntriesView from "$lib/views/MyEntriesView.svelte";
+  import VerbFormView from "$lib/views/VerbFormView.svelte";
   import WordFormView from "$lib/views/WordFormView.svelte";
   import PaperReviewView from "$lib/views/PaperReviewView.svelte";
   import StudyView from "$lib/views/StudyView.svelte";
@@ -37,7 +37,7 @@
     | "lists"
     | "list-editor"
     | "my-entries"
-    | "word-form";
+    | "entry-form";
 
   let { data }: PageProps = $props();
 
@@ -70,10 +70,13 @@
   const editingList = $derived(lists.find((list) => list.id === editingListId) ?? null);
 
   let entryRepository: EntryRepository | undefined;
-  let wordForm = $state<{ entryId: EntryId | null; returnTo: AppView; key: number } | null>(null);
-  const wordFormEntry = $derived(
-    ownEntries.find((entry): entry is WordEntry => entry.type === "word" && entry.id === wordForm?.entryId),
-  );
+  let entryForm = $state<{
+    kind: StudyEntry["type"];
+    entryId: EntryId | null;
+    returnTo: AppView;
+    key: number;
+  } | null>(null);
+  const entryFormEntry = $derived(ownEntries.find((entry) => entry.id === entryForm?.entryId));
 
   onMount(() => {
     const loaded = loadSrs(window.localStorage);
@@ -181,19 +184,24 @@
     scrollTop();
   }
 
-  function openWordForm(entryId: EntryId | null, returnTo: AppView) {
-    wordForm = { entryId, returnTo, key: (wordForm?.key ?? 0) + 1 };
-    view = "word-form";
+  function openEntryForm(kind: StudyEntry["type"], entryId: EntryId | null, returnTo: AppView) {
+    entryForm = { kind, entryId, returnTo, key: (entryForm?.key ?? 0) + 1 };
+    view = "entry-form";
     scrollTop();
   }
 
-  function closeWordForm() {
-    view = wordForm?.returnTo ?? "my-entries";
-    wordForm = null;
+  function editOwnEntry(id: EntryId) {
+    const entry = ownEntries.find((own) => own.id === id);
+    if (entry) openEntryForm(entry.type, id, "my-entries");
+  }
+
+  function closeEntryForm() {
+    view = entryForm?.returnTo ?? "my-entries";
+    entryForm = null;
     scrollTop();
   }
 
-  function handleSaveWord(entry: WordEntry) {
+  function handleSaveEntry(entry: StudyEntry) {
     const isNew = !ownIds.has(entry.id);
     ownEntries = isNew
       ? [...ownEntries, entry]
@@ -202,10 +210,10 @@
       () => (entriesStorageOk = true),
       () => (entriesStorageOk = false),
     );
-    if (isNew && wordForm?.returnTo === "list-editor" && editingList) {
+    if (isNew && entryForm?.returnTo === "list-editor" && editingList) {
       persistList(addEntry(editingList, entry.id));
     }
-    closeWordForm();
+    closeEntryForm();
   }
 
   function handleDeleteEntry(id: EntryId) {
@@ -345,13 +353,28 @@
       entries={ownEntries}
       storageOk={entriesStorageOk}
       onBack={openLists}
-      onCreateWord={() => openWordForm(null, "my-entries")}
-      onEdit={(id) => openWordForm(id, "my-entries")}
+      onCreateWord={() => openEntryForm("word", null, "my-entries")}
+      onCreateVerb={() => openEntryForm("verb", null, "my-entries")}
+      onEdit={editOwnEntry}
       onDelete={handleDeleteEntry}
     />
-  {:else if view === "word-form" && wordForm}
-    {#key wordForm.key}
-      <WordFormView entry={wordFormEntry} {entries} onSave={handleSaveWord} onCancel={closeWordForm} />
+  {:else if view === "entry-form" && entryForm}
+    {#key entryForm.key}
+      {#if entryForm.kind === "verb"}
+        <VerbFormView
+          entry={entryFormEntry?.type === "verb" ? entryFormEntry : undefined}
+          {entries}
+          onSave={handleSaveEntry}
+          onCancel={closeEntryForm}
+        />
+      {:else}
+        <WordFormView
+          entry={entryFormEntry?.type === "word" ? entryFormEntry : undefined}
+          {entries}
+          onSave={handleSaveEntry}
+          onCancel={closeEntryForm}
+        />
+      {/if}
     {/key}
   {:else if view === "list-editor" && editingList}
     {#key editingList.id}
@@ -360,7 +383,8 @@
         {entries}
         {ownIds}
         onBack={openLists}
-        onCreateWord={() => openWordForm(null, "list-editor")}
+        onCreateWord={() => openEntryForm("word", null, "list-editor")}
+        onCreateVerb={() => openEntryForm("verb", null, "list-editor")}
         onRename={handleRenameList}
         onToggle={handleToggleEntry}
       />

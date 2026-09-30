@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "attribution": {
+    "commit": false,
+    "pr": false,
+    "sessionUrl": false
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bun install:*)",
+      "Bash(bun run:*)",
+      "Bash(bunx playwright:*)",
+      "Bash(bunx wrangler d1 migrations apply ripasso --local:*)",
+      "Bash(bunx drizzle-kit generate:*)"
+    ],
+    "deny": [
+      "Bash(bunx wrangler deploy:*)",
+      "Bash(bunx wrangler d1 create:*)",
+      "Bash(bunx wrangler secret:*)",
+      "Bash(bunx wrangler d1 migrations apply ripasso --remote:*)",
+      "Bash(git push --force:*)",
+      "Bash(gh pr merge:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/scripts/session-start.sh",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}

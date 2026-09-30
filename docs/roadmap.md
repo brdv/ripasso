@@ -14,7 +14,7 @@ branch name, and correct anything below that the implementation made untrue.
 | #   | Step                                   | Status      | Branch | PR  |
 | --- | -------------------------------------- | ----------- | ------ | --- |
 | 0   | Agent setup, roadmap, and docs         | merged      | `prep/agent-setup` | #2  |
-| 1   | Local practice lists                   | in review   | `claude/roadmap-step-1-local-lists` |     |
+| 1   | Local practice lists                   | in review   | `claude/roadmap-step-1-local-lists` | #4  |
 | 2   | Custom words (local)                   | not started |        |     |
 | 3   | Custom verbs (local)                   | not started |        |     |
 | 4   | D1 schema, migrations, and seed        | not started |        |     |

@@ -4,7 +4,7 @@
 </script>
 
 <div class="boxes" aria-label="Verdeling over leerboxen">
-  {#each boxes as count, index}
+  {#each boxes as count, index (index)}
     <div class="boxbar">
       <span class="boxbar-label">box {index + 1}</span>
       <span class="boxbar-track">

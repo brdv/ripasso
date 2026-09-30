@@ -50,7 +50,7 @@
         </label>
       </div>
       <div class="check-group" class:is-disabled={!menu.includeVerbs}>
-        {#each TENSES as tense}
+        {#each TENSES as tense (tense)}
           <label class="chk">
             <input type="checkbox" bind:checked={menu.tenses[tense]} disabled={!menu.includeVerbs} />
             <span>{TENSE_LABEL[tense]}</span>

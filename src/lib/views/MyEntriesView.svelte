@@ -5,6 +5,7 @@
   let {
     entries,
     storageOk = true,
+    storageWarning = "",
     onBack,
     onCreateWord,
     onCreateVerb,
@@ -13,6 +14,7 @@
   }: {
     entries: StudyEntry[];
     storageOk?: boolean;
+    storageWarning?: string;
     onBack: () => void;
     onCreateWord: () => void;
     onCreateVerb: () => void;
@@ -59,8 +61,6 @@
   </div>
 
   {#if !storageOk}
-    <p class="storage-warning" role="alert">
-      Let op: opslag werkt niet in deze browser. Eigen woorden en werkwoorden blijven niet bewaard.
-    </p>
+    <p class="storage-warning" role="alert">{storageWarning}</p>
   {/if}
 </main>

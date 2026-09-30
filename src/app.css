@@ -67,6 +67,42 @@ body {
     text-align: right;
 }
 
+.account-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+.account-bar form {
+    margin: 0;
+}
+.account-email {
+    font-size: 12px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+.auth-switch {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin: 14px 0 0;
+}
+.auth-switch a {
+    color: var(--accent);
+}
+a.btn {
+    text-decoration: none;
+    color: var(--ink);
+    display: inline-block;
+}
+a.linkbtn {
+    display: inline-block;
+}
+
 .card-pane {
     background: var(--surface);
     border: 1px solid var(--line);

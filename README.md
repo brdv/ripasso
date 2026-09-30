@@ -2,8 +2,8 @@
 
 Ripasso is a SvelteKit app for practising Italian vocabulary and verb conjugations. The built-in
 deck lives in a Cloudflare D1 database (seeded from `static/data.json`) and is served by
-`GET /api/entries`; study progress, lists, and own entries are kept locally in the browser. There
-is no account system yet.
+`GET /api/entries`. Guests keep study progress, lists, and own entries in the browser; logged-in
+users store lists and own entries on the server.
 
 ## Features
 
@@ -20,6 +20,10 @@ is no account system yet.
 - **Own verbs.** "Nieuw werkwoord" adds a verb with auxiliary, conjugation group, regularity, a
   note, and any subset of the tense × person grid. Every filled cell needs both the Italian and
   the Dutch form; a session only produces cards for the cells you filled.
+- **Accounts.** "Account aanmaken" (`/account-aanmaken`) and "Inloggen" (`/inloggen`) use e-mail
+  and password (minimum 8 characters). Logged-in users' lists and own entries are stored on the
+  server and they also see the read-only "Basis" list. Logging out keeps the browser's guest
+  data untouched. Progress is still stored per browser.
 
 ## Development
 
@@ -31,6 +35,18 @@ bun run dev
 ```
 
 The development server is available at `http://localhost:5173` by default.
+
+### Local secrets
+
+Authentication (Better Auth) reads `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` from the platform
+environment. Locally they come from `.dev.vars` (gitignored):
+
+```sh
+cp .dev.vars.example .dev.vars
+```
+
+The example holds a fake secret for development only. `bun run test:e2e` creates `.dev.vars`
+from the example when it is missing.
 
 ### Database
 
@@ -79,7 +95,9 @@ deployed with the database:
    `database_id` in `wrangler.jsonc` (the committed value is a placeholder). If the app is
    deployed with Cloudflare Pages, also bind the database as `DB` in the Pages project settings.
 2. Apply migrations remotely: `wrangler d1 migrations apply ripasso --remote`.
-3. Deploy to Cloudflare.
+3. Set `BETTER_AUTH_SECRET` (a long random string) and `BETTER_AUTH_URL` (the public URL of the
+   app) as secrets or environment variables of the deployed app.
+4. Deploy to Cloudflare.
 
 ## CI
 

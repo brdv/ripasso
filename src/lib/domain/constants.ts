@@ -1,5 +1,8 @@
 import type { Person, Tense } from "./types";
 
+/** Shared by the registration form and the server-side auth config. */
+export const MIN_PASSWORD_LENGTH = 8;
+
 export const PERSONS: Person[] = ["io", "tu", "lui_lei", "noi", "voi", "loro"];
 
 export const TENSES: Tense[] = [

@@ -19,7 +19,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 3   | Custom verbs (local)                   | in review   | `claude/roadmap-step-3-custom-verbs` | #6  |
 | 4   | D1 schema, migrations, and seed        | in review   | `claude/roadmap-step-4-d1-schema` | #7  |
 | 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` | #8  |
-| 6   | Accounts                               | not started |        |     |
+| 6   | Accounts                               | in review   | `claude/roadmap-step-6-accounts` |     |
 | 7   | Guest-to-account sync                  | not started |        |     |
 | 8   | Sharing lists                          | not started |        |     |
 | 9   | Cleanup and final docs pass            | not started |        |     |
@@ -119,6 +119,7 @@ placeholders a human may change later; implement them as written.
 | Database | Cloudflare D1 via Drizzle ORM. Migrations are SQL files in `migrations/`, applied with `wrangler d1 migrations apply`. |
 | Entry storage | One `entries` table with shared columns plus a JSON `data` column holding the type-specific fields, including verb forms. **revisit** once querying individual forms matters. |
 | Base content owner | A `system` owner ID. Base entries and the base list are owned by `system` with `public` visibility. A real super-admin account can be mapped onto it later. **revisit** |
+| Base list visibility | The base list "Basis" is served only to logged-in users (from `GET /api/lists`), marked read-only. Guests keep "Hele dataset", which has the same content. |
 | Auth | Better Auth with email and password, stored in D1. No email verification, no OAuth, no password reset flow yet. **revisit** |
 | Sessions after login | Logged-in users read and write through the server. Local storage is not used as an offline cache for logged-in users yet. **revisit** |
 | First login sync | Local lists and custom entries are imported once per account per browser. Progress merges per card: the row with the larger `last` wins. |
@@ -335,9 +336,15 @@ In scope:
 - Authenticated endpoints, all checking ownership on the server:
   - `GET/POST /api/lists`, `PUT/DELETE /api/lists/[id]`
   - `POST /api/entries`, `PUT/DELETE /api/entries/[id]` (own entries only)
-- Remote `ListRepository` and `EntryRepository` implementations used when a user is logged in;
-  the local ones stay in use for guests.
-- The base list is visible to everyone in the list selector but cannot be edited.
+- `GET /api/entries?scope=own` returns only the caller's own entries (backs
+  `EntryRepository.listOwn()`).
+- Remote `ListRepository` and `EntryRepository` implementations (`src/lib/repositories/remote.ts`)
+  used when a user is logged in; the local ones stay in use for guests.
+- The base list is visible to logged-in users in the list selector but cannot be edited: lists
+  the user does not own are returned with `readOnly: true` (an optional `PracticeList` field) and
+  the lists view shows them with a "vast" badge and no edit or delete actions.
+- Registration asks only for e-mail and password; Better Auth's required `name` is the part of
+  the e-mail address before `@`. The forms are validated on the server so every message is Dutch.
 
 Acceptance criteria:
 

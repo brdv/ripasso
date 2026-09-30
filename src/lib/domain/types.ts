@@ -64,6 +64,8 @@ export interface PracticeList {
   id: string;
   name: string;
   entryRefs: EntryReference[];
+  /** Set on lists the current user can practise but not change, such as the base list. */
+  readOnly?: boolean;
 }
 
 export interface VerbCard {

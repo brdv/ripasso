@@ -91,6 +91,10 @@ The same commands run in GitHub Actions on every PR and push to `main`
   `createTestDatabase()` from `src/lib/server/testing/d1.ts`: it starts wrangler's platform proxy
   with a temporary persistence directory, applies every file in `migrations/`, and returns the
   `D1Database` plus `dispose()`. Create it in `beforeAll` with a generous timeout.
+- API route tests (`src/lib/server/api.test.ts`) call the exported handlers directly with a fake
+  event whose `locals.user` is a made-up user (`{ id, email }`); no real account is needed.
+  End-to-end tests create real accounts through `/account-aanmaken` with a unique e-mail address
+  per test and project (see `tests/accounts.spec.ts`).
 - Svelte components: `*.svelte.spec.ts` (Vitest browser mode with Chromium).
 - End-to-end: `tests/*.spec.ts`. Playwright's web server runs `bun run db:migrate:local` before
   `bun run dev`, and the dev server exposes the local D1 as `platform.env.DB`. Always wait for `[data-ready="true"]` before interacting (see
@@ -104,5 +108,7 @@ The same commands run in GitHub Actions on every PR and push to `main`
   sessions.
 - `.githooks/commit-msg` strips AI attribution trailers as a safety net. Do not bypass it with
   `--no-verify`.
+- Local secrets live in `.dev.vars` (gitignored), created from `.dev.vars.example`. Never commit
+  real secrets.
 - Remote Cloudflare operations (creating D1 databases, `--remote` migrations, secrets, deploys)
   are human-only. Use local D1 (`--local`) only.

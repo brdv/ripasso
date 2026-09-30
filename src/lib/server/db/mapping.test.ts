@@ -4,7 +4,7 @@ import { entriesFromDeck } from "$lib/domain/entries";
 import type { Deck, StudyEntry } from "$lib/domain/types";
 import { entryToRow, rowToEntry } from "./mapping";
 
-const deck = JSON.parse(readFileSync("static/data.json", "utf8")) as Deck;
+const deck = JSON.parse(readFileSync("seed/data.json", "utf8")) as Deck;
 const baseEntries = entriesFromDeck(deck);
 const meta = { ownerId: "system", visibility: "public" as const, createdAt: 1, updatedAt: 2 };
 

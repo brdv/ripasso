@@ -64,7 +64,6 @@ export const progress = sqliteTable(
 );
 
 export type EntryRow = typeof entries.$inferSelect;
-export type ListRow = typeof lists.$inferSelect;
 
 // Better Auth tables (email and password). Column names follow Better Auth's defaults.
 

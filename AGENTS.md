@@ -51,7 +51,7 @@ bun run test:e2e     # Playwright, desktop and mobile projects
 bun run build        # production build with the Cloudflare adapter
 bun run db:migrate:local  # apply migrations (schema and base-content seed) to the local D1
 bun run db:generate  # generate a migration after changing src/lib/server/db/schema.ts
-bun run db:seed      # regenerate migrations/0001_seed.sql after changing static/data.json
+bun run db:seed      # regenerate migrations/0001_seed.sql after changing seed/data.json
 ```
 
 Before opening a PR, all five must pass:

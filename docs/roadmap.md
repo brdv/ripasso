@@ -22,7 +22,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 6   | Accounts                               | in review   | `claude/roadmap-step-6-accounts` | #9  |
 | 7   | Guest-to-account sync                  | in review   | `claude/roadmap-step-7-sync` | #10 |
 | 8   | Sharing lists                          | in review   | `claude/roadmap-step-8-sharing` | #11 |
-| 9   | Cleanup and final docs pass            | not started |        |     |
+| 9   | Cleanup and final docs pass            | in review   | `claude/roadmap-step-9-cleanup` |     |
 
 Status values: `not started`, `in progress`, `in review`, `merged`.
 
@@ -427,8 +427,10 @@ Docs: Status row, README.
 In scope:
 
 - Move `static/data.json` to `seed/data.json` if nothing at runtime needs it any more, and update
-  the seed script.
-- Remove code made dead by steps 1–8.
+  the seed script. Done: nothing at runtime used it after step 5. Regenerating the seed only
+  changed the source path in its header comment.
+- Remove code made dead by steps 1–8. Only the unused `ListRow` type was left over; exports
+  that were already unused on `main` before step 1 are left alone.
 - Make sure the README describes the finished app, local development, tests, and deployment, and
   that this roadmap's Status table and decisions log match reality.
 - Leave the legacy root `index.html` and `data.js` in place; deleting them is a human decision.

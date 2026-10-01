@@ -1,5 +1,5 @@
-// Local development configuration. `database_id` is a placeholder: a human replaces it with the
-// ID from `wrangler d1 create ripasso` before deploying (see README, "Deployment").
+// Wrangler configuration. `database_id` is the remote D1 database created with
+// `wrangler d1 create ripasso`; local development and tests do not use it.
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "ripasso",
@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "ripasso",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "2985d894-7740-4fff-809c-9a41d03d3375",
       "migrations_dir": "migrations"
     }
   ]

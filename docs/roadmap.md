@@ -242,7 +242,7 @@ In scope:
   dependency of the Cloudflare adapter; add it to `devDependencies` explicitly.
 - `wrangler.jsonc` with a D1 binding named `DB`, `database_name: "ripasso"`, and
   `database_id: "00000000-0000-0000-0000-000000000000"` as a placeholder that humans replace at
-  deploy time. Local development does not need a real ID.
+  deploy time. Local development does not need a real ID. (The real ID has since been filled in.)
 - `App.Platform` typed in `src/app.d.ts` with `env.DB: D1Database`.
 - Schema in `src/lib/server/db/schema.ts`:
 

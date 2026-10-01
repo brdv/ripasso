@@ -1,7 +1,7 @@
 # Ripasso
 
 Ripasso is a SvelteKit app for practising Italian vocabulary and verb conjugations. The built-in
-deck lives in a Cloudflare D1 database (seeded from `static/data.json`) and is served by
+deck lives in a Cloudflare D1 database (seeded from `seed/data.json`) and is served by
 `GET /api/entries`. Guests keep study progress, lists, and own entries in the browser; logged-in
 users store them on the server.
 
@@ -36,6 +36,22 @@ users store them on the server.
   entries are referenced, the owner's own entries are copied into their account, so the copy
   keeps working when the original changes or disappears.
 
+## Project layout
+
+- `src/lib/domain/`: pure TypeScript (cards, sessions, spaced repetition, lists, validation,
+  search, progress merging).
+- `src/lib/repositories/`: client-side persistence behind small interfaces (`ListRepository`,
+  `EntryRepository`, `ProgressRepository`) with local-storage implementations for guests and
+  server implementations for logged-in users, plus the one-time guest import.
+- `src/lib/server/`: D1 schema and mapping, server repositories, Better Auth, and input
+  validation. API routes are under `src/routes/api/`.
+- `src/lib/views/` and `src/lib/components/`: the UI; app state and view switching live in
+  `src/routes/+page.svelte`. `/inloggen`, `/account-aanmaken`, and `/l/[slug]` are separate routes.
+- `seed/data.json`: the built-in deck, turned into `migrations/0001_seed.sql` by
+  `scripts/seed.ts`.
+- `index.html` and `data.js` in the repository root are the original single-file app, kept for
+  reference; the SvelteKit app does not use them.
+
 ## Development
 
 Install dependencies and run the local app with Bun:
@@ -67,7 +83,7 @@ The server side uses Cloudflare D1 through Drizzle ORM. `wrangler.jsonc` binds a
 ```sh
 bun run db:migrate:local   # create or update the local database, including the base content
 bun run db:generate        # after editing src/lib/server/db/schema.ts: write a new migration
-bun run db:seed            # after editing static/data.json: regenerate migrations/0001_seed.sql
+bun run db:seed            # after editing seed/data.json: regenerate migrations/0001_seed.sql
 ```
 
 The schema is in `src/lib/server/db/schema.ts` and migrations are SQL files in `migrations/`.
@@ -127,6 +143,7 @@ separate steps. When a step fails, the Playwright report and test results are up
 
 ## Roadmap
 
-Planned work and its design decisions are in [`docs/roadmap.md`](docs/roadmap.md). Coding agents
+The roadmap that produced these features, with its design decisions, is in
+[`docs/roadmap.md`](docs/roadmap.md). Coding agents
 follow [`AGENTS.md`](AGENTS.md); running the roadmap with cloud agents is described in
 [`docs/cloud-agent-setup.md`](docs/cloud-agent-setup.md).

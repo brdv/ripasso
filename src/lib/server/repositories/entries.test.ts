@@ -8,7 +8,7 @@ import { entries } from "../db/schema";
 import { createTestDatabase } from "../testing/d1";
 import { createEntryStore } from "./entries";
 
-const baseEntries = entriesFromDeck(JSON.parse(readFileSync("static/data.json", "utf8")) as Deck);
+const baseEntries = entriesFromDeck(JSON.parse(readFileSync("seed/data.json", "utf8")) as Deck);
 
 describe("entry store", () => {
   let database: Awaited<ReturnType<typeof createTestDatabase>>;

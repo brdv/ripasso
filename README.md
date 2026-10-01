@@ -65,8 +65,8 @@ The development server is available at `http://localhost:5173` by default.
 
 ### Local secrets
 
-Authentication (Better Auth) reads `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` from the platform
-environment. Locally they come from `.dev.vars` (gitignored):
+Authentication (Better Auth) reads `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` (and optionally
+`BETTER_AUTH_TRUSTED_ORIGINS`) from the platform environment. Locally they come from `.dev.vars` (gitignored):
 
 ```sh
 cp .dev.vars.example .dev.vars
@@ -126,7 +126,10 @@ deployed with the database:
    builds fail to deploy without it. `wrangler.jsonc` sets it for local development only.
 3. Apply migrations remotely: `wrangler d1 migrations apply ripasso --remote`.
 4. Set `BETTER_AUTH_SECRET` (a long random string) and `BETTER_AUTH_URL` (the public URL of the
-   app) as secrets or environment variables of the deployed app.
+   app) as secrets or environment variables of the deployed app. Preview deployments live on
+   other hostnames, so also set `BETTER_AUTH_TRUSTED_ORIGINS` (comma-separated, wildcards
+   allowed), for example `https://*.ripasso.pages.dev`; without it, login only works on the
+   `BETTER_AUTH_URL` host.
 5. Deploy to Cloudflare.
 
 ## CI

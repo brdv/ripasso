@@ -66,6 +66,8 @@ export interface PracticeList {
   entryRefs: EntryReference[];
   /** Set on lists the current user can practise but not change, such as the base list. */
   readOnly?: boolean;
+  /** Set on the owner's copy of a list that is shared by link (`/l/<shareSlug>`). */
+  shareSlug?: string;
 }
 
 export interface VerbCard {

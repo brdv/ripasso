@@ -5,7 +5,9 @@ import { chunkRows } from "../db/chunk";
 import { listEntries, lists } from "../db/schema";
 
 export function createListStore(db: Db) {
-  async function withEntries(rows: { id: string; name: string; ownerId: string }[], userId: string) {
+  type ListRowSummary = { id: string; name: string; ownerId: string; shareSlug: string | null };
+
+  async function withEntries(rows: ListRowSummary[], userId: string) {
     if (rows.length === 0) return [];
     const refs = await db
       .select({ listId: listEntries.listId, entryId: listEntries.entryId })
@@ -20,6 +22,7 @@ export function createListStore(db: Db) {
         entryRefs: refs.filter((ref) => ref.listId === row.id).map(({ entryId }) => ({ entryId })),
       };
       if (row.ownerId !== userId) list.readOnly = true;
+      else if (row.shareSlug) list.shareSlug = row.shareSlug;
       return list;
     });
   }
@@ -37,7 +40,7 @@ export function createListStore(db: Db) {
     /** Public lists (read-only, such as "Basis") followed by the user's own lists. */
     async listVisible(userId: string): Promise<PracticeList[]> {
       const rows = await db
-        .select({ id: lists.id, name: lists.name, ownerId: lists.ownerId })
+        .select({ id: lists.id, name: lists.name, ownerId: lists.ownerId, shareSlug: lists.shareSlug })
         .from(lists)
         .where(or(eq(lists.visibility, "public"), eq(lists.ownerId, userId)))
         .orderBy(desc(eq(lists.visibility, "public")), asc(lists.createdAt));
@@ -46,7 +49,7 @@ export function createListStore(db: Db) {
 
     async getOwn(userId: string, id: string): Promise<PracticeList | null> {
       const rows = await db
-        .select({ id: lists.id, name: lists.name, ownerId: lists.ownerId })
+        .select({ id: lists.id, name: lists.name, ownerId: lists.ownerId, shareSlug: lists.shareSlug })
         .from(lists)
         .where(and(eq(lists.id, id), eq(lists.ownerId, userId)));
       return (await withEntries(rows, userId))[0] ?? null;
@@ -76,6 +79,41 @@ export function createListStore(db: Db) {
       return true;
     },
 
+    /** Makes one of the user's lists `unlisted` with a new or existing slug. Null when not theirs. */
+    async share(userId: string, id: string, now = Date.now()): Promise<string | null> {
+      const list = await this.getOwn(userId, id);
+      if (!list) return null;
+      if (list.shareSlug) return list.shareSlug;
+      const slug = createShareSlug();
+      await db
+        .update(lists)
+        .set({ visibility: "unlisted", shareSlug: slug, updatedAt: now })
+        .where(and(eq(lists.id, id), eq(lists.ownerId, userId)))
+        .run();
+      return slug;
+    },
+
+    /** Makes one of the user's lists private again; the old link stops working. */
+    async unshare(userId: string, id: string, now = Date.now()): Promise<boolean> {
+      const result = await db
+        .update(lists)
+        .set({ visibility: "private", shareSlug: null, updatedAt: now })
+        .where(and(eq(lists.id, id), eq(lists.ownerId, userId)))
+        .run();
+      return result.meta.changes > 0;
+    },
+
+    /** The unlisted list behind a share slug, with its owner, or null. */
+    async getShared(slug: string): Promise<{ list: PracticeList; ownerId: string } | null> {
+      const rows = await db
+        .select({ id: lists.id, name: lists.name, ownerId: lists.ownerId, shareSlug: lists.shareSlug })
+        .from(lists)
+        .where(and(eq(lists.shareSlug, slug), eq(lists.visibility, "unlisted")));
+      if (rows.length === 0) return null;
+      const [list] = await withEntries(rows, rows[0].ownerId);
+      return { list: { id: list.id, name: list.name, entryRefs: list.entryRefs }, ownerId: rows[0].ownerId };
+    },
+
     async remove(userId: string, id: string): Promise<boolean> {
       if (!(await this.getOwn(userId, id))) return false;
       await db.batch([
@@ -85,4 +123,10 @@ export function createListStore(db: Db) {
       return true;
     },
   };
+}
+
+/** 24 URL-safe characters from 18 random bytes (144 bits). */
+export function createShareSlug(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(18));
+  return btoa(String.fromCharCode(...bytes)).replaceAll("+", "-").replaceAll("/", "_");
 }

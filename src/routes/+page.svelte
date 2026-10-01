@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+  import { page } from "$app/state";
   import { onMount } from "svelte";
   import AppHeader from "$lib/components/AppHeader.svelte";
   import { cardCounts, expandEntriesToCards } from "$lib/domain/cards";
@@ -76,11 +77,15 @@
   let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
   let listRepository: ListRepository | undefined;
+  let remoteListRepository: RemoteListRepository | undefined;
   let lists = $state<PracticeList[]>([]);
   let listsStorageOk = $state(true);
   let selectedListId = $state("");
   let editingListId = $state<string | null>(null);
   const editingList = $derived(lists.find((list) => list.id === editingListId) ?? null);
+  // A list opened through a share link ("Oefen deze lijst"); practised live, never stored.
+  let sharedSource = $state<{ list: PracticeList; entries: StudyEntry[] } | null>(null);
+  const menuLists = $derived(sharedSource ? [sharedSource.list, ...lists] : lists);
 
   let entryRepository: EntryRepository | undefined;
   let entryForm = $state<{
@@ -100,6 +105,7 @@
       const remoteEntries = new RemoteEntryRepository();
       const remoteProgress = new RemoteProgressRepository();
       listRepository = remoteLists;
+      remoteListRepository = remoteLists;
       entryRepository = remoteEntries;
       progressRepository = remoteProgress;
       importGuestDataOnce(window.localStorage, user.id)
@@ -133,16 +139,35 @@
       });
     }
 
+    const sharedSlug = page.url.searchParams.get("gedeeld");
+    if (sharedSlug) loadSharedSource(sharedSlug);
+
     return () => clearTimeout(resetTimer);
   });
+
+  async function loadSharedSource(slug: string) {
+    try {
+      const response = await fetch(`/api/shared/${encodeURIComponent(slug)}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const shared = (await response.json()) as { list: PracticeList; entries: StudyEntry[] };
+      sharedSource = {
+        list: { ...shared.list, id: `gedeeld:${slug}`, name: `Gedeeld: ${shared.list.name}`, readOnly: true },
+        entries: shared.entries,
+      };
+      selectedListId = sharedSource.list.id;
+    } catch {
+      menuWarning = "Deze gedeelde lijst kon niet worden geladen.";
+    }
+  }
 
   function scrollTop() {
     if (browser) window.scrollTo({ top: 0, behavior: "instant" });
   }
 
   function startSession() {
-    const selectedList = lists.find((list) => list.id === selectedListId);
-    const sessionEntries = selectedList ? listEntries(selectedList, entries) : entries;
+    const selectedList = menuLists.find((list) => list.id === selectedListId);
+    const pool = sharedSource ? [...entries, ...sharedSource.entries] : entries;
+    const sessionEntries = selectedList ? listEntries(selectedList, pool) : entries;
     const items = buildSessionItems(sessionEntries, menu, progress);
 
     if (items.length === 0) {
@@ -206,6 +231,18 @@
   function handleToggleEntry(entryId: EntryId, include: boolean) {
     if (!editingList) return;
     persistList(include ? addEntry(editingList, entryId) : removeEntry(editingList, entryId));
+  }
+
+  async function handleShareList(id: string, share: boolean) {
+    if (!remoteListRepository) return;
+    try {
+      const shareSlug = share ? await remoteListRepository.share(id) : undefined;
+      if (!share) await remoteListRepository.unshare(id);
+      lists = lists.map((list) => (list.id === id ? { ...list, shareSlug } : list));
+      listsStorageOk = true;
+    } catch {
+      listsStorageOk = false;
+    }
   }
 
   function handleDeleteList(id: string) {
@@ -385,7 +422,7 @@
     <MenuView
       bind:menu
       bind:selectedListId
-      {lists}
+      lists={menuLists}
       warning={menuWarning}
       {resetNote}
       onStart={startSession}
@@ -403,6 +440,9 @@
       onEdit={editList}
       onDelete={handleDeleteList}
       onMyEntries={openMyEntries}
+      canShare={Boolean(data.user)}
+      onShare={(id) => handleShareList(id, true)}
+      onUnshare={(id) => handleShareList(id, false)}
     />
   {:else if view === "my-entries"}
     <MyEntriesView

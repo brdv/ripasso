@@ -29,6 +29,12 @@ users store them on the server.
   per card; the most recently practised row wins). The browser remembers this in
   `ripasso_sync_v1`, so it happens once per account per browser. After that, progress is saved
   to the account after every graded card, and "Voortgang wissen" clears the account's progress.
+- **Sharing lists.** Logged-in users can "Deel lijst" in the lists overview: the list gets an
+  unguessable link `/l/<code>` with a copy button, and "Stop met delen" turns the link off.
+  Anyone with the link can practise the list ("Oefen deze lijst", with the usual menu settings;
+  progress stays personal). Logged-in users can also "Kopieer naar mijn lijsten": built-in
+  entries are referenced, the owner's own entries are copied into their account, so the copy
+  keeps working when the original changes or disappears.
 
 ## Development
 

@@ -12,6 +12,9 @@
     onEdit,
     onDelete,
     onMyEntries,
+    canShare = false,
+    onShare,
+    onUnshare,
   }: {
     lists: PracticeList[];
     entries: StudyEntry[];
@@ -22,7 +25,26 @@
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
     onMyEntries: () => void;
+    canShare?: boolean;
+    onShare?: (id: string) => void;
+    onUnshare?: (id: string) => void;
   } = $props();
+
+  let copiedId = $state<string | null>(null);
+
+  function shareUrl(slug: string): string {
+    return `${window.location.origin}/l/${slug}`;
+  }
+
+  async function copyLink(list: PracticeList) {
+    if (!list.shareSlug) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl(list.shareSlug));
+      copiedId = list.id;
+    } catch {
+      copiedId = null;
+    }
+  }
 
   let newName = $state("");
   let error = $state("");
@@ -72,7 +94,7 @@
     {:else}
       <ul class="list-rows">
         {#each lists as list (list.id)}
-          <li class="list-row">
+          <li class="list-row list-row-wrap">
             <span class="list-row-main">
               <span class="list-row-name">
                 {list.name}
@@ -87,6 +109,27 @@
                 </button>
                 <button class="linkbtn" type="button" onclick={() => remove(list)}>Verwijderen</button>
               </span>
+              {#if canShare}
+                <div class="share-block">
+                  {#if list.shareSlug}
+                    <div class="share-row">
+                      <input
+                        class="text-input"
+                        type="text"
+                        readonly
+                        aria-label={`Link naar ${list.name}`}
+                        value={shareUrl(list.shareSlug)}
+                      />
+                      <button class="btn btn-ghost compact-button" type="button" onclick={() => copyLink(list)}>
+                        {copiedId === list.id ? "Gekopieerd" : "Kopieer"}
+                      </button>
+                    </div>
+                    <button class="linkbtn" type="button" onclick={() => onUnshare?.(list.id)}>Stop met delen</button>
+                  {:else}
+                    <button class="linkbtn" type="button" onclick={() => onShare?.(list.id)}>Deel lijst</button>
+                  {/if}
+                </div>
+              {/if}
             {/if}
           </li>
         {/each}

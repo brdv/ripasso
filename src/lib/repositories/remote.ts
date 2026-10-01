@@ -63,13 +63,17 @@ export class RemoteListRepository implements ListRepository {
   }
 
   /** Shares a list by link and returns its slug. Server-only, so not part of `ListRepository`. */
-  async share(id: string): Promise<string> {
-    const response = await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}/share`, "POST");
-    return ((await response.json()) as { shareSlug: string }).shareSlug;
+  share(id: string): Promise<string> {
+    return this.writes.run(async () => {
+      const response = await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}/share`, "POST");
+      return ((await response.json()) as { shareSlug: string }).shareSlug;
+    });
   }
 
-  async unshare(id: string): Promise<void> {
-    await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}/share`, "DELETE");
+  unshare(id: string): Promise<void> {
+    return this.writes.run(async () => {
+      await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}/share`, "DELETE");
+    });
   }
 }
 

@@ -87,8 +87,13 @@ The same commands run in GitHub Actions on every PR and push to `main`
 ## Tests
 
 - Domain logic: `*.test.ts` next to the module (node environment).
+- Server code: `src/lib/server/**/*.test.ts` (node environment). Tests that need a database call
+  `createTestDatabase()` from `src/lib/server/testing/d1.ts`: it starts wrangler's platform proxy
+  with a temporary persistence directory, applies every file in `migrations/`, and returns the
+  `D1Database` plus `dispose()`. Create it in `beforeAll` with a generous timeout.
 - Svelte components: `*.svelte.spec.ts` (Vitest browser mode with Chromium).
-- End-to-end: `tests/*.spec.ts`. Always wait for `[data-ready="true"]` before interacting (see
+- End-to-end: `tests/*.spec.ts`. Playwright's web server runs `bun run db:migrate:local` before
+  `bun run dev`, and the dev server exposes the local D1 as `platform.env.DB`. Always wait for `[data-ready="true"]` before interacting (see
   `openApp` in `tests/app.spec.ts`). Tests run on the `desktop` and `mobile` projects.
 - New behaviour needs tests. Prefer a few meaningful tests over many shallow ones.
 

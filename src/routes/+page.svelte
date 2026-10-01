@@ -3,7 +3,6 @@
   import { onMount } from "svelte";
   import AppHeader from "$lib/components/AppHeader.svelte";
   import { cardCounts, expandEntriesToCards } from "$lib/domain/cards";
-  import { entriesFromDeck } from "$lib/domain/entries";
   import { addEntry, createList, listEntries, removeEntry, renameList } from "$lib/domain/lists";
   import { TENSES } from "$lib/domain/constants";
   import { buildSessionItems, createSession, defaultMenuState } from "$lib/domain/session";
@@ -41,7 +40,7 @@
 
   let { data }: PageProps = $props();
 
-  const sharedEntries = $derived(entriesFromDeck(data.deck));
+  const sharedEntries = $derived(data.entries);
   let ownEntries = $state<StudyEntry[]>([]);
   let entriesStorageOk = $state(true);
   const entries = $derived([...sharedEntries, ...ownEntries]);

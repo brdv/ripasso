@@ -1,8 +1,9 @@
 # Ripasso
 
 Ripasso is a SvelteKit app for practising Italian vocabulary and verb conjugations. The built-in
-deck is loaded from `static/data.json`; study progress is kept locally in the browser. There is no
-database or account system yet.
+deck lives in a Cloudflare D1 database (seeded from `static/data.json`) and is served by
+`GET /api/entries`; study progress, lists, and own entries are kept locally in the browser. There
+is no account system yet.
 
 ## Features
 
@@ -56,14 +57,18 @@ bun run test:e2e
 bun run build
 ```
 
+`bun run test` includes server integration tests that start a throwaway local D1 through
+wrangler. `bun run test:e2e` applies local migrations before starting the dev server, so a fresh
+checkout works without extra steps.
+
 The end-to-end tests require Playwright's Chromium binary. Install it once with:
 
 ```sh
 bunx playwright install chromium
 ```
 
-The production build uses SvelteKit's Cloudflare adapter, but the application currently needs no
-Cloudflare services at runtime.
+The production build uses SvelteKit's Cloudflare adapter and needs the `DB` D1 binding at
+runtime (see "Deployment").
 
 ## Deployment
 

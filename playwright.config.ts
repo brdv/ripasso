@@ -12,7 +12,8 @@ export default defineConfig({
     { name: "mobile", use: { ...devices["iPhone 13"], browserName: "chromium" } },
   ],
   webServer: {
-    command: "bun run dev -- --host 127.0.0.1",
+    // Apply local D1 migrations first so a fresh checkout has the schema and base content.
+    command: "bun run db:migrate:local && bun run dev -- --host 127.0.0.1",
     url: "http://127.0.0.1:5173",
     reuseExistingServer: true,
   },

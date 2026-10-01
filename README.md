@@ -103,7 +103,7 @@ Deployment is done by a human; agents never touch remote Cloudflare resources. B
 deployed with the database:
 
 1. Create the database with `wrangler d1 create ripasso` and put the returned ID in
-   `database_id` in `wrangler.jsonc` (the committed value is a placeholder). If the app is
+   `database_id` in `wrangler.jsonc` (done: the committed ID is the `ripasso` database). If the app is
    deployed with Cloudflare Pages, also bind the database as `DB` in the Pages project settings.
 2. Enable the `nodejs_compat` compatibility flag for the deployed app (for Cloudflare Pages: in the
    project's runtime settings, for production and preview). Better Auth imports `node:crypto`, so

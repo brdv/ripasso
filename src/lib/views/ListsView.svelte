@@ -6,6 +6,7 @@
     lists,
     entries,
     storageOk = true,
+    storageWarning = "",
     onBack,
     onCreate,
     onEdit,
@@ -15,6 +16,7 @@
     lists: PracticeList[];
     entries: StudyEntry[];
     storageOk?: boolean;
+    storageWarning?: string;
     onBack: () => void;
     onCreate: (name: string) => string | void;
     onEdit: (id: string) => void;
@@ -72,15 +74,20 @@
         {#each lists as list (list.id)}
           <li class="list-row">
             <span class="list-row-main">
-              <span class="list-row-name">{list.name}</span>
+              <span class="list-row-name">
+                {list.name}
+                {#if list.readOnly}<span class="badge">vast</span>{/if}
+              </span>
               <span class="list-row-meta">{formatListCounts(listCounts(list, entries))}</span>
             </span>
-            <span class="list-row-actions">
-              <button class="btn btn-ghost compact-button" type="button" onclick={() => onEdit(list.id)}>
-                Bewerken
-              </button>
-              <button class="linkbtn" type="button" onclick={() => remove(list)}>Verwijderen</button>
-            </span>
+            {#if !list.readOnly}
+              <span class="list-row-actions">
+                <button class="btn btn-ghost compact-button" type="button" onclick={() => onEdit(list.id)}>
+                  Bewerken
+                </button>
+                <button class="linkbtn" type="button" onclick={() => remove(list)}>Verwijderen</button>
+              </span>
+            {/if}
           </li>
         {/each}
       </ul>
@@ -88,9 +95,6 @@
   </div>
 
   {#if !storageOk}
-    <p class="storage-warning" role="alert">
-      Let op: opslag werkt niet in deze browser. Je kunt wel blijven oefenen, maar lijsten blijven niet
-      bewaard.
-    </p>
+    <p class="storage-warning" role="alert">{storageWarning}</p>
   {/if}
 </main>

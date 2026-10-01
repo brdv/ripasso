@@ -16,6 +16,7 @@
   } from "$lib/domain/types";
   import { LocalEntryRepository } from "$lib/repositories/local-entries";
   import { LocalListRepository } from "$lib/repositories/local-lists";
+  import { RemoteEntryRepository, RemoteListRepository } from "$lib/repositories/remote";
   import type { EntryRepository, ListRepository } from "$lib/repositories/types";
   import ListEditorView from "$lib/views/ListEditorView.svelte";
   import ListsView from "$lib/views/ListsView.svelte";
@@ -40,11 +41,17 @@
 
   let { data }: PageProps = $props();
 
-  const sharedEntries = $derived(data.entries);
   let ownEntries = $state<StudyEntry[]>([]);
   let entriesStorageOk = $state(true);
-  const entries = $derived([...sharedEntries, ...ownEntries]);
   const ownIds = $derived(new Set(ownEntries.map((entry) => entry.id)));
+  // For logged-in users the loaded entries already contain their own; keep those only once.
+  const sharedEntries = $derived(data.entries.filter((entry) => !ownIds.has(entry.id)));
+  const entries = $derived([...sharedEntries, ...ownEntries]);
+  const storageWarning = $derived(
+    data.user
+      ? "Let op: opslaan op de server lukte niet. Probeer het later opnieuw."
+      : "Let op: opslag werkt niet in deze browser. Je kunt wel blijven oefenen, maar wijzigingen blijven niet bewaard.",
+  );
   const cards = $derived(expandEntriesToCards(entries, TENSES));
   const counts = $derived(cardCounts(cards));
   const dataSummary = $derived(
@@ -82,17 +89,35 @@
     progress = loaded.progress;
     storageOk = loaded.ok;
 
-    const localLists = new LocalListRepository(window.localStorage);
-    const localEntries = new LocalEntryRepository(sharedEntries, window.localStorage);
-    listRepository = localLists;
-    entryRepository = localEntries;
-    Promise.all([localLists.list(), localEntries.listOwn()]).then(([storedLists, storedEntries]) => {
-      lists = storedLists;
-      listsStorageOk = localLists.ok;
-      ownEntries = storedEntries;
-      entriesStorageOk = localEntries.ok;
-      ready = true;
-    });
+    if (data.user) {
+      // Logged-in users read and write through the server; guest data stays untouched.
+      const remoteLists = new RemoteListRepository();
+      const remoteEntries = new RemoteEntryRepository();
+      listRepository = remoteLists;
+      entryRepository = remoteEntries;
+      Promise.all([remoteLists.list(), remoteEntries.listOwn()])
+        .then(([storedLists, storedEntries]) => {
+          lists = storedLists;
+          ownEntries = storedEntries;
+        })
+        .catch(() => {
+          listsStorageOk = false;
+          entriesStorageOk = false;
+        })
+        .finally(() => (ready = true));
+    } else {
+      const localLists = new LocalListRepository(window.localStorage);
+      const localEntries = new LocalEntryRepository(data.entries, window.localStorage);
+      listRepository = localLists;
+      entryRepository = localEntries;
+      Promise.all([localLists.list(), localEntries.listOwn()]).then(([storedLists, storedEntries]) => {
+        lists = storedLists;
+        listsStorageOk = localLists.ok;
+        ownEntries = storedEntries;
+        entriesStorageOk = localEntries.ok;
+        ready = true;
+      });
+    }
 
     return () => clearTimeout(resetTimer);
   });
@@ -323,7 +348,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <div class="wrap" data-ready={ready}>
-  <AppHeader summary={dataSummary} />
+  <AppHeader summary={dataSummary} user={data.user} />
 
   {#if view === "menu"}
     <MenuView
@@ -341,6 +366,7 @@
       {lists}
       {entries}
       storageOk={listsStorageOk}
+      {storageWarning}
       onBack={goToMenu}
       onCreate={handleCreateList}
       onEdit={editList}
@@ -351,6 +377,7 @@
     <MyEntriesView
       entries={ownEntries}
       storageOk={entriesStorageOk}
+      {storageWarning}
       onBack={openLists}
       onCreateWord={() => openEntryForm("word", null, "my-entries")}
       onCreateVerb={() => openEntryForm("verb", null, "my-entries")}

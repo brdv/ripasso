@@ -7,6 +7,7 @@ import { MIN_PASSWORD_LENGTH } from "$lib/domain/constants";
 import { getRequestEvent } from "$app/server";
 import { getDb } from "./db";
 import { account, session, user, verification } from "./db/schema";
+import { trustedOrigins } from "./trusted-origins";
 
 export { MIN_PASSWORD_LENGTH } from "$lib/domain/constants";
 
@@ -14,12 +15,10 @@ export interface AuthEnv {
   DB: D1Database;
   BETTER_AUTH_SECRET: string;
   BETTER_AUTH_URL: string;
+  BETTER_AUTH_TRUSTED_ORIGINS?: string;
 }
 
 export function createAuth(env: AuthEnv) {
-  // In development the app is reached as both localhost and 127.0.0.1 (Playwright).
-  const devOrigins = dev ? ["http://localhost:5173", "http://127.0.0.1:5173"] : [];
-
   return betterAuth({
     database: drizzleAdapter(getDb(env.DB), {
       provider: "sqlite",
@@ -27,7 +26,7 @@ export function createAuth(env: AuthEnv) {
     }),
     secret: env.BETTER_AUTH_SECRET,
     baseURL: env.BETTER_AUTH_URL,
-    trustedOrigins: [env.BETTER_AUTH_URL, ...devOrigins],
+    trustedOrigins: trustedOrigins(env.BETTER_AUTH_URL, env.BETTER_AUTH_TRUSTED_ORIGINS, dev),
     emailAndPassword: {
       enabled: true,
       minPasswordLength: MIN_PASSWORD_LENGTH,

@@ -430,7 +430,9 @@ These are never done by an agent. The README's Deployment section lists them onc
 
 1. `wrangler d1 create ripasso` and put the real `database_id` in `wrangler.jsonc`.
 2. `wrangler d1 migrations apply ripasso --remote`.
-3. Set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` for the deployed app, and enable the
+3. Set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` for the deployed app (plus
+   `BETTER_AUTH_TRUSTED_ORIGINS`, e.g. `https://*.ripasso.pages.dev`, so login works on preview
+   deployments), and enable the
    `nodejs_compat` compatibility flag (required by Better Auth; Cloudflare Pages preview
    deployments fail without it from step 6 on).
 4. Deploy to Cloudflare.

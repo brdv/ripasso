@@ -1,0 +1,16 @@
+// Wrangler configuration. `database_id` is the remote D1 database created with
+// `wrangler d1 create ripasso`; local development and tests do not use it.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ripasso",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ripasso",
+      "database_id": "2985d894-7740-4fff-809c-9a41d03d3375",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

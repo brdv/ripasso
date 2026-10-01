@@ -17,7 +17,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 1   | Local practice lists                   | in review   | `claude/roadmap-step-1-local-lists` | #4  |
 | 2   | Custom words (local)                   | in review   | `claude/roadmap-step-2-custom-words` | #5  |
 | 3   | Custom verbs (local)                   | in review   | `claude/roadmap-step-3-custom-verbs` | #6  |
-| 4   | D1 schema, migrations, and seed        | not started |        |     |
+| 4   | D1 schema, migrations, and seed        | in review   | `claude/roadmap-step-4-d1-schema` | #7  |
 | 5   | Server repositories and entries API    | not started |        |     |
 | 6   | Accounts                               | not started |        |     |
 | 7   | Guest-to-account sync                  | not started |        |     |
@@ -242,7 +242,7 @@ In scope:
   dependency of the Cloudflare adapter; add it to `devDependencies` explicitly.
 - `wrangler.jsonc` with a D1 binding named `DB`, `database_name: "ripasso"`, and
   `database_id: "00000000-0000-0000-0000-000000000000"` as a placeholder that humans replace at
-  deploy time. Local development does not need a real ID.
+  deploy time. Local development does not need a real ID. (The real ID has since been filled in.)
 - `App.Platform` typed in `src/app.d.ts` with `env.DB: D1Database`.
 - Schema in `src/lib/server/db/schema.ts`:
 
@@ -266,8 +266,13 @@ In scope:
   `wrangler d1 migrations apply ripasso --local`.
 - A seed script (`scripts/seed.ts`, run with Bun) that reads `static/data.json`, uses
   `entriesFromDeck`, and writes a SQL seed migration inserting all base entries (owner `system`,
-  visibility `public`) and one base list "Basis" (owner `system`, visibility `public`) containing
-  every base entry. The seed is idempotent (`INSERT OR REPLACE`).
+  visibility `public`) and one base list "Basis" (ID `basis`, owner `system`, visibility
+  `public`) containing every base entry. The seed is idempotent (`INSERT OR REPLACE`) and
+  deterministic (fixed timestamps). Its file, `migrations/0001_seed.sql`, is registered in
+  Drizzle's journal with `drizzle-kit generate --custom --name seed`, so later generated
+  migrations number after it.
+- `@cloudflare/workers-types` (for `D1Database`) and `@types/node` are dev dependencies;
+  `wrangler.jsonc` enables `nodejs_compat`.
 - `package.json` scripts: `db:generate`, `db:migrate:local`, `db:seed`.
 - Mapping functions `entryToRow` / `rowToEntry` in `src/lib/server/db/`, with round-trip tests
   proving every base entry survives unchanged.

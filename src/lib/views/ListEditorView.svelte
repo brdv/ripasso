@@ -11,6 +11,7 @@
     ownIds = new Set(),
     onBack,
     onCreateWord,
+    onCreateVerb,
     onRename,
     onToggle,
   }: {
@@ -19,6 +20,7 @@
     ownIds?: Set<EntryId>;
     onBack: () => void;
     onCreateWord: () => void;
+    onCreateVerb: () => void;
     onRename: (name: string) => string | void;
     onToggle: (entryId: EntryId, include: boolean) => void;
   } = $props();
@@ -90,6 +92,9 @@
       />
       <div class="action-row search-actions">
         <button class="btn btn-ghost compact-button" type="button" onclick={onCreateWord}>Nieuw woord</button>
+        <button class="btn btn-ghost compact-button" type="button" onclick={onCreateVerb}>
+          Nieuw werkwoord
+        </button>
       </div>
       <ul class="list-rows search-results" aria-label="Zoekresultaten">
         {#each available as entry (entry.id)}

@@ -16,6 +16,9 @@ database or account system yet.
   let you add your own words with word type and, for nouns, article, gender, and number. They
   behave like built-in words, are marked "eigen" in the list editor, and are stored in the
   browser (`ripasso_entries_v1`). Built-in words cannot be edited.
+- **Own verbs.** "Nieuw werkwoord" adds a verb with auxiliary, conjugation group, regularity, a
+  note, and any subset of the tense × person grid. Every filled cell needs both the Italian and
+  the Dutch form; a session only produces cards for the cells you filled.
 
 ## Development
 

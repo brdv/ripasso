@@ -67,7 +67,7 @@ test("edits and deletes a custom word without breaking lists", async ({ page }) 
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Mijn woorden" }).click();
   await mine.getByRole("button", { name: "Verwijderen" }).click();
-  await expect(page.getByText("Je hebt nog geen eigen woorden.")).toBeVisible();
+  await expect(page.getByText("Je hebt nog geen eigen woorden of werkwoorden.")).toBeVisible();
 
   await page.getByRole("button", { name: "Lijsten", exact: true }).click();
   await expect(page.getByText("0 werkwoorden · 0 woorden")).toBeVisible();

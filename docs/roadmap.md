@@ -16,7 +16,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 0   | Agent setup, roadmap, and docs         | merged      | `prep/agent-setup` | #2  |
 | 1   | Local practice lists                   | in review   | `claude/roadmap-step-1-local-lists` | #4  |
 | 2   | Custom words (local)                   | in review   | `claude/roadmap-step-2-custom-words` | #5  |
-| 3   | Custom verbs (local)                   | not started |        |     |
+| 3   | Custom verbs (local)                   | in review   | `claude/roadmap-step-3-custom-verbs` | #6  |
 | 4   | D1 schema, migrations, and seed        | not started |        |     |
 | 5   | Server repositories and entries API    | not started |        |     |
 | 6   | Accounts                               | not started |        |     |
@@ -213,8 +213,10 @@ In scope:
   text, suggested values `regolare` and `irregolare`), conjugation class (`-are`, `-ere`, `-ire`,
   or none), note, and the tense × person grid from the decisions log.
 - Validation in `entry-validation.ts` for verbs, following the decisions log.
-- Custom verbs appear in "Mijn woorden" (rename the view to "Mijn woorden en werkwoorden" if it
-  reads better) and in list editor search.
+- Custom verbs appear in the "Mijn woorden en werkwoorden" view (still opened with the "Mijn
+  woorden" button) and in list editor search. Both that view and the list editor have a "Nieuw
+  werkwoord" action. The grid is one collapsible block per tense (Italian and Dutch column per
+  person) that scrolls inside its own container when needed.
 
 Acceptance criteria:
 

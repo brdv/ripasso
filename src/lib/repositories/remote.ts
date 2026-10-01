@@ -14,11 +14,26 @@ async function send(fetcher: Fetch, url: string, method: string, body?: unknown)
 }
 
 /**
+ * Runs writes one after another. The UI saves optimistically without awaiting, so without this
+ * two quick edits could reach the server out of order and the older one would win.
+ */
+class WriteQueue {
+  private tail: Promise<unknown> = Promise.resolve();
+
+  run<T>(task: () => Promise<T>): Promise<T> {
+    const result = this.tail.then(task, task);
+    this.tail = result.catch(() => undefined);
+    return result;
+  }
+}
+
+/**
  * Server-backed repositories for logged-in users. `save` creates with POST the first time an ID
  * is seen and updates with PUT afterwards.
  */
 export class RemoteListRepository implements ListRepository {
   private readonly known = new Set<string>();
+  private readonly writes = new WriteQueue();
 
   constructor(private readonly fetcher: Fetch = fetch) {}
 
@@ -28,24 +43,29 @@ export class RemoteListRepository implements ListRepository {
     return lists;
   }
 
-  async save(list: PracticeList): Promise<void> {
-    const body = { id: list.id, name: list.name, entryRefs: list.entryRefs };
-    if (this.known.has(list.id)) {
-      await send(this.fetcher, `/api/lists/${encodeURIComponent(list.id)}`, "PUT", body);
-    } else {
-      await send(this.fetcher, "/api/lists", "POST", body);
-      this.known.add(list.id);
-    }
+  save(list: PracticeList): Promise<void> {
+    return this.writes.run(async () => {
+      const body = { id: list.id, name: list.name, entryRefs: list.entryRefs };
+      if (this.known.has(list.id)) {
+        await send(this.fetcher, `/api/lists/${encodeURIComponent(list.id)}`, "PUT", body);
+      } else {
+        await send(this.fetcher, "/api/lists", "POST", body);
+        this.known.add(list.id);
+      }
+    });
   }
 
-  async remove(id: string): Promise<void> {
-    await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}`, "DELETE");
-    this.known.delete(id);
+  remove(id: string): Promise<void> {
+    return this.writes.run(async () => {
+      await send(this.fetcher, `/api/lists/${encodeURIComponent(id)}`, "DELETE");
+      this.known.delete(id);
+    });
   }
 }
 
 export class RemoteEntryRepository implements EntryRepository {
   private readonly known = new Set<EntryId>();
+  private readonly writes = new WriteQueue();
 
   constructor(private readonly fetcher: Fetch = fetch) {}
 
@@ -59,17 +79,21 @@ export class RemoteEntryRepository implements EntryRepository {
     return own;
   }
 
-  async save(entry: StudyEntry): Promise<void> {
-    if (this.known.has(entry.id)) {
-      await send(this.fetcher, `/api/entries/${encodeURIComponent(entry.id)}`, "PUT", entry);
-    } else {
-      await send(this.fetcher, "/api/entries", "POST", entry);
-      this.known.add(entry.id);
-    }
+  save(entry: StudyEntry): Promise<void> {
+    return this.writes.run(async () => {
+      if (this.known.has(entry.id)) {
+        await send(this.fetcher, `/api/entries/${encodeURIComponent(entry.id)}`, "PUT", entry);
+      } else {
+        await send(this.fetcher, "/api/entries", "POST", entry);
+        this.known.add(entry.id);
+      }
+    });
   }
 
-  async remove(id: EntryId): Promise<void> {
-    await send(this.fetcher, `/api/entries/${encodeURIComponent(id)}`, "DELETE");
-    this.known.delete(id);
+  remove(id: EntryId): Promise<void> {
+    return this.writes.run(async () => {
+      await send(this.fetcher, `/api/entries/${encodeURIComponent(id)}`, "DELETE");
+      this.known.delete(id);
+    });
   }
 }

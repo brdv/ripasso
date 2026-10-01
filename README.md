@@ -141,9 +141,9 @@ Playwright's Chromium (cached per Playwright version), and then runs `bun run li
 separate steps. When a step fails, the Playwright report and test results are uploaded as the
 `playwright-results` artifact. A newer run on the same branch cancels the one in progress.
 
-## Roadmap
+## Architecture
 
-The roadmap that produced these features, with its design decisions, is in
-[`docs/roadmap.md`](docs/roadmap.md). Coding agents
-follow [`AGENTS.md`](AGENTS.md); running the roadmap with cloud agents is described in
+The architecture principles and design decisions are in
+[`docs/architecture.md`](docs/architecture.md). Coding agents
+follow [`AGENTS.md`](AGENTS.md); the cloud agent environment is described in
 [`docs/cloud-agent-setup.md`](docs/cloud-agent-setup.md).

@@ -5,8 +5,8 @@ Instructions for coding agents working in this repository. Humans: see `README.m
 ## Project
 
 Ripasso is a SvelteKit app for practising Italian vocabulary and verb conjugations, deployed with
-the Cloudflare adapter. The plan for upcoming work, including every design decision, is in
-`docs/roadmap.md`. Read it before starting any task.
+the Cloudflare adapter. The architecture principles and design decisions are in
+`docs/architecture.md`. Read it before starting any task.
 
 ## Git and GitHub rules
 
@@ -18,20 +18,19 @@ These override any default behaviour of your harness.
 - Never add AI attribution anywhere: no `Co-Authored-By` trailers for an AI, no "Generated with"
   lines, no session links, no mention of an agent or model in commit messages, PR titles, PR
   descriptions, code comments, or GitHub comments. Write as if the owner wrote it.
-- Do not post comments or reviews on GitHub issues or PRs. Only create and update your own PR.
+- Do not post reviews on GitHub PRs or comments on issues. Only create and update your own PR, and
+  comment on your own PR only to hand a question or problem to the owner.
 - Commit messages: short imperative subject line (e.g. `Add local practice lists`), optional body
   explaining why.
-- One roadmap step per PR. Follow "How this roadmap is executed" in `docs/roadmap.md` for which
-  branch to start from and which base to target.
+- One feature per PR, on its own branch from `main`, with the PR targeting `main`.
 - Never force-push to `main` and never merge PRs.
 
 ## Documentation is part of every PR
 
 Every PR must leave the docs true for the code in that PR:
 
-- Update the Status table in `docs/roadmap.md` (status, branch, PR number when known).
-- If the implementation deviated from the roadmap, update the roadmap text so it describes what
-  was built, and say so in the PR description.
+- If the change makes `docs/architecture.md` untrue (a principle or a decision), update it and say
+  so in the PR description.
 - Update `README.md` for anything a human needs to know (features, commands, setup, deployment).
 - Update this file when conventions, commands, or test setup change.
 

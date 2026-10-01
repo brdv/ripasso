@@ -10,6 +10,7 @@
     onCreate,
     onEdit,
     onDelete,
+    onMyEntries,
   }: {
     lists: PracticeList[];
     entries: StudyEntry[];
@@ -18,6 +19,7 @@
     onCreate: (name: string) => string | void;
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
+    onMyEntries: () => void;
   } = $props();
 
   let newName = $state("");
@@ -43,6 +45,7 @@
   <div class="topbar">
     <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Menu</button>
     <h1 class="view-title">Lijsten</h1>
+    <button class="btn btn-ghost compact-button" type="button" onclick={onMyEntries}>Mijn woorden</button>
   </div>
 
   <div class="card-pane">

@@ -8,22 +8,44 @@
   import { TENSES } from "$lib/domain/constants";
   import { buildSessionItems, createSession, defaultMenuState } from "$lib/domain/session";
   import { clearSrs, loadSrs, record, saveSrs } from "$lib/domain/srs";
-  import type { EntryId, PracticeList, Progress, StudySession } from "$lib/domain/types";
+  import type {
+    EntryId,
+    PracticeList,
+    Progress,
+    StudyEntry,
+    StudySession,
+    WordEntry,
+  } from "$lib/domain/types";
+  import { LocalEntryRepository } from "$lib/repositories/local-entries";
   import { LocalListRepository } from "$lib/repositories/local-lists";
-  import type { ListRepository } from "$lib/repositories/types";
+  import type { EntryRepository, ListRepository } from "$lib/repositories/types";
   import ListEditorView from "$lib/views/ListEditorView.svelte";
   import ListsView from "$lib/views/ListsView.svelte";
   import MenuView from "$lib/views/MenuView.svelte";
+  import MyEntriesView from "$lib/views/MyEntriesView.svelte";
+  import WordFormView from "$lib/views/WordFormView.svelte";
   import PaperReviewView from "$lib/views/PaperReviewView.svelte";
   import StudyView from "$lib/views/StudyView.svelte";
   import SummaryView from "$lib/views/SummaryView.svelte";
   import type { PageProps } from "./$types";
 
-  type AppView = "menu" | "session" | "paper-review" | "summary" | "lists" | "list-editor";
+  type AppView =
+    | "menu"
+    | "session"
+    | "paper-review"
+    | "summary"
+    | "lists"
+    | "list-editor"
+    | "my-entries"
+    | "word-form";
 
   let { data }: PageProps = $props();
 
-  const entries = $derived(entriesFromDeck(data.deck));
+  const sharedEntries = $derived(entriesFromDeck(data.deck));
+  let ownEntries = $state<StudyEntry[]>([]);
+  let entriesStorageOk = $state(true);
+  const entries = $derived([...sharedEntries, ...ownEntries]);
+  const ownIds = $derived(new Set(ownEntries.map((entry) => entry.id)));
   const cards = $derived(expandEntriesToCards(entries, TENSES));
   const counts = $derived(cardCounts(cards));
   const dataSummary = $derived(
@@ -47,16 +69,26 @@
   let editingListId = $state<string | null>(null);
   const editingList = $derived(lists.find((list) => list.id === editingListId) ?? null);
 
+  let entryRepository: EntryRepository | undefined;
+  let wordForm = $state<{ entryId: EntryId | null; returnTo: AppView; key: number } | null>(null);
+  const wordFormEntry = $derived(
+    ownEntries.find((entry): entry is WordEntry => entry.type === "word" && entry.id === wordForm?.entryId),
+  );
+
   onMount(() => {
     const loaded = loadSrs(window.localStorage);
     progress = loaded.progress;
     storageOk = loaded.ok;
 
     const localLists = new LocalListRepository(window.localStorage);
+    const localEntries = new LocalEntryRepository(sharedEntries, window.localStorage);
     listRepository = localLists;
-    localLists.list().then((stored) => {
-      lists = stored;
+    entryRepository = localEntries;
+    Promise.all([localLists.list(), localEntries.listOwn()]).then(([storedLists, storedEntries]) => {
+      lists = storedLists;
       listsStorageOk = localLists.ok;
+      ownEntries = storedEntries;
+      entriesStorageOk = localEntries.ok;
       ready = true;
     });
 
@@ -141,6 +173,46 @@
     listRepository?.remove(id).then(
       () => (listsStorageOk = true),
       () => (listsStorageOk = false),
+    );
+  }
+
+  function openMyEntries() {
+    view = "my-entries";
+    scrollTop();
+  }
+
+  function openWordForm(entryId: EntryId | null, returnTo: AppView) {
+    wordForm = { entryId, returnTo, key: (wordForm?.key ?? 0) + 1 };
+    view = "word-form";
+    scrollTop();
+  }
+
+  function closeWordForm() {
+    view = wordForm?.returnTo ?? "my-entries";
+    wordForm = null;
+    scrollTop();
+  }
+
+  function handleSaveWord(entry: WordEntry) {
+    const isNew = !ownIds.has(entry.id);
+    ownEntries = isNew
+      ? [...ownEntries, entry]
+      : ownEntries.map((existing) => (existing.id === entry.id ? entry : existing));
+    entryRepository?.save(entry).then(
+      () => (entriesStorageOk = true),
+      () => (entriesStorageOk = false),
+    );
+    if (isNew && wordForm?.returnTo === "list-editor" && editingList) {
+      persistList(addEntry(editingList, entry.id));
+    }
+    closeWordForm();
+  }
+
+  function handleDeleteEntry(id: EntryId) {
+    ownEntries = ownEntries.filter((entry) => entry.id !== id);
+    entryRepository?.remove(id).then(
+      () => (entriesStorageOk = true),
+      () => (entriesStorageOk = false),
     );
   }
 
@@ -266,13 +338,29 @@
       onCreate={handleCreateList}
       onEdit={editList}
       onDelete={handleDeleteList}
+      onMyEntries={openMyEntries}
     />
+  {:else if view === "my-entries"}
+    <MyEntriesView
+      entries={ownEntries}
+      storageOk={entriesStorageOk}
+      onBack={openLists}
+      onCreateWord={() => openWordForm(null, "my-entries")}
+      onEdit={(id) => openWordForm(id, "my-entries")}
+      onDelete={handleDeleteEntry}
+    />
+  {:else if view === "word-form" && wordForm}
+    {#key wordForm.key}
+      <WordFormView entry={wordFormEntry} {entries} onSave={handleSaveWord} onCancel={closeWordForm} />
+    {/key}
   {:else if view === "list-editor" && editingList}
     {#key editingList.id}
       <ListEditorView
         list={editingList}
         {entries}
+        {ownIds}
         onBack={openLists}
+        onCreateWord={() => openWordForm(null, "list-editor")}
         onRename={handleRenameList}
         onToggle={handleToggleEntry}
       />

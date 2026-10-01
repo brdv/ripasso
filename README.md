@@ -12,6 +12,10 @@ database or account system yet.
   and delete lists and add or remove words and verbs through a search box. The "Oefenen uit"
   select in the menu picks the whole dataset or one list; the menu's content and tense filters
   still apply. Lists are stored in the browser (`ripasso_lists_v1`).
+- **Own words.** "Mijn woorden" (from the lists overview) and "Nieuw woord" (in the list editor)
+  let you add your own words with word type and, for nouns, article, gender, and number. They
+  behave like built-in words, are marked "eigen" in the list editor, and are stored in the
+  browser (`ripasso_entries_v1`). Built-in words cannot be edited.
 
 ## Development
 

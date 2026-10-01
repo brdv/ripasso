@@ -288,6 +288,7 @@ body {
     display: grid;
     gap: 8px;
 }
+.search-actions,
 .search-results {
     margin-top: 10px;
 }
@@ -333,6 +334,27 @@ body {
     font-family: var(--sans);
     font-style: normal;
     vertical-align: middle;
+}
+.action-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+.field-error {
+    color: var(--bad);
+    font-size: 12px;
+    margin-top: 4px;
+    min-height: 0;
+}
+.form-warning {
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 12px;
 }
 .storage-warning {
     color: var(--bad);

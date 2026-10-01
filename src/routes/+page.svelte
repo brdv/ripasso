@@ -6,7 +6,7 @@
   import { addEntry, createList, listEntries, removeEntry, renameList } from "$lib/domain/lists";
   import { TENSES } from "$lib/domain/constants";
   import { buildSessionItems, createSession, defaultMenuState } from "$lib/domain/session";
-  import { clearSrs, loadSrs, record, saveSrs } from "$lib/domain/srs";
+  import { record } from "$lib/domain/srs";
   import type {
     EntryId,
     PracticeList,
@@ -16,8 +16,14 @@
   } from "$lib/domain/types";
   import { LocalEntryRepository } from "$lib/repositories/local-entries";
   import { LocalListRepository } from "$lib/repositories/local-lists";
-  import { RemoteEntryRepository, RemoteListRepository } from "$lib/repositories/remote";
-  import type { EntryRepository, ListRepository } from "$lib/repositories/types";
+  import { importGuestDataOnce } from "$lib/repositories/guest-import";
+  import { LocalProgressRepository } from "$lib/repositories/local-progress";
+  import {
+    RemoteEntryRepository,
+    RemoteListRepository,
+    RemoteProgressRepository,
+  } from "$lib/repositories/remote";
+  import type { EntryRepository, ListRepository, ProgressRepository } from "$lib/repositories/types";
   import ListEditorView from "$lib/views/ListEditorView.svelte";
   import ListsView from "$lib/views/ListsView.svelte";
   import MenuView from "$lib/views/MenuView.svelte";
@@ -61,6 +67,7 @@
   let menu = $state(defaultMenuState());
   let progress = $state<Progress>({});
   let storageOk = $state(true);
+  let progressRepository: ProgressRepository | undefined;
   let view = $state<AppView>("menu");
   let session = $state<StudySession | null>(null);
   let menuWarning = $state("");
@@ -85,27 +92,34 @@
   const entryFormEntry = $derived(ownEntries.find((entry) => entry.id === entryForm?.entryId));
 
   onMount(() => {
-    const loaded = loadSrs(window.localStorage);
-    progress = loaded.progress;
-    storageOk = loaded.ok;
-
     if (data.user) {
-      // Logged-in users read and write through the server; guest data stays untouched.
+      // Logged-in users read and write through the server. On the first login in this browser
+      // the guest data is copied into the account once; the guest data itself stays untouched.
+      const user = data.user;
       const remoteLists = new RemoteListRepository();
       const remoteEntries = new RemoteEntryRepository();
+      const remoteProgress = new RemoteProgressRepository();
       listRepository = remoteLists;
       entryRepository = remoteEntries;
-      Promise.all([remoteLists.list(), remoteEntries.listOwn()])
-        .then(([storedLists, storedEntries]) => {
+      progressRepository = remoteProgress;
+      importGuestDataOnce(window.localStorage, user.id)
+        .catch(() => (listsStorageOk = entriesStorageOk = storageOk = false))
+        .then(() => Promise.all([remoteLists.list(), remoteEntries.listOwn(), remoteProgress.load()]))
+        .then(([storedLists, storedEntries, storedProgress]) => {
           lists = storedLists;
           ownEntries = storedEntries;
+          progress = storedProgress;
         })
-        .catch(() => {
-          listsStorageOk = false;
-          entriesStorageOk = false;
-        })
+        .catch(() => (listsStorageOk = entriesStorageOk = storageOk = false))
         .finally(() => (ready = true));
     } else {
+      const localProgress = new LocalProgressRepository(window.localStorage);
+      progressRepository = localProgress;
+      localProgress.load().then((loaded) => {
+        progress = loaded;
+        storageOk = localProgress.ok;
+      });
+
       const localLists = new LocalListRepository(window.localStorage);
       const localEntries = new LocalEntryRepository(data.entries, window.localStorage);
       listRepository = localLists;
@@ -261,7 +275,7 @@
     if (correct) session.correct += 1;
 
     progress = record(progress, item.card.id, correct);
-    storageOk = saveSrs(progress, window.localStorage);
+    persistProgress([item.card.id]);
     advanceDirect();
   }
 
@@ -297,16 +311,33 @@
     });
 
     progress = nextProgress;
-    storageOk = saveSrs(progress, window.localStorage);
+    persistProgress(session.items.map((sessionItem) => sessionItem.card.id));
     view = "summary";
     scrollTop();
   }
 
+  /** Optimistic: the UI already shows the new progress; a failed write shows the warning. */
+  function persistProgress(cardIds: string[]) {
+    const repository = progressRepository;
+    if (!repository) return;
+    const writes = [...new Set(cardIds)].map((cardId) => repository.record(cardId, progress[cardId]));
+    Promise.all(writes).then(
+      () => (storageOk = true),
+      () => (storageOk = false),
+    );
+  }
+
   function resetProgress() {
-    if (!window.confirm("Alle voortgang in deze browser wissen?")) return;
+    const question = data.user
+      ? "Alle voortgang in je account wissen?"
+      : "Alle voortgang in deze browser wissen?";
+    if (!window.confirm(question)) return;
 
     progress = {};
-    storageOk = clearSrs(window.localStorage);
+    progressRepository?.clear().then(
+      () => (storageOk = true),
+      () => (storageOk = false),
+    );
     resetNote = "Voortgang gewist.";
     clearTimeout(resetTimer);
     resetTimer = setTimeout(() => (resetNote = ""), 2000);
@@ -426,6 +457,6 @@
   {:else if view === "paper-review" && session}
     <PaperReviewView {session} onBack={goToMenu} onProcess={processPaper} />
   {:else if view === "summary" && session}
-    <SummaryView {session} {progress} {storageOk} onAgain={goToMenu} />
+    <SummaryView {session} {progress} {storageOk} inAccount={Boolean(data.user)} onAgain={goToMenu} />
   {/if}
 </div>

@@ -20,7 +20,7 @@ branch name, and correct anything below that the implementation made untrue.
 | 4   | D1 schema, migrations, and seed        | in review   | `claude/roadmap-step-4-d1-schema` | #7  |
 | 5   | Server repositories and entries API    | in review   | `claude/roadmap-step-5-entries-api` | #8  |
 | 6   | Accounts                               | in review   | `claude/roadmap-step-6-accounts` | #9  |
-| 7   | Guest-to-account sync                  | not started |        |     |
+| 7   | Guest-to-account sync                  | in review   | `claude/roadmap-step-7-sync` | #10 |
 | 8   | Sharing lists                          | not started |        |     |
 | 9   | Cleanup and final docs pass            | not started |        |     |
 
@@ -370,7 +370,13 @@ In scope:
 - On login, if `ripasso_sync_v1` has no record for this user ID, import local custom entries
   (keeping their IDs), local lists, and local progress (merge rule from the decisions log), then
   write `{ version: 1, imported: { [userId]: timestamp } }`. Import is one batched request
-  (`POST /api/import`) and is idempotent.
+  (`POST /api/import`) and is idempotent: entries and lists are created only when their ID is
+  free (an ID owned by someone else is skipped), invalid items are skipped, and progress rows
+  only replace server rows with a smaller `last`. Nothing is sent when the browser has no guest
+  data; a failed import is not recorded, so it is retried on the next page load.
+  (`src/lib/repositories/guest-import.ts`, `src/lib/server/repositories/import.ts`.)
+- Multi-row inserts are chunked to stay within D1's 100 bound parameters per query
+  (`src/lib/server/db/chunk.ts`).
 - "Voortgang wissen" clears the server progress for logged-in users.
 - Progress writes after grading are optimistic; a failed write shows the existing storage
   warning.

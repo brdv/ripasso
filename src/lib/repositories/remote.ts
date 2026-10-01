@@ -1,5 +1,5 @@
-import type { EntryId, PracticeList, StudyEntry } from "$lib/domain/types";
-import type { EntryRepository, ListRepository } from "./types";
+import type { EntryId, PracticeList, Progress, ProgressEntry, StudyEntry } from "$lib/domain/types";
+import type { EntryRepository, ListRepository, ProgressRepository } from "./types";
 
 type Fetch = typeof fetch;
 
@@ -95,5 +95,21 @@ export class RemoteEntryRepository implements EntryRepository {
       await send(this.fetcher, `/api/entries/${encodeURIComponent(id)}`, "DELETE");
       this.known.delete(id);
     });
+  }
+}
+
+export class RemoteProgressRepository implements ProgressRepository {
+  constructor(private readonly fetcher: Fetch = fetch) {}
+
+  async load(): Promise<Progress> {
+    return (await (await send(this.fetcher, "/api/progress", "GET")).json()) as Progress;
+  }
+
+  async record(cardId: string, entry: ProgressEntry): Promise<void> {
+    await send(this.fetcher, `/api/progress/${encodeURIComponent(cardId)}`, "PUT", entry);
+  }
+
+  async clear(): Promise<void> {
+    await send(this.fetcher, "/api/progress", "DELETE");
   }
 }

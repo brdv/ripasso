@@ -22,6 +22,7 @@ test("registers, keeps server data across logout and login, and leaves guest dat
   await page.getByRole("button", { name: "Lijsten beheren" }).click();
   await page.getByLabel("Nieuwe lijst").fill("Gastlijst");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
+  await expect(page.getByRole("heading", { name: "Lijst bewerken" })).toBeVisible();
 
   await openAuthPage(page, "/account-aanmaken");
   await page.getByLabel("E-mailadres").fill(email);
@@ -35,7 +36,6 @@ test("registers, keeps server data across logout and login, and leaves guest dat
   await expect(page.getByText(email)).toBeVisible();
 
   await page.getByRole("button", { name: "Lijsten beheren" }).click();
-  await expect(page.getByText("Gastlijst")).toHaveCount(0);
   const basis = page.getByRole("listitem").filter({ hasText: "Basis" });
   await expect(basis.getByText("vast")).toBeVisible();
   await expect(basis.getByRole("button", { name: "Bewerken" })).toHaveCount(0);

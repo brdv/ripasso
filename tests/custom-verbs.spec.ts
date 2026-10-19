@@ -15,7 +15,7 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
   await page.getByLabel("Infinitief (Italiaans)").fill("parlare");
   await page.getByLabel("Nederlands", { exact: true }).fill("praten");
   await page.getByLabel("presente io Italiaans").fill("parlo");
-  await page.getByLabel("presente io Nederlands").fill("ik praat");
+  await page.getByLabel("presente io Nederlands").fill("praat");
   await page.getByLabel("presente tu Italiaans").fill("parli");
   await page.getByRole("button", { name: "Opslaan" }).click();
   await expect(page.getByText("Vul ook het Nederlands in.")).toBeVisible();
@@ -30,7 +30,7 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
   );
   expect(overflowing).toEqual([]);
 
-  await page.getByLabel("presente tu Nederlands").fill("jij praat");
+  await page.getByLabel("presente tu Nederlands").fill("praat");
   await page.getByRole("button", { name: "Opslaan" }).click();
   await expect(page.getByText("In deze lijst · 1 werkwoord · 0 woorden")).toBeVisible();
 
@@ -43,6 +43,9 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
   await page.getByRole("button", { name: "Naar nakijken" }).click();
   await expect(page.getByText("Nakijken - 2 kaarten")).toBeVisible();
   await expect(page.locator(".plrow").filter({ hasText: "presente" })).toHaveCount(2);
+  // The Dutch pronoun is added in front of the typed form.
+  await expect(page.locator(".plrow").filter({ hasText: "ik praat" })).toHaveCount(1);
+  await expect(page.locator(".plrow").filter({ hasText: "jij praat" })).toHaveCount(1);
 
   await page.getByRole("button", { name: "Menu" }).click();
   await page.getByText("presente", { exact: true }).click();

@@ -69,7 +69,7 @@ them as written.
 | Empty lists | Allowed. Starting one shows the menu warning. |
 | Local storage keys | `ripasso_lists_v1`, `ripasso_entries_v1`, `ripasso_sync_v1`. Progress stays in `ripasso_progress_v2`. |
 | New IDs | Lists: `crypto.randomUUID()`. Custom entries: `word:<uuid>` / `verb:<uuid>`. Base entries keep their existing IDs (`word:<it>`, `verb:<lemma>`). |
-| Custom verb editor | A tense × person grid; each cell has an Italian and a Dutch field. Every cell is optional; a cell must have both or neither; at least one complete cell is required. **revisit** |
+| Custom verb editor | A tense × person grid; each cell has an Italian and a Dutch field. Every cell is optional; a cell must have both or neither; at least one complete cell is required. The Dutch field shows the person's pronoun (`PERSON_NL`: ik, jij, hij/zij, wij, jullie, zij) as a fixed prefix and the user types only the verb part. Stored Dutch forms keep the pronoun in front, as in the base content; a pronoun the user types anyway (including "je", "we", "ze") is not doubled. **revisit** |
 | Deleting a custom entry | Allowed with confirmation. References to it in lists are left in place and resolve to nothing. Progress rows are left in place. |
 | Database | Cloudflare D1 via Drizzle ORM. Migrations are SQL files in `migrations/`, applied with `wrangler d1 migrations apply`. |
 | Entry storage | One `entries` table with shared columns plus a JSON `data` column holding the type-specific fields, including verb forms. **revisit** once querying individual forms matters. |

@@ -19,7 +19,9 @@ users store them on the server.
   browser (`ripasso_entries_v1`). Built-in words cannot be edited.
 - **Own verbs.** "Nieuw werkwoord" adds a verb with auxiliary, conjugation group, regularity, a
   note, and any subset of the tense × person grid. Every filled cell needs both the Italian and
-  the Dutch form; a session only produces cards for the cells you filled.
+  the Dutch form; a session only produces cards for the cells you filled. The Dutch pronoun
+  (ik, jij, hij/zij, wij, jullie, zij) is already shown in front of each Dutch field, so you only
+  type the verb part.
 - **Accounts.** "Account aanmaken" (`/account-aanmaken`) and "Inloggen" (`/inloggen`) use e-mail
   and password (minimum 8 characters). Logged-in users' lists and own entries are stored on the
   server and they also see the read-only "Basis" list. Logging out keeps the browser's guest

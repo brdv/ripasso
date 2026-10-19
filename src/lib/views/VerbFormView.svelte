@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PERSON_SHORT, PERSONS, TENSE_LABEL, TENSES } from "$lib/domain/constants";
+  import { PERSON_NL, PERSON_SHORT, PERSONS, TENSE_LABEL, TENSES } from "$lib/domain/constants";
   import {
     AUXILIARIES,
     CONJUGATION_CLASSES,
@@ -115,6 +115,7 @@
       <div class="label">Vervoegingen</div>
       <p class="pl-intro">
         Vul alleen de vormen in die je wilt oefenen. Elke vorm heeft Italiaans én Nederlands nodig.
+        Het Nederlandse voornaamwoord staat er al voor.
       </p>
       {#each TENSES as tense, index (tense)}
         <details class="tense-block" open={index === 0 || filledPerTense[tense] > 0}>
@@ -143,14 +144,17 @@
                       />
                     </td>
                     <td>
-                      <input
-                        class="text-input"
-                        type="text"
-                        autocomplete="off"
-                        aria-label={`${TENSE_LABEL[tense]} ${PERSON_SHORT[person]} Nederlands`}
-                        aria-invalid={Boolean(cellError)}
-                        bind:value={draft.forms[tense][person].nl}
-                      />
+                      <div class="prefixed-input">
+                        <span class="input-prefix" aria-hidden="true">{PERSON_NL[person]}</span>
+                        <input
+                          class="text-input"
+                          type="text"
+                          autocomplete="off"
+                          aria-label={`${TENSE_LABEL[tense]} ${PERSON_SHORT[person]} Nederlands`}
+                          aria-invalid={Boolean(cellError)}
+                          bind:value={draft.forms[tense][person].nl}
+                        />
+                      </div>
                     </td>
                   </tr>
                   {#if cellError}

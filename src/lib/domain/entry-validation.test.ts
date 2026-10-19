@@ -118,6 +118,30 @@ describe("validateVerb", () => {
     expect(validateVerb(duplicate, [existingVerb], "verb:essere").warnings).toEqual([]);
   });
 
+  it("adds the Dutch pronoun to forms typed without it, and does not double it", () => {
+    const draft = base();
+    draft.forms.presente.io = { it: "parlo", nl: " praat " };
+    draft.forms.presente.loro = { it: "parlano", nl: "Zij praten" };
+    draft.forms.presente.noi = { it: "parliamo", nl: "we praten" };
+    const forms = validateVerb(draft, [], "verb:1").value?.forms?.presente;
+
+    expect(forms?.io?.nl).toBe("ik praat");
+    expect(forms?.loro?.nl).toBe("zij praten");
+    expect(forms?.noi?.nl).toBe("wij praten");
+  });
+
+  it("shows stored Dutch forms without their pronoun in the draft", () => {
+    const draft = verbDraftFrom({
+      id: "verb:3",
+      type: "verb",
+      lemma: "essere",
+      nl: "zijn",
+      forms: { presente: { lui_lei: { it: "è", nl: "hij/zij is" }, loro: { it: "sono", nl: "zij zijn" } } },
+    });
+    expect(draft.forms.presente.lui_lei.nl).toBe("is");
+    expect(draft.forms.presente.loro.nl).toBe("zijn");
+  });
+
   it("round-trips an existing verb through the draft", () => {
     const entry = {
       id: "verb:2",

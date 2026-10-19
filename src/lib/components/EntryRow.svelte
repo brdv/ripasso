@@ -9,12 +9,15 @@
     entry,
     badge,
     linked = false,
+    fromList,
     children,
   }: {
     entry: StudyEntry;
     badge?: string;
     /** Makes the whole row a link to the entry's page. */
     linked?: boolean;
+    /** The list editor the link was followed from; the entry's page returns there. */
+    fromList?: string;
     children?: Snippet;
   } = $props();
 
@@ -28,7 +31,9 @@
     <span class="list-row-name">
       {#if linked}
         <!-- The link covers the whole row; the actions sit above it. -->
-        <a class="row-link lang-it" href={resolve("/(app)/woorden/[id]", { id: encodeURIComponent(entry.id) })}
+        <a class="row-link lang-it" href={resolve(
+            `/woorden/${encodeURIComponent(entry.id)}${fromList ? `?lijst=${encodeURIComponent(fromList)}` : ""}`,
+          )}
           >{entryName(entry)}</a
         >
       {:else}

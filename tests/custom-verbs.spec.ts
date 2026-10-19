@@ -33,7 +33,7 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
 
   await page.getByLabel("presente tu Nederlands").fill("praat");
   await page.getByRole("button", { name: "Opslaan" }).click();
-  await expect(page.getByText("In deze lijst · 1 werkwoord · 0 woorden")).toBeVisible();
+  await expect(page.getByText("1 werkwoord · 0 woorden")).toBeVisible();
 
   await navigate(page, "Oefenen");
   await page.getByLabel("Oefenen uit").selectOption({ label: "Eigen ww" });

@@ -50,7 +50,8 @@ test("registers, keeps server data across logout and login, and leaves guest dat
   const saved = page.waitForResponse((response) => response.url().endsWith("/api/lists/") || /\/api\/lists\/[^/]+$/.test(response.url()));
   await page.getByRole("button", { name: "Opslaan" }).click();
   await saved;
-  await expect(page.getByRole("list", { name: "In deze lijst" }).getByText("serverino")).toBeVisible();
+  await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "serverino" })).toBeVisible();
 
   await page.getByRole("button", { name: "Uitloggen" }).click();
   await expect(page.getByRole("link", { name: "Inloggen" })).toBeVisible();

@@ -81,7 +81,9 @@ The same commands run in GitHub Actions on every PR and push to `main`
   with `getAppState()`. The navbar is in the root layout and hidden on `/sessie`.
 - Reuse the existing CSS classes in `src/app.css` (`card-pane`, `field`, `seg-group`, `chk`,
   `btn`, `btn-primary`, `linkbtn`, ...) before adding new styles. Every screen must work at
-  390 px wide with no horizontal page scroll.
+  390 px wide with no horizontal page scroll. Wide-screen layout goes in `min-width` media
+  queries only; a view's `<main>` can opt into `page-wide` (up to 1040 px) or `page-narrow`
+  (680 px, used by sessions) instead of the default 768 px.
 - Match the surrounding code's style. Do not reformat or refactor code your task does not need.
 - Do not modify the legacy root files `index.html` and `data.js`.
 - Card ID shapes (`card:<entryId>` and `card:<entryId>:<tense>:<person>`) must not change.

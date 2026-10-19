@@ -61,7 +61,7 @@
   }
 </script>
 
-<main>
+<main class="page-wide">
   <div class="topbar">
     <h1 class="view-title">Lijsten</h1>
   </div>
@@ -86,7 +86,7 @@
     {#if lists.length === 0}
       <p class="pl-intro">Je hebt nog geen lijsten.</p>
     {:else}
-      <ul class="list-rows">
+      <ul class="list-rows lists-grid">
         {#each lists as list (list.id)}
           <li class="list-row list-row-wrap">
             <span class="list-row-main">

@@ -23,99 +23,107 @@
   } = $props();
 </script>
 
-<main>
-  <div class="card-pane">
-    <div class="field">
-      <label class="label" for="practice-source">Oefenen uit</label>
-      <select id="practice-source" class="text-input" bind:value={selectedListId}>
-        <option value="">Hele dataset</option>
-        {#each lists as list (list.id)}
-          <option value={list.id}>{list.name}</option>
-        {/each}
-      </select>
-      <div class="data-summary">Hele dataset: {summary}</div>
-    </div>
+<main class="page-wide">
+  <div class="topbar">
+    <h1 class="view-title">Oefenen</h1>
+  </div>
 
-    <div class="field">
-      <div class="label">Richting</div>
-      <div class="seg-group seg-group--3">
-        <label class="seg">
-          <input type="radio" name="dir" value="nl_it" bind:group={menu.dir} />
-          <span>Nederlands → Italiaans</span>
-        </label>
-        <label class="seg">
-          <input type="radio" name="dir" value="it_nl" bind:group={menu.dir} />
-          <span>Italiaans → Nederlands</span>
-        </label>
-        <label class="seg">
-          <input type="radio" name="dir" value="mix" bind:group={menu.dir} />
-          <span>Door elkaar</span>
-        </label>
+  <div class="menu-layout">
+    <div class="card-pane menu-settings">
+      <div class="field">
+        <label class="label" for="practice-source">Oefenen uit</label>
+        <select id="practice-source" class="text-input" bind:value={selectedListId}>
+          <option value="">Hele dataset</option>
+          {#each lists as list (list.id)}
+            <option value={list.id}>{list.name}</option>
+          {/each}
+        </select>
       </div>
-    </div>
 
-    <div class="field">
-      <div class="label">Wat oefenen</div>
-      <div class="check-group content-options">
-        <label class="chk">
-          <input type="checkbox" bind:checked={menu.includeVerbs} />
-          <span>Werkwoorden</span>
-        </label>
-        <label class="chk">
-          <input type="checkbox" bind:checked={menu.includeWords} />
-          <span>Woorden</span>
-        </label>
-      </div>
-      <div class="check-group" class:is-disabled={!menu.includeVerbs}>
-        {#each TENSES as tense (tense)}
-          <label class="chk">
-            <input type="checkbox" bind:checked={menu.tenses[tense]} disabled={!menu.includeVerbs} />
-            <span>{TENSE_LABEL[tense]}</span>
+      <div class="field">
+        <div class="label">Richting</div>
+        <div class="seg-group seg-group--3">
+          <label class="seg">
+            <input type="radio" name="dir" value="nl_it" bind:group={menu.dir} />
+            <span>Nederlands → Italiaans</span>
           </label>
-        {/each}
+          <label class="seg">
+            <input type="radio" name="dir" value="it_nl" bind:group={menu.dir} />
+            <span>Italiaans → Nederlands</span>
+          </label>
+          <label class="seg">
+            <input type="radio" name="dir" value="mix" bind:group={menu.dir} />
+            <span>Door elkaar</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">Wat oefenen</div>
+        <div class="check-group content-options">
+          <label class="chk">
+            <input type="checkbox" bind:checked={menu.includeVerbs} />
+            <span>Werkwoorden</span>
+          </label>
+          <label class="chk">
+            <input type="checkbox" bind:checked={menu.includeWords} />
+            <span>Woorden</span>
+          </label>
+        </div>
+        <div class="check-group" class:is-disabled={!menu.includeVerbs}>
+          {#each TENSES as tense (tense)}
+            <label class="chk">
+              <input type="checkbox" bind:checked={menu.tenses[tense]} disabled={!menu.includeVerbs} />
+              <span>{TENSE_LABEL[tense]}</span>
+            </label>
+          {/each}
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">Sessie</div>
+        <div class="seg-group session-options">
+          <label class="seg">
+            <input type="radio" name="session-type" value="smart" bind:group={menu.sessionType} />
+            <span>Slimme review</span>
+          </label>
+          <label class="seg">
+            <input type="radio" name="session-type" value="free" bind:group={menu.sessionType} />
+            <span>Vrije sessie</span>
+          </label>
+        </div>
+        <div class="count-row">
+          <input id="session-count" type="number" min="1" max="200" inputmode="numeric" bind:value={menu.count} />
+          <label class="hint-inline" for="session-count">aantal kaarten per sessie</label>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="label">Nakijken</div>
+        <div class="seg-group">
+          <label class="seg">
+            <input type="radio" name="flow" value="direct" bind:group={menu.flow} />
+            <span>Direct per kaart</span>
+          </label>
+          <label class="seg">
+            <input type="radio" name="flow" value="paper" bind:group={menu.flow} />
+            <span>Achteraf op papier</span>
+          </label>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <div class="label">Sessie</div>
-      <div class="seg-group session-options">
-        <label class="seg">
-          <input type="radio" name="session-type" value="smart" bind:group={menu.sessionType} />
-          <span>Slimme review</span>
-        </label>
-        <label class="seg">
-          <input type="radio" name="session-type" value="free" bind:group={menu.sessionType} />
-          <span>Vrije sessie</span>
-        </label>
+    <aside class="start-panel">
+      <div class="start-wrap">
+        <button class="btn btn-primary btn-block" type="button" onclick={onStart}>Start sessie</button>
+        <div class="menu-warning" role="status">{warning}</div>
       </div>
-      <div class="count-row">
-        <input id="session-count" type="number" min="1" max="200" inputmode="numeric" bind:value={menu.count} />
-        <label class="hint-inline" for="session-count">aantal kaarten per sessie</label>
+      <div class="data-summary">Hele dataset: {summary}</div>
+
+      <div class="reset-row">
+        <button class="linkbtn" type="button" onclick={onReset}>Voortgang wissen</button>
+        <span class="reset-note" role="status">{resetNote}</span>
       </div>
-    </div>
-
-    <div class="field">
-      <div class="label">Nakijken</div>
-      <div class="seg-group">
-        <label class="seg">
-          <input type="radio" name="flow" value="direct" bind:group={menu.flow} />
-          <span>Direct per kaart</span>
-        </label>
-        <label class="seg">
-          <input type="radio" name="flow" value="paper" bind:group={menu.flow} />
-          <span>Achteraf op papier</span>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <div class="start-wrap">
-    <button class="btn btn-primary btn-block" type="button" onclick={onStart}>Start sessie</button>
-    <div class="menu-warning" role="status">{warning}</div>
-  </div>
-
-  <div class="reset-row">
-    <button class="linkbtn" type="button" onclick={onReset}>Voortgang wissen</button>
-    <span class="reset-note" role="status">{resetNote}</span>
+    </aside>
   </div>
 </main>

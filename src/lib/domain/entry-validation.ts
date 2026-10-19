@@ -1,4 +1,4 @@
-import { PERSONS, TENSES, WORDTYPE_NL } from "./constants";
+import { PERSON_NL, PERSONS, TENSES, WORDTYPE_NL } from "./constants";
 import type { EntryId, Person, StudyEntry, Tense, VerbEntry, VerbForm, WordEntry } from "./types";
 
 export const WORD_TYPES = Object.keys(WORDTYPE_NL).filter((type) => type !== "verb");
@@ -89,6 +89,27 @@ export function validateWord(
   };
 }
 
+/** Pronouns a typed or stored Dutch form may already start with, besides the one in `PERSON_NL`. */
+const DUTCH_PRONOUN_VARIANTS: Record<Person, string[]> = {
+  io: [],
+  tu: ["je"],
+  lui_lei: ["hij", "zij", "ze"],
+  noi: ["we"],
+  voi: [],
+  loro: ["ze"],
+};
+
+/** Removes a leading Dutch pronoun, so "zij zijn" becomes "zijn". */
+export function stripDutchPronoun(person: Person, nl: string): string {
+  const text = nl.trim();
+  const lower = text.toLowerCase();
+  for (const pronoun of [PERSON_NL[person], ...DUTCH_PRONOUN_VARIANTS[person]]) {
+    if (lower.startsWith(`${pronoun} `)) return text.slice(pronoun.length).trim();
+  }
+  return text;
+}
+
+/** The draft holds Dutch forms without their pronoun; the form shows it as a prefix. */
 export type VerbFormsDraft = Record<Tense, Record<Person, VerbForm>>;
 
 export interface VerbDraft {
@@ -111,7 +132,7 @@ export function verbDraftFrom(entry?: VerbEntry): VerbDraft {
       Object.fromEntries(
         PERSONS.map((person) => {
           const form = entry?.forms?.[tense]?.[person];
-          return [person, { it: form?.it ?? "", nl: form?.nl ?? "" }];
+          return [person, { it: form?.it ?? "", nl: stripDutchPronoun(person, form?.nl ?? "") }];
         }),
       ),
     ]),
@@ -130,7 +151,8 @@ export function verbDraftFrom(entry?: VerbEntry): VerbDraft {
 
 /**
  * Validates a verb form. Every grid cell is optional, but a cell needs both its Italian and
- * Dutch text or neither, and at least one complete cell is required.
+ * Dutch text or neither, and at least one complete cell is required. Dutch forms are stored with
+ * the pronoun from `PERSON_NL` in front; one typed in the cell is not doubled.
  */
 export function validateVerb(
   draft: VerbDraft,
@@ -154,9 +176,9 @@ export function validateVerb(
     for (const person of PERSONS) {
       const cell = draft.forms[tense]?.[person] ?? { it: "", nl: "" };
       const it = cell.it.trim();
-      const cellNl = cell.nl.trim();
+      const cellNl = stripDutchPronoun(person, cell.nl);
       if (it && cellNl) {
-        forms[tense] = { ...forms[tense], [person]: { it, nl: cellNl } };
+        forms[tense] = { ...forms[tense], [person]: { it, nl: `${PERSON_NL[person]} ${cellNl}` } };
       } else if (it || cellNl) {
         incomplete += 1;
         errors[`forms.${tense}.${person}`] = it ? "Vul ook het Nederlands in." : "Vul ook het Italiaans in.";

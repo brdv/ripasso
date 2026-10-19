@@ -48,6 +48,16 @@ export const PERSON_SHORT: Record<Person, string> = {
   loro: "loro",
 };
 
+/** The Dutch pronoun every stored Dutch verb form starts with; the verb form shows it as a fixed prefix. */
+export const PERSON_NL: Record<Person, string> = {
+  io: "ik",
+  tu: "jij",
+  lui_lei: "hij/zij",
+  noi: "wij",
+  voi: "jullie",
+  loro: "zij",
+};
+
 export const WORDTYPE_NL: Record<string, string> = {
   noun: "zelfstandig naamwoord",
   adverb: "bijwoord",

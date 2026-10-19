@@ -435,6 +435,22 @@ textarea.text-input {
     padding: 7px 8px;
     font-size: 14px;
 }
+.prefixed-input {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.input-prefix {
+    flex: 0 0 3.8em;
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+    text-align: right;
+}
+.prefixed-input .text-input {
+    flex: 1;
+    min-width: 0;
+}
 .form-table tr.has-error .text-input {
     border-color: var(--bad);
 }

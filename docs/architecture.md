@@ -64,7 +64,8 @@ them as written.
 | Area | Decision |
 | ---- | -------- |
 | List selector | A "Oefenen uit" select at the top of the menu: "Hele dataset" plus one option per list. Not persisted; defaults to "Hele dataset". **revisit** |
-| Navigation | Every screen is a SvelteKit route in the `(app)` group: `/` (session settings), `/sessie`, `/lijsten`, `/lijsten/[id]`, `/woorden`, `/woorden/nieuw?soort=woord\|werkwoord[&lijst=<id>]`, `/woorden/[id]/bewerken`. A top navbar links Oefenen, Lijsten, and Woorden. Shared state lives in one `AppState` created by the `(app)` layout; entering the group again (after login or logout) creates a fresh one. |
+| Navigation | Every screen is a SvelteKit route in the `(app)` group: `/` (session settings), `/sessie`, `/lijsten`, `/lijsten/[id]`, `/woorden`, `/woorden/nieuw?soort=woord\|werkwoord[&lijst=<id>]`, `/woorden/[id]`, `/woorden/[id]/bewerken[?lijst=<id>]`. Entry IDs in URLs are `encodeURIComponent`-encoded. A top navbar links Oefenen, Lijsten, and Woorden. Shared state lives in one `AppState` created by the `(app)` layout; entering the group again (after login or logout) creates a fresh one. |
+| Words page | `/woorden` lists all entries the user can practise (built-in and own), sorted by Italian headword, filtered by `filterEntries` (search, kind, "Alleen eigen"). The filter lives in `AppState` so it survives visiting an entry. Every entry has a read-only detail page; only own entries get Bewerken and Verwijderen. |
 | Practice sessions | A session lives in memory in `AppState` and is shown at `/sessie`, which hides the navbar and has a "Stoppen" button. Reloading `/sessie` or opening it without a session goes back to `/`. |
 | Menu filters on lists | Werkwoorden/Woorden checkboxes and tense toggles still apply to list sessions. An empty result shows the existing menu warning. |
 | Empty lists | Allowed. Starting one shows the menu warning. |

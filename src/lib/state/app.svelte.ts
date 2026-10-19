@@ -2,6 +2,7 @@ import { getContext, setContext } from "svelte";
 import { cardCounts, expandEntriesToCards } from "$lib/domain/cards";
 import { TENSES } from "$lib/domain/constants";
 import { addEntry, createList, listEntries, removeEntry, renameList } from "$lib/domain/lists";
+import { emptyFilter } from "$lib/domain/search";
 import { buildSessionItems, createSession, defaultMenuState } from "$lib/domain/session";
 import { record } from "$lib/domain/srs";
 import type { EntryId, PracticeList, Progress, StudyEntry, StudySession } from "$lib/domain/types";
@@ -40,6 +41,9 @@ export class AppState {
     const counts = cardCounts(expandEntriesToCards(this.entries, TENSES));
     return `${counts.verbCards} werkwoordskaarten (${counts.verbCount} werkwoorden) + ${counts.wordCards} woorden`;
   });
+
+  // Kept here so the Woorden filters survive opening an entry and coming back.
+  wordsFilter = $state(emptyFilter());
 
   menu = $state(defaultMenuState());
   progress = $state<Progress>({});

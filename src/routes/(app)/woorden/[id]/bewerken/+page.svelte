@@ -10,9 +10,15 @@
   const app = getAppState();
   // Only own entries can be edited.
   const entry = $derived(app.ownEntries.find((own) => own.id === page.params.id));
+  // Opened from the list editor: go back there, otherwise to the entry's page.
+  const listId = $derived(page.url.searchParams.get("lijst"));
 
   function close() {
-    goto(resolve("/woorden"));
+    goto(
+      listId
+        ? resolve("/(app)/lijsten/[id]", { id: listId })
+        : resolve("/(app)/woorden/[id]", { id: encodeURIComponent(page.params.id ?? "") }),
+    );
   }
 
   function save(saved: StudyEntry) {

@@ -48,15 +48,21 @@ test("edits and deletes a custom word without breaking lists", async ({ page }) 
   await page.getByLabel("Italiaans").fill("casetta");
   await page.getByRole("button", { name: "Opslaan" }).click();
 
-  const mine = page.getByRole("list", { name: "Mijn woorden" });
-  await mine.getByRole("button", { name: "Bewerken" }).click();
+  // Saving opens the new word's page, where it can be edited.
+  await expect(page.getByRole("heading", { name: "casetta" })).toBeVisible();
+  await page.getByRole("link", { name: "Bewerken" }).click();
   await expect(page.getByLabel("Italiaans")).toHaveValue("casetta");
   await page.getByLabel("Nederlands").fill("het huisje");
   await page.getByRole("button", { name: "Opslaan" }).click();
-  await expect(mine.getByText("het huisje")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "casetta" })).toBeVisible();
+  await expect(page.getByText("het huisje")).toBeVisible();
 
-  // Shared entries have no edit controls: only own entries are listed here.
-  await expect(mine.getByRole("listitem")).toHaveCount(1);
+  // The Woorden page lists everything; "Alleen eigen" leaves only this word.
+  await navigate(page, "Woorden");
+  await page.getByText("Alleen eigen", { exact: true }).click();
+  const words = page.getByRole("list", { name: "Woorden" });
+  await expect(words.getByRole("listitem")).toHaveCount(1);
+  await expect(words.getByText("eigen", { exact: true })).toBeVisible();
 
   await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Huis");
@@ -66,9 +72,12 @@ test("edits and deletes a custom word without breaking lists", async ({ page }) 
   await navigate(page, "Lijsten");
   await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
 
-  page.once("dialog", (dialog) => dialog.accept());
   await navigate(page, "Woorden");
-  await mine.getByRole("button", { name: "Verwijderen" }).click();
+  await words.getByRole("link", { name: "casetta" }).click();
+  await expect(page.getByRole("link", { name: "Huis" })).toBeVisible();
+  page.once("dialog", (dialog) => dialog.accept());
+  await page.getByRole("button", { name: "Verwijderen" }).click();
+  // The filter is remembered while moving between pages.
   await expect(page.getByText("Je hebt nog geen eigen woorden of werkwoorden.")).toBeVisible();
 
   await navigate(page, "Lijsten");

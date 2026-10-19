@@ -43,7 +43,7 @@
 
 <main>
   <div class="topbar">
-    <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Lijsten</button>
+    <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Terug</button>
     <h1 class="view-title">Lijst bewerken</h1>
   </div>
 

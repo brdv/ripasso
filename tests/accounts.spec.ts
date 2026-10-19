@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "playwright/test";
+import { navigate } from "./nav";
 
 async function openApp(page: Page) {
   await page.goto("/");
@@ -19,7 +20,7 @@ test("registers, keeps server data across logout and login, and leaves guest dat
 
   // A guest list that must survive logging in and out untouched.
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Gastlijst");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
   await expect(page.getByRole("heading", { name: "Lijst bewerken" })).toBeVisible();
@@ -32,10 +33,11 @@ test("registers, keeps server data across logout and login, and leaves guest dat
   await page.getByLabel("Wachtwoord").fill("geheim-wachtwoord");
   await page.getByRole("button", { name: "Account aanmaken" }).click();
 
+  await page.waitForURL("/");
   await expect(page.locator('[data-ready="true"]')).toBeVisible();
   await expect(page.getByText(email)).toBeVisible();
 
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   const basis = page.getByRole("listitem").filter({ hasText: "Basis" });
   await expect(basis.getByText("vast")).toBeVisible();
   await expect(basis.getByRole("button", { name: "Bewerken" })).toHaveCount(0);
@@ -53,7 +55,7 @@ test("registers, keeps server data across logout and login, and leaves guest dat
   await page.getByRole("button", { name: "Uitloggen" }).click();
   await expect(page.getByRole("link", { name: "Inloggen" })).toBeVisible();
   await expect(page.locator('[data-ready="true"]')).toBeVisible();
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("Gastlijst")).toBeVisible();
   await expect(page.getByText("Serverlijst")).toHaveCount(0);
 
@@ -65,9 +67,11 @@ test("registers, keeps server data across logout and login, and leaves guest dat
   await page.getByLabel("Wachtwoord").fill("geheim-wachtwoord");
   await page.getByRole("button", { name: "Inloggen" }).click();
 
+  // The login page is also marked ready, so wait for the redirect to the app first.
+  await page.waitForURL("/");
   await expect(page.locator('[data-ready="true"]')).toBeVisible();
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
-  await page.getByRole("button", { name: "Mijn woorden" }).click();
+  await navigate(page, "Woorden");
   await expect(page.getByText("serverino")).toBeVisible();
 });

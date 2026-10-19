@@ -1,7 +1,7 @@
 import type { StudyEntry } from "$lib/domain/types";
-import type { PageLoad } from "./$types";
+import type { LayoutLoad } from "./$types";
 
-export const load: PageLoad = async ({ fetch }) => {
+export const load: LayoutLoad = async ({ fetch }) => {
   const response = await fetch("/api/entries");
 
   if (!response.ok) {

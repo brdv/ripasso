@@ -39,7 +39,7 @@
       {/if}
     </div>
     <div class="summary-actions">
-      <button class="btn btn-ghost" type="button" onclick={onAgain}>Naar menu</button>
+      <button class="btn btn-ghost" type="button" onclick={onAgain}>Terug naar oefenen</button>
     </div>
   </section>
 </main>

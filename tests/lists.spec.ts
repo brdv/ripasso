@@ -1,4 +1,5 @@
 import { expect, test } from "playwright/test";
+import { navigate } from "./nav";
 
 async function openApp(page: import("playwright/test").Page) {
   await page.goto("/");
@@ -17,7 +18,7 @@ async function expectNoHorizontalOverflow(page: import("playwright/test").Page) 
 test("creates a list with essere and practises only that list", async ({ page }) => {
   await openApp(page);
 
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Week 1");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
 
@@ -31,7 +32,8 @@ test("creates a list with essere and practises only that list", async ({ page })
   await expect(page.getByText("In deze lijst · 1 werkwoord · 0 woorden")).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
-  await page.reload();
+  // A fresh page load: the list must come back from storage.
+  await page.goto("/");
   await expect(page.locator('[data-ready="true"]')).toBeVisible();
   await page.getByLabel("Oefenen uit").selectOption({ label: "Week 1" });
   await page.getByText("Achteraf op papier", { exact: true }).click();
@@ -53,7 +55,7 @@ test("survives corrupt list storage and unknown entries", async ({ page }) => {
     localStorage.setItem("ripasso_lists_v1", "{broken");
   });
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("Je hebt nog geen lijsten.")).toBeVisible();
   await expect(page.getByRole("alert")).toContainText("opslag werkt niet");
 
@@ -67,9 +69,9 @@ test("survives corrupt list storage and unknown entries", async ({ page }) => {
     ),
   );
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("1 werkwoord · 0 woorden")).toBeVisible();
-  await page.getByRole("button", { name: "Menu" }).click();
+  await navigate(page, "Oefenen");
   await page.getByLabel("Oefenen uit").selectOption({ label: "Oud" });
   await page.getByRole("button", { name: "Start sessie" }).click();
   await expect(page.getByText(/^1 \/ 15$/)).toBeVisible();
@@ -77,13 +79,13 @@ test("survives corrupt list storage and unknown entries", async ({ page }) => {
 
 test("an empty list shows the menu warning", async ({ page }) => {
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Leeg");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("0 werkwoorden · 0 woorden")).toBeVisible();
   await expectNoHorizontalOverflow(page);
-  await page.getByRole("button", { name: "Menu" }).click();
+  await navigate(page, "Oefenen");
   await page.getByLabel("Oefenen uit").selectOption({ label: "Leeg" });
   await page.getByRole("button", { name: "Start sessie" }).click();
   await expect(page.getByText(/Geen kaarten met deze keuzes/)).toBeVisible();

@@ -1,4 +1,5 @@
 import { expect, test } from "playwright/test";
+import { navigate } from "./nav";
 
 async function openApp(page: import("playwright/test").Page) {
   await page.goto("/");
@@ -7,7 +8,7 @@ async function openApp(page: import("playwright/test").Page) {
 
 test("creates a custom word, adds it to a list, and practises it", async ({ page }) => {
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Dieren");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
 
@@ -25,7 +26,8 @@ test("creates a custom word, adds it to a list, and practises it", async ({ page
   await expect(current.getByRole("listitem")).toHaveCount(1);
   await expect(current.getByText("eigen")).toBeVisible();
 
-  await page.reload();
+  // A fresh page load: the list must come back from storage.
+  await page.goto("/");
   await expect(page.locator('[data-ready="true"]')).toBeVisible();
   await page.getByLabel("Oefenen uit").selectOption({ label: "Dieren" });
   await page.getByRole("button", { name: "Start sessie" }).click();
@@ -37,8 +39,8 @@ test("creates a custom word, adds it to a list, and practises it", async ({ page
 
 test("edits and deletes a custom word without breaking lists", async ({ page }) => {
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
-  await page.getByRole("button", { name: "Mijn woorden" }).click();
+  await navigate(page, "Lijsten");
+  await navigate(page, "Woorden");
   await page.getByRole("button", { name: "Nieuw woord" }).click();
   await page.getByLabel("Italiaans").fill("vita");
   await page.getByLabel("Nederlands").fill("woning");
@@ -56,20 +58,20 @@ test("edits and deletes a custom word without breaking lists", async ({ page }) 
   // Shared entries have no edit controls: only own entries are listed here.
   await expect(mine.getByRole("listitem")).toHaveCount(1);
 
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Huis");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
   await page.getByLabel("Toevoegen").fill("casetta");
   await page.getByRole("list", { name: "Zoekresultaten" }).getByRole("button", { name: "Toevoegen" }).click();
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
 
   page.once("dialog", (dialog) => dialog.accept());
-  await page.getByRole("button", { name: "Mijn woorden" }).click();
+  await navigate(page, "Woorden");
   await mine.getByRole("button", { name: "Verwijderen" }).click();
   await expect(page.getByText("Je hebt nog geen eigen woorden of werkwoorden.")).toBeVisible();
 
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("0 werkwoorden · 0 woorden")).toBeVisible();
   await page.getByRole("button", { name: "Bewerken" }).click();
   await expect(page.getByRole("heading", { name: "Lijst bewerken" })).toBeVisible();

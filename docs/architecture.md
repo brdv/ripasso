@@ -64,7 +64,8 @@ them as written.
 | Area | Decision |
 | ---- | -------- |
 | List selector | A "Oefenen uit" select at the top of the menu: "Hele dataset" plus one option per list. Not persisted; defaults to "Hele dataset". **revisit** |
-| List management | A separate "lists" view (overview) and "list-editor" view, reached from a "Lijsten beheren" button in the menu. Views stay in-page state like the existing ones, no new routes. |
+| Navigation | Every screen is a SvelteKit route in the `(app)` group: `/` (session settings), `/sessie`, `/lijsten`, `/lijsten/[id]`, `/woorden`, `/woorden/nieuw?soort=woord\|werkwoord[&lijst=<id>]`, `/woorden/[id]/bewerken`. A top navbar links Oefenen, Lijsten, and Woorden. Shared state lives in one `AppState` created by the `(app)` layout; entering the group again (after login or logout) creates a fresh one. |
+| Practice sessions | A session lives in memory in `AppState` and is shown at `/sessie`, which hides the navbar and has a "Stoppen" button. Reloading `/sessie` or opening it without a session goes back to `/`. |
 | Menu filters on lists | Werkwoorden/Woorden checkboxes and tense toggles still apply to list sessions. An empty result shows the existing menu warning. |
 | Empty lists | Allowed. Starting one shows the menu warning. |
 | Local storage keys | `ripasso_lists_v1`, `ripasso_entries_v1`, `ripasso_sync_v1`. Progress stays in `ripasso_progress_v2`. |

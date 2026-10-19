@@ -9,11 +9,15 @@ users store them on the server.
 
 - Practise verb conjugations and vocabulary in both directions, with a simple Leitner-box review
   or a free session, graded directly or afterwards "on paper".
-- **Practice lists.** "Lijsten beheren" in the menu opens an overview where you create, rename,
+- **Navigation.** A navbar at the top links to "Oefenen" (`/`, the session settings), "Lijsten"
+  (`/lijsten`), and "Woorden" (`/woorden`), with login or logout on the right. Every screen has
+  its own URL, so reloading and the browser's back button work. A running session (`/sessie`)
+  hides the navbar and has a "Stoppen" button; it lives in memory only, so a reload ends it.
+- **Practice lists.** "Lijsten" opens an overview where you create, rename,
   and delete lists and add or remove words and verbs through a search box. The "Oefenen uit"
   select in the menu picks the whole dataset or one list; the menu's content and tense filters
   still apply. Lists are stored in the browser (`ripasso_lists_v1`).
-- **Own words.** "Mijn woorden" (from the lists overview) and "Nieuw woord" (in the list editor)
+- **Own words.** "Woorden" in the navbar and "Nieuw woord" (in the list editor)
   let you add your own words with word type and, for nouns, article, gender, and number. They
   behave like built-in words, are marked "eigen" in the list editor, and are stored in the
   browser (`ripasso_entries_v1`). Built-in words cannot be edited.
@@ -47,8 +51,9 @@ users store them on the server.
   server implementations for logged-in users, plus the one-time guest import.
 - `src/lib/server/`: D1 schema and mapping, server repositories, Better Auth, and input
   validation. API routes are under `src/routes/api/`.
-- `src/lib/views/` and `src/lib/components/`: the UI; app state and view switching live in
-  `src/routes/+page.svelte`. `/inloggen`, `/account-aanmaken`, and `/l/[slug]` are separate routes.
+- `src/lib/views/` and `src/lib/components/`: the UI. The app's screens are routes under
+  `src/routes/(app)/`; their shared state is `AppState` in `src/lib/state/app.svelte.ts`.
+  `/inloggen`, `/account-aanmaken`, and `/l/[slug]` sit outside that group.
 - `seed/data.json`: the built-in deck, turned into `migrations/0001_seed.sql` by
   `scripts/seed.ts`.
 - `index.html` and `data.js` in the repository root are the original single-file app, kept for

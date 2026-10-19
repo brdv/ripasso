@@ -18,7 +18,8 @@
 
   function save(entry: StudyEntry) {
     app.saveEntry(entry, listId);
-    close();
+    if (listId) close();
+    else goto(resolve("/(app)/woorden/[id]", { id: encodeURIComponent(entry.id) }));
   }
 </script>
 

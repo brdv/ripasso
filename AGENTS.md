@@ -75,7 +75,7 @@ The same commands run in GitHub Actions on every PR and push to `main`
 - `src/lib/domain/` is pure TypeScript: no Svelte, no DOM, no `fetch`, no storage globals. Pass
   storage or clocks in as parameters (see `srs.ts`).
 - Views live in `src/lib/views/`, reusable pieces in `src/lib/components/`. Each screen is a route
-  under `src/routes/(app)/` (`/`, `/sessie`, `/lijsten`, `/lijsten/[id]`, `/woorden`, ...) that
+  under `src/routes/(app)/` (`/`, `/sessie`, `/lijsten`, `/lijsten/[id]`, `/woorden`, `/woorden/[id]`, ...) that
   renders a view. App-level state (entries, lists, progress, the running session) lives in
   `AppState` (`src/lib/state/app.svelte.ts`), created by `src/routes/(app)/+layout.svelte` and read
   with `getAppState()`. The navbar is in the root layout and hidden on `/sessie`.

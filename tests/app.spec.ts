@@ -70,7 +70,7 @@ test("navigates with the navbar, deep links, and the back button", async ({ page
   await expect(page.getByRole("heading", { name: "Lijsten" })).toBeVisible();
 
   await nav.getByRole("link", { name: "Woorden" }).click();
-  await expect(page.getByRole("heading", { name: "Mijn woorden en werkwoorden" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Woorden" })).toBeVisible();
 
   // A session hides the navbar; "Stoppen" returns to the practice settings.
   await nav.getByRole("link", { name: "Oefenen" }).click();

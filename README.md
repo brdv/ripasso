@@ -17,7 +17,11 @@ users store them on the server.
   and delete lists and add or remove words and verbs through a search box. The "Oefenen uit"
   select in the menu picks the whole dataset or one list; the menu's content and tense filters
   still apply. Lists are stored in the browser (`ripasso_lists_v1`).
-- **Own words.** "Woorden" in the navbar and "Nieuw woord" (in the list editor)
+- **Words.** "Woorden" (`/woorden`) lists every built-in and own word and verb, alphabetically,
+  with a search box and filters (Alles / Werkwoorden / Woorden, "Alleen eigen"). Each entry has
+  its own page (`/woorden/<id>`) with its translation, word type or verb details, the lists it is
+  in, and for verbs the full conjugation table. Own entries can be edited and deleted there.
+- **Own words.** "Nieuw woord" (on the Woorden page and in the list editor)
   let you add your own words with word type and, for nouns, article, gender, and number. They
   behave like built-in words, are marked "eigen" in the list editor, and are stored in the
   browser (`ripasso_entries_v1`). Built-in words cannot be edited.

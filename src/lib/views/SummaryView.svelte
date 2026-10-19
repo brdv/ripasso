@@ -22,7 +22,7 @@
   const boxes = $derived(boxDistribution(session.items, progress));
 </script>
 
-<main>
+<main class="page-narrow">
   <section class="card-pane summary">
     <div class="summary-score">{session.correct} / {total} goed</div>
     <div class="summary-sub">{percentage}% in deze sessie · {total} kaarten</div>

@@ -23,7 +23,7 @@
         </form>
       {:else}
         <a class="linkbtn" href={resolve("/inloggen")}>Inloggen</a>
-        <a class="linkbtn" href={resolve("/account-aanmaken")}>Account aanmaken</a>
+        <a class="btn btn-primary compact-button" href={resolve("/account-aanmaken")}>Account aanmaken</a>
       {/if}
     </div>
   </div>

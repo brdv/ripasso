@@ -19,7 +19,7 @@
   const wrongCount = $derived(session.items.length - goodCount);
 </script>
 
-<main>
+<main class="page-narrow">
   <ProgressHeader label={`Nakijken - ${session.items.length} kaarten`} {onBack} />
 
   <div class="card-pane">

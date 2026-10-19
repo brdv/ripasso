@@ -20,7 +20,7 @@
   const item = $derived(session.items[session.idx]);
 </script>
 
-<main>
+<main class="page-narrow">
   <ProgressHeader current={session.idx + 1} total={session.items.length} {onBack} />
   {#key item.card.id}
     <StudyCard

@@ -22,9 +22,8 @@ test("creates a custom word, adds it to a list, and practises it", async ({ page
   await page.getByLabel("Geslacht").selectOption("m");
   await page.getByRole("button", { name: "Opslaan" }).click();
 
-  const current = page.getByRole("list", { name: "In deze lijst" });
-  await expect(current.getByRole("listitem")).toHaveCount(1);
-  await expect(current.getByText("eigen")).toBeVisible();
+  await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
+  await expect(page.getByRole("listitem").filter({ hasText: "gattino" }).getByText("eigen")).toBeVisible();
 
   // A fresh page load: the list must come back from storage.
   await page.goto("/");
@@ -67,8 +66,9 @@ test("edits and deletes a custom word without breaking lists", async ({ page }) 
   await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Huis");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
-  await page.getByLabel("Toevoegen").fill("casetta");
-  await page.getByRole("list", { name: "Zoekresultaten" }).getByRole("button", { name: "Toevoegen" }).click();
+  await page.getByLabel("Zoeken").fill("casetta");
+  await page.getByRole("listitem").filter({ hasText: "casetta" }).getByRole("button", { name: "Toevoegen" }).click();
+  await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
   await navigate(page, "Lijsten");
   await expect(page.getByText("0 werkwoorden · 1 woord")).toBeVisible();
 

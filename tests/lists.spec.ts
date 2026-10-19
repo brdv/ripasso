@@ -22,14 +22,13 @@ test("creates a list with essere and practises only that list", async ({ page })
   await page.getByLabel("Nieuwe lijst").fill("Week 1");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
 
-  await page.getByLabel("Toevoegen").fill("ESSERE");
-  const results = page.getByRole("list", { name: "Zoekresultaten" });
-  await results.getByRole("listitem").filter({ hasText: "essere" }).getByRole("button", { name: "Toevoegen" }).click();
+  await page.getByLabel("Zoeken").fill("ESSERE");
+  const essere = page.getByRole("listitem").filter({ hasText: /^essere/ });
+  await essere.getByRole("button", { name: "Toevoegen" }).click();
 
-  const current = page.getByRole("list", { name: "In deze lijst" });
-  await expect(current.getByRole("listitem")).toHaveCount(1);
-  await expect(results.getByRole("listitem").filter({ hasText: /^essere/ })).toHaveCount(0);
-  await expect(page.getByText("In deze lijst · 1 werkwoord · 0 woorden")).toBeVisible();
+  await expect(page.getByText("1 werkwoord · 0 woorden")).toBeVisible();
+  await expect(essere).toHaveCount(1);
+  await expect(essere.getByRole("button", { name: "Toevoegen" })).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
 
   // A fresh page load: the list must come back from storage.
@@ -89,4 +88,53 @@ test("an empty list shows the menu warning", async ({ page }) => {
   await page.getByLabel("Oefenen uit").selectOption({ label: "Leeg" });
   await page.getByRole("button", { name: "Start sessie" }).click();
   await expect(page.getByText(/Geen kaarten met deze keuzes/)).toBeVisible();
+});
+
+test("edits an own word from the list editor and toggles entries in place", async ({ page }, testInfo) => {
+  await openApp(page);
+  await navigate(page, "Lijsten");
+  await page.getByLabel("Nieuwe lijst").fill("Keuken");
+  await page.getByRole("button", { name: "Nieuwe lijst" }).click();
+  await page.waitForURL(/\/lijsten\/[\w-]+$/);
+  const editorUrl = page.url();
+
+  await page.getByRole("button", { name: "Nieuw woord" }).click();
+  await page.getByLabel("Italiaans").fill("pentola");
+  await page.getByLabel("Nederlands").fill("de pan");
+  await page.getByRole("button", { name: "Opslaan" }).click();
+  await expect(page).toHaveURL(editorUrl);
+
+  // Own entries in the editor link straight to their edit form, which returns to the editor.
+  const pentola = page.getByRole("listitem").filter({ hasText: /^pentola/ });
+  await pentola.getByRole("link", { name: "Bewerken" }).click();
+  await page.getByLabel("Nederlands").fill("de kookpan");
+  await page.getByRole("button", { name: "Opslaan" }).click();
+  await expect(page).toHaveURL(editorUrl);
+  await expect(pentola).toContainText("de kookpan");
+
+  // The search and the Werkwoorden filter apply to everything shown.
+  await page.getByLabel("Zoeken").fill("pan");
+  await page.getByText("Werkwoorden", { exact: true }).click();
+  await expect(pentola).toHaveCount(0);
+  await page.getByText("Alles", { exact: true }).click();
+  await page.getByLabel("Zoeken").fill("");
+
+  if (testInfo.project.name === "mobile") {
+    // One list: rows toggle in place, and a chip narrows it to the list's entries.
+    await expect(pentola.getByRole("button", { name: "✓ In lijst" })).toHaveAttribute("aria-pressed", "true");
+    await page.getByText("In deze lijst (1)").click();
+    await expect(page.getByRole("list", { name: "Woorden" }).getByRole("listitem")).toHaveCount(1);
+    await pentola.getByRole("button", { name: "✓ In lijst" }).click();
+    await expect(page.getByText("Nog leeg. Voeg woorden en werkwoorden toe.")).toBeVisible();
+    await page.getByText("In deze lijst (0)").click();
+    await expect(pentola.getByRole("button", { name: "Toevoegen" })).toHaveAttribute("aria-pressed", "false");
+  } else {
+    // Two columns: available entries on the left, the list on the right.
+    const current = page.getByRole("list", { name: "In deze lijst" });
+    await expect(current.getByRole("listitem")).toHaveCount(1);
+    await current.getByRole("button", { name: "Verwijderen" }).click();
+    await expect(page.getByRole("list", { name: "Beschikbaar" }).getByText("pentola")).toBeVisible();
+  }
+  await expect(page.getByText("0 werkwoorden · 0 woorden")).toBeVisible();
+  await expectNoHorizontalOverflow(page);
 });

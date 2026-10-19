@@ -13,8 +13,12 @@ users store them on the server.
   (`/lijsten`), and "Woorden" (`/woorden`), with login or logout on the right. Every screen has
   its own URL, so reloading and the browser's back button work. A running session (`/sessie`)
   hides the navbar and has a "Stoppen" button; it lives in memory only, so a reload ends it.
-- **Practice lists.** "Lijsten" opens an overview where you create, rename,
-  and delete lists and add or remove words and verbs through a search box. The "Oefenen uit"
+- **Practice lists.** "Lijsten" opens an overview where you create, rename, and delete lists.
+  The list editor has one search box and filters (Alles / Werkwoorden / Woorden, "Alleen eigen")
+  for everything it shows. On wide screens it shows "Beschikbaar" and "In deze lijst" side by
+  side; on phones it shows one list where each row toggles between "Toevoegen" and "✓ In lijst",
+  with an "In deze lijst (n)" chip to show only the list. Own entries have a "Bewerken" link
+  that returns to the editor. The "Oefenen uit"
   select in the menu picks the whole dataset or one list; the menu's content and tense filters
   still apply. Lists are stored in the browser (`ripasso_lists_v1`).
 - **Words.** "Woorden" (`/woorden`) lists every built-in and own word and verb, alphabetically,

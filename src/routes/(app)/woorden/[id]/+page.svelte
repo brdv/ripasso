@@ -25,6 +25,7 @@
     {entry}
     own={app.ownIds.has(entry.id)}
     {lists}
+    fromList={page.url.searchParams.get("lijst") ?? undefined}
     onDelete={remove}
   />
 {:else if app.ready}

@@ -1,11 +1,13 @@
 <script lang="ts">
   import type { EntryFilter } from "$lib/domain/search";
+  import type { Snippet } from "svelte";
 
   let {
     filter = $bindable(),
     id = "entry-search",
     label = "Zoeken",
-  }: { filter: EntryFilter; id?: string; label?: string } = $props();
+    children,
+  }: { filter: EntryFilter; id?: string; label?: string; children?: Snippet } = $props();
 </script>
 
 <div class="entry-filters">
@@ -35,5 +37,6 @@
       <input type="checkbox" bind:checked={filter.ownOnly} />
       <span>Alleen eigen</span>
     </label>
+    {@render children?.()}
   </div>
 </div>

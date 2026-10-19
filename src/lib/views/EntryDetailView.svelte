@@ -17,6 +17,7 @@
     entry,
     own,
     lists,
+    fromList,
     onDelete,
   }: {
     entry: StudyEntry;
@@ -24,6 +25,8 @@
     own: boolean;
     /** The user's lists that contain this entry. */
     lists: PracticeList[];
+    /** Opened from this list's editor: "Terug" and editing return there. */
+    fromList?: string;
     onDelete: () => void;
   } = $props();
 
@@ -54,7 +57,9 @@
 
 <main>
   <div class="topbar">
-    <a class="btn btn-ghost compact-button" href={resolve("/woorden")}>Terug</a>
+    <a class="btn btn-ghost compact-button" href={fromList ? resolve("/(app)/lijsten/[id]", { id: fromList }) : resolve("/woorden")}
+      >Terug</a
+    >
     <h1 class="view-title lang-it">{heading}</h1>
   </div>
 
@@ -82,7 +87,9 @@
       {#if own}
         <a
           class="btn btn-ghost compact-button"
-          href={resolve("/(app)/woorden/[id]/bewerken", { id: encodeURIComponent(entry.id) })}>Bewerken</a
+          href={resolve(
+            `/woorden/${encodeURIComponent(entry.id)}/bewerken${fromList ? `?lijst=${encodeURIComponent(fromList)}` : ""}`,
+          )}>Bewerken</a
         >
         <button class="linkbtn" type="button" onclick={remove}>Verwijderen</button>
       {:else}

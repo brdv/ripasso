@@ -30,8 +30,9 @@ test("shares a list by link, lets guests practise it, and lets others copy it", 
   await owner.getByLabel("Italiaans").fill("condiviso");
   await owner.getByLabel("Nederlands").fill("gedeeld");
   await owner.getByRole("button", { name: "Opslaan" }).click();
-  await owner.getByLabel("Toevoegen").fill("essere");
-  await owner.getByRole("list", { name: "Zoekresultaten" }).getByRole("button", { name: "Toevoegen" }).click();
+  await owner.getByLabel("Zoeken").fill("essere");
+  await owner.getByRole("listitem").filter({ hasText: /^essere/ }).getByRole("button", { name: "Toevoegen" }).click();
+  await expect(owner.getByText("1 werkwoord · 1 woord")).toBeVisible();
   await navigate(owner, "Lijsten");
   await owner.getByRole("button", { name: "Deel lijst" }).click();
   const link = owner.getByLabel("Link naar Deelbaar");

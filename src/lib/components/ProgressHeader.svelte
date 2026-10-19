@@ -15,7 +15,7 @@
 </script>
 
 <div class="topbar">
-  <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Menu</button>
+  <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Stoppen</button>
   <div class="progress">
     {#if current !== undefined && total !== undefined}
       <div class="progress-track" aria-hidden="true">

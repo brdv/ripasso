@@ -33,7 +33,6 @@
 <div class="wrap" data-ready={ready}>
   <main>
     <div class="topbar">
-      <a class="btn btn-ghost compact-button" href={resolve("/")}>Ripasso</a>
       <h1 class="view-title">Gedeelde lijst</h1>
     </div>
 

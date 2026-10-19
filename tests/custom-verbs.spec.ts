@@ -1,4 +1,5 @@
 import { expect, test } from "playwright/test";
+import { navigate } from "./nav";
 
 async function openApp(page: import("playwright/test").Page) {
   await page.goto("/");
@@ -7,7 +8,7 @@ async function openApp(page: import("playwright/test").Page) {
 
 test("creates a verb with one tense and practises only that tense", async ({ page }) => {
   await openApp(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Eigen ww");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
   await page.getByRole("button", { name: "Nieuw werkwoord" }).click();
@@ -34,8 +35,7 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
   await page.getByRole("button", { name: "Opslaan" }).click();
   await expect(page.getByText("In deze lijst · 1 werkwoord · 0 woorden")).toBeVisible();
 
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
-  await page.getByRole("button", { name: "Menu" }).click();
+  await navigate(page, "Oefenen");
   await page.getByLabel("Oefenen uit").selectOption({ label: "Eigen ww" });
   await page.getByText("Achteraf op papier", { exact: true }).click();
   await page.getByRole("button", { name: "Start sessie" }).click();
@@ -44,7 +44,7 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
   await expect(page.getByText("Nakijken - 2 kaarten")).toBeVisible();
   await expect(page.locator(".plrow").filter({ hasText: "presente" })).toHaveCount(2);
 
-  await page.getByRole("button", { name: "Menu" }).click();
+  await page.getByRole("button", { name: "Stoppen" }).click();
   await page.getByText("presente", { exact: true }).click();
   await page.getByRole("button", { name: "Start sessie" }).click();
   await expect(page.getByText(/Geen kaarten met deze keuzes/)).toBeVisible();

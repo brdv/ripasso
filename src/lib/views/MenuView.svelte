@@ -6,20 +6,20 @@
     menu = $bindable(),
     selectedListId = $bindable(""),
     lists = [],
+    summary = "",
     warning = "",
     resetNote = "",
     onStart,
     onReset,
-    onManageLists,
   }: {
     menu: MenuState;
     selectedListId?: string;
     lists?: PracticeList[];
+    summary?: string;
     warning?: string;
     resetNote?: string;
     onStart: () => void;
     onReset: () => void;
-    onManageLists: () => void;
   } = $props();
 </script>
 
@@ -27,17 +27,13 @@
   <div class="card-pane">
     <div class="field">
       <label class="label" for="practice-source">Oefenen uit</label>
-      <div class="source-row">
-        <select id="practice-source" class="text-input" bind:value={selectedListId}>
-          <option value="">Hele dataset</option>
-          {#each lists as list (list.id)}
-            <option value={list.id}>{list.name}</option>
-          {/each}
-        </select>
-        <button class="btn btn-ghost compact-button" type="button" onclick={onManageLists}>
-          Lijsten beheren
-        </button>
-      </div>
+      <select id="practice-source" class="text-input" bind:value={selectedListId}>
+        <option value="">Hele dataset</option>
+        {#each lists as list (list.id)}
+          <option value={list.id}>{list.name}</option>
+        {/each}
+      </select>
+      <div class="data-summary">Hele dataset: {summary}</div>
     </div>
 
     <div class="field">

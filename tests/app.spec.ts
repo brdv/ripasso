@@ -50,3 +50,37 @@ test("renders the menu without horizontal overflow", async ({ page }, testInfo) 
   expect(overflowingElements).toEqual([]);
   await page.screenshot({ path: testInfo.outputPath("menu.png"), fullPage: true });
 });
+
+test("navigates with the navbar, deep links, and the back button", async ({ page }) => {
+  await openApp(page);
+  const nav = page.getByRole("navigation", { name: "Hoofdmenu" });
+  await expect(nav.getByRole("link", { name: "Oefenen" })).toHaveAttribute("aria-current", "page");
+
+  await nav.getByRole("link", { name: "Lijsten" }).click();
+  await expect(page).toHaveURL(/\/lijsten$/);
+  await page.getByLabel("Nieuwe lijst").fill("Link");
+  await page.getByRole("button", { name: "Nieuwe lijst" }).click();
+  await expect(page).toHaveURL(/\/lijsten\/[\w-]+$/);
+
+  // The list editor survives a reload and the browser's back button returns to the overview.
+  await page.reload();
+  await expect(page.locator('[data-ready="true"]')).toBeVisible();
+  await expect(page.getByLabel("Naam")).toHaveValue("Link");
+  await page.goBack();
+  await expect(page.getByRole("heading", { name: "Lijsten" })).toBeVisible();
+
+  await nav.getByRole("link", { name: "Woorden" }).click();
+  await expect(page.getByRole("heading", { name: "Mijn woorden en werkwoorden" })).toBeVisible();
+
+  // A session hides the navbar; "Stoppen" returns to the practice settings.
+  await nav.getByRole("link", { name: "Oefenen" }).click();
+  await page.getByRole("button", { name: "Start sessie" }).click();
+  await expect(page).toHaveURL(/\/sessie$/);
+  await expect(nav).toHaveCount(0);
+  await page.getByRole("button", { name: "Stoppen" }).click();
+  await expect(page.getByRole("button", { name: "Start sessie" })).toBeVisible();
+
+  // Without a running session, /sessie goes back to the start.
+  await page.goto("/sessie");
+  await expect(page.getByRole("button", { name: "Start sessie" })).toBeVisible();
+});

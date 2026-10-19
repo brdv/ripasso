@@ -6,7 +6,6 @@
     entries,
     storageOk = true,
     storageWarning = "",
-    onBack,
     onCreateWord,
     onCreateVerb,
     onEdit,
@@ -15,7 +14,6 @@
     entries: StudyEntry[];
     storageOk?: boolean;
     storageWarning?: string;
-    onBack: () => void;
     onCreateWord: () => void;
     onCreateVerb: () => void;
     onEdit: (id: EntryId) => void;
@@ -32,7 +30,6 @@
 
 <main>
   <div class="topbar">
-    <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Lijsten</button>
     <h1 class="view-title">Mijn woorden en werkwoorden</h1>
   </div>
 

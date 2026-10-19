@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "playwright/test";
+import { navigate } from "./nav";
 
 async function waitReady(page: Page) {
   await expect(page.locator('[data-ready="true"]')).toBeVisible();
@@ -10,6 +11,7 @@ async function register(page: Page, email: string) {
   await page.getByLabel("E-mailadres").fill(email);
   await page.getByLabel("Wachtwoord").fill("geheim-wachtwoord");
   await page.getByRole("button", { name: "Account aanmaken" }).click();
+  await page.waitForURL("/");
   await expect(page.getByText(email)).toBeVisible();
   await waitReady(page);
 }
@@ -20,15 +22,14 @@ test("moves guest progress, lists, and words into a new account once", async ({ 
   // As a guest: a custom word in a list, and progress on it.
   await page.goto("/");
   await waitReady(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Gastdieren");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
   await page.getByRole("button", { name: "Nieuw woord" }).click();
   await page.getByLabel("Italiaans").fill("gattone");
   await page.getByLabel("Nederlands").fill("de kater");
   await page.getByRole("button", { name: "Opslaan" }).click();
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
-  await page.getByRole("button", { name: "Menu" }).click();
+  await navigate(page, "Oefenen");
   await page.getByLabel("Oefenen uit").selectOption({ label: "Gastdieren" });
   await page.getByRole("button", { name: "Start sessie" }).click();
   await page.getByRole("button", { name: "Toon antwoord" }).click();
@@ -40,17 +41,16 @@ test("moves guest progress, lists, and words into a new account once", async ({ 
   const rows = (await progress.json()) as Record<string, { box: number }>;
   expect(Object.values(rows)).toEqual([expect.objectContaining({ box: 2 })]);
 
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("Gastdieren")).toBeVisible();
-  await page.getByRole("button", { name: "Mijn woorden" }).click();
+  await navigate(page, "Woorden");
   await expect(page.getByText("gattone")).toBeVisible();
 
   // After logging out, new guest data is not imported on the next login in this browser.
-  await page.getByRole("button", { name: "Lijsten", exact: true }).click();
-  await page.getByRole("button", { name: "Menu" }).click();
+  await navigate(page, "Oefenen");
   await page.getByRole("button", { name: "Uitloggen" }).click();
   await waitReady(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await page.getByLabel("Nieuwe lijst").fill("Later");
   await page.getByRole("button", { name: "Nieuwe lijst" }).click();
   await expect(page.getByRole("heading", { name: "Lijst bewerken" })).toBeVisible();
@@ -60,14 +60,15 @@ test("moves guest progress, lists, and words into a new account once", async ({ 
   await page.getByLabel("E-mailadres").fill(email);
   await page.getByLabel("Wachtwoord").fill("geheim-wachtwoord");
   await page.getByRole("button", { name: "Inloggen" }).click();
+  await page.waitForURL("/");
   await expect(page.getByText(email)).toBeVisible();
   await waitReady(page);
-  await page.getByRole("button", { name: "Lijsten beheren" }).click();
+  await navigate(page, "Lijsten");
   await expect(page.getByText("Gastdieren")).toBeVisible();
   await expect(page.getByText("Later")).toHaveCount(0);
 
   // Clearing progress while logged in clears the server copy.
-  await page.getByRole("button", { name: "Menu" }).click();
+  await navigate(page, "Oefenen");
   page.once("dialog", (dialog) => dialog.accept());
   await page.getByRole("button", { name: "Voortgang wissen" }).click();
   await expect(page.getByText("Voortgang gewist.")).toBeVisible();

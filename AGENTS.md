@@ -74,8 +74,11 @@ The same commands run in GitHub Actions on every PR and push to `main`
   commits, and docs are English.
 - `src/lib/domain/` is pure TypeScript: no Svelte, no DOM, no `fetch`, no storage globals. Pass
   storage or clocks in as parameters (see `srs.ts`).
-- Views live in `src/lib/views/`, reusable pieces in `src/lib/components/`. App-level state and
-  view switching live in `src/routes/+page.svelte`.
+- Views live in `src/lib/views/`, reusable pieces in `src/lib/components/`. Each screen is a route
+  under `src/routes/(app)/` (`/`, `/sessie`, `/lijsten`, `/lijsten/[id]`, `/woorden`, ...) that
+  renders a view. App-level state (entries, lists, progress, the running session) lives in
+  `AppState` (`src/lib/state/app.svelte.ts`), created by `src/routes/(app)/+layout.svelte` and read
+  with `getAppState()`. The navbar is in the root layout and hidden on `/sessie`.
 - Reuse the existing CSS classes in `src/app.css` (`card-pane`, `field`, `seg-group`, `chk`,
   `btn`, `btn-primary`, `linkbtn`, ...) before adding new styles. Every screen must work at
   390 px wide with no horizontal page scroll.
@@ -97,7 +100,9 @@ The same commands run in GitHub Actions on every PR and push to `main`
 - Svelte components: `*.svelte.spec.ts` (Vitest browser mode with Chromium).
 - End-to-end: `tests/*.spec.ts`. Playwright's web server runs `bun run db:migrate:local` before
   `bun run dev`, and the dev server exposes the local D1 as `platform.env.DB`. Always wait for `[data-ready="true"]` before interacting (see
-  `openApp` in `tests/app.spec.ts`). Tests run on the `desktop` and `mobile` projects.
+  `openApp` in `tests/app.spec.ts`); the login pages are marked ready too, so after logging in
+  wait for the redirect (`page.waitForURL("/")`) first. Move between pages with `navigate()`
+  from `tests/nav.ts`, which clicks the navbar. Tests run on the `desktop` and `mobile` projects.
 - New behaviour needs tests. Prefer a few meaningful tests over many shallow ones.
 
 ## Cloud sessions

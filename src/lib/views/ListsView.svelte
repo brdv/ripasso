@@ -7,11 +7,9 @@
     entries,
     storageOk = true,
     storageWarning = "",
-    onBack,
     onCreate,
     onEdit,
     onDelete,
-    onMyEntries,
     canShare = false,
     onShare,
     onUnshare,
@@ -20,11 +18,9 @@
     entries: StudyEntry[];
     storageOk?: boolean;
     storageWarning?: string;
-    onBack: () => void;
     onCreate: (name: string) => string | void;
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
-    onMyEntries: () => void;
     canShare?: boolean;
     onShare?: (id: string) => void;
     onUnshare?: (id: string) => void;
@@ -67,9 +63,7 @@
 
 <main>
   <div class="topbar">
-    <button class="btn btn-ghost compact-button" type="button" onclick={onBack}>Menu</button>
     <h1 class="view-title">Lijsten</h1>
-    <button class="btn btn-ghost compact-button" type="button" onclick={onMyEntries}>Mijn woorden</button>
   </div>
 
   <div class="card-pane">

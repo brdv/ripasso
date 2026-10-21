@@ -4,10 +4,13 @@ import type { Person, Tense } from "./types";
 export type ConjugationClass = "are" | "ere" | "ire";
 export type Auxiliary = "avere" | "essere";
 
-/** A piece of a conjugated form; `ending` marks the part the rule adds, for highlighting. */
+/**
+ * A piece of a conjugated form, marked for highlighting: the `ending` the rule adds, the -isc-
+ * `infix`, the `auxiliary` of a compound form, or an `irregular` part that follows no rule.
+ */
 export interface FormSegment {
   text: string;
-  ending?: boolean;
+  kind?: "ending" | "infix" | "auxiliary" | "irregular";
 }
 
 /** Where a verb leaves the rules. Anything not listed here follows them. */
@@ -120,14 +123,23 @@ function attach(stem: string, ending: string, cls: ConjugationClass): string {
 }
 
 function participleSegments(participle: string, auxiliary: Auxiliary, person: Person, regular: boolean): FormSegment[] {
-  const stem = participle.slice(0, -1);
   if (auxiliary === "avere") {
-    return regular ? [{ text: participle.slice(0, -3) }, { text: participle.slice(-3), ending: true }] : [{ text: participle }];
+    return regular
+      ? [{ text: participle.slice(0, -3) }, { text: participle.slice(-3), kind: "ending" }]
+      : [{ text: participle, kind: "irregular" }];
   }
   // With essere the participle agrees with the subject: andato/andata, andati/andate.
+  const stem = participle.slice(0, -1);
+  const stemKind = regular ? undefined : "irregular";
   const plural = PERSONS.indexOf(person) >= 3;
   const [masculine, feminine] = plural ? ["i", "e"] : ["o", "a"];
-  return [{ text: stem }, { text: masculine, ending: true }, { text: `/${stem}` }, { text: feminine, ending: true }];
+  return [
+    { text: stem, kind: stemKind },
+    { text: masculine, kind: "ending" },
+    { text: "/" },
+    { text: stem, kind: stemKind },
+    { text: feminine, kind: "ending" },
+  ];
 }
 
 /**
@@ -140,31 +152,46 @@ export function conjugate(lemma: string, tense: Tense, person: Person, options: 
   if (!cls) return null;
   const { irregular = {}, auxiliary = "avere", isc = false } = options;
   const override = irregular.forms?.[tense]?.[person];
-  if (override) return [{ text: override }];
+  if (override) return [{ text: override, kind: "irregular" }];
 
   const index = PERSONS.indexOf(person);
   const stem = infinitive.slice(0, -3);
   switch (tense) {
     case "presente": {
       const ending = PRESENT_ENDINGS[isc && cls === "ire" ? "isc" : cls][index];
-      return [{ text: attach(stem, ending, cls) }, { text: ending, ending: true }];
+      const base: FormSegment = { text: attach(stem, ending, cls) };
+      return ending.startsWith("isc")
+        ? [base, { text: "isc", kind: "infix" }, { text: ending.slice(3), kind: "ending" }]
+        : [base, { text: ending, kind: "ending" }];
     }
-    case "imperfetto":
-      return [{ text: irregular.imperfettoStem ?? infinitive.slice(0, -2) }, { text: IMPERFETTO_ENDINGS[index], ending: true }];
+    case "imperfetto": {
+      const imperfettoStem: FormSegment = irregular.imperfettoStem
+        ? { text: irregular.imperfettoStem, kind: "irregular" }
+        : { text: infinitive.slice(0, -2) };
+      return [imperfettoStem, { text: IMPERFETTO_ENDINGS[index], kind: "ending" }];
+    }
     case "futuro_semplice":
     case "condizionale_presente": {
-      const futureStem = irregular.futureStem ?? attach(stem, FUTURE_VOWEL[cls], cls) + FUTURE_VOWEL[cls];
+      const futureStem: FormSegment = irregular.futureStem
+        ? { text: irregular.futureStem, kind: "irregular" }
+        : { text: attach(stem, FUTURE_VOWEL[cls], cls) + FUTURE_VOWEL[cls] };
       const endings = tense === "futuro_semplice" ? FUTURO_ENDINGS : CONDIZIONALE_ENDINGS;
-      return [{ text: futureStem }, { text: endings[index], ending: true }];
+      return [futureStem, { text: endings[index], kind: "ending" }];
     }
     case "passato_prossimo": {
       const participle = irregular.participle ?? stem + PARTICIPLE_ENDINGS[cls];
       return [
-        { text: `${AUXILIARY_PRESENTE[auxiliary][index]} ` },
+        { text: `${AUXILIARY_PRESENTE[auxiliary][index]} `, kind: "auxiliary" },
         ...participleSegments(participle, auxiliary, person, !irregular.participle),
       ];
     }
   }
+}
+
+/** Shortens the agreement of an essere form for display: andato/andata becomes andato/a. */
+export function shortAgreement(segments: FormSegment[]): FormSegment[] {
+  const slash = segments.findIndex((segment) => segment.text === "/");
+  return slash === -1 ? segments : [...segments.slice(0, slash + 1), ...segments.slice(slash + 2)];
 }
 
 export function formText(segments: FormSegment[]): string {

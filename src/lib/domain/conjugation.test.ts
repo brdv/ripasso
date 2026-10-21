@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { conjugate, formText, IRREGULAR_VERBS, type Auxiliary } from "./conjugation";
+import { conjugate, formText, IRREGULAR_VERBS, shortAgreement, type Auxiliary } from "./conjugation";
 import { PERSONS, TENSES } from "./constants";
 import type { Deck, Person, Tense } from "./types";
 
@@ -76,14 +76,30 @@ describe("conjugation rules", () => {
   });
 
   it("marks the endings the rules add", () => {
-    expect(conjugate("parlare", "presente", "noi")).toEqual([{ text: "parl" }, { text: "iamo", ending: true }]);
-    expect(conjugate("andare", "passato_prossimo", "noi", { auxiliary: "essere" })).toEqual([
-      { text: "siamo " },
-      { text: "andat" },
-      { text: "i", ending: true },
-      { text: "/andat" },
-      { text: "e", ending: true },
+    expect(conjugate("parlare", "presente", "noi")).toEqual([{ text: "parl" }, { text: "iamo", kind: "ending" }]);
+    expect(conjugate("finire", "presente", "loro", { isc: true })).toEqual([
+      { text: "fin" },
+      { text: "isc", kind: "infix" },
+      { text: "ono", kind: "ending" },
     ]);
+    expect(conjugate("andare", "passato_prossimo", "noi", { auxiliary: "essere" })).toEqual([
+      { text: "siamo ", kind: "auxiliary" },
+      { text: "andat" },
+      { text: "i", kind: "ending" },
+      { text: "/" },
+      { text: "andat" },
+      { text: "e", kind: "ending" },
+    ]);
+    expect(conjugate("essere", "futuro_semplice", "io", { irregular: IRREGULAR_VERBS.essere })).toEqual([
+      { text: "sar", kind: "irregular" },
+      { text: "ò", kind: "ending" },
+    ]);
+  });
+
+  it("shortens the agreement of essere forms for display", () => {
+    const form = conjugate("arrivare", "passato_prossimo", "loro", { auxiliary: "essere" }) ?? [];
+    expect(formText(shortAgreement(form))).toBe("sono arrivati/e");
+    expect(formText(shortAgreement(conjugate("parlare", "passato_prossimo", "io") ?? []))).toBe("ho parlato");
   });
 
   it("does not conjugate infinitives outside the three groups", () => {

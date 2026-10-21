@@ -9,12 +9,13 @@ describe("TenseTheory", () => {
 
     await expect.element(page.getByRole("dialog")).not.toBeInTheDocument();
     await page.getByRole("button", { name: "Hoe vorm je deze tijd?" }).click();
-    await expect.element(page.getByRole("dialog", { name: "Hoe vorm je de futuro semplice?" })).toBeVisible();
+    await expect.element(page.getByRole("dialog", { name: "Futuro semplice" })).toBeVisible();
 
     await expect.element(page.getByRole("cell", { name: "parleremo" })).toBeVisible();
     await expect.element(page.getByRole("cell", { name: "dormiranno" })).toBeVisible();
     // The irregular stems come from the same rules the seed test checks.
-    await expect.element(page.getByText("sar-")).toBeVisible();
+    await expect.element(page.getByRole("cell", { name: "sar-" })).toBeVisible();
+    await expect.element(page.getByRole("cell", { name: "sarò" })).toBeVisible();
     await expect.element(page.getByText("tra un mese")).toBeVisible();
   });
 
@@ -23,6 +24,6 @@ describe("TenseTheory", () => {
     await page.getByRole("button", { name: "Hoe vorm je deze tijd?" }).click();
 
     await expect.element(page.getByRole("cell", { name: "abbiamo parlato" })).toBeVisible();
-    await expect.element(page.getByRole("cell", { name: "siamo arrivati/arrivate" })).toBeVisible();
+    await expect.element(page.getByRole("cell", { name: "siamo arrivati/e" })).toBeVisible();
   });
 });

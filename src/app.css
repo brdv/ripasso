@@ -565,27 +565,54 @@ textarea.text-input {
     align-items: baseline;
     gap: 8px;
 }
-.theory {
-    margin: 0 8px 8px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--surface);
-}
-.theory summary {
-    cursor: pointer;
-    padding: 8px 10px;
+.linkbtn.theory-open {
+    display: block;
+    margin: 0 12px 8px;
     font-size: 13px;
     color: var(--accent);
 }
+.theory {
+    width: min(680px, calc(100% - 12px));
+    max-height: calc(100dvh - 16px);
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+}
+.theory::backdrop {
+    background: rgb(34 32 25 / 0.45);
+}
+html:has(.theory[open]) {
+    overflow: hidden;
+}
+.theory-header {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+}
+.theory-title {
+    flex: 1;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 20px;
+    font-weight: normal;
+}
 .theory-body {
-    padding: 0 10px 10px;
+    padding: 12px 12px 16px;
     font-size: 14px;
 }
 .theory-body p {
     margin: 0 0 8px;
 }
-.theory-body .grid-scroll {
-    padding: 0 0 8px;
+.theory-scroll {
+    overflow-x: auto;
+    margin-bottom: 8px;
 }
 .theory-heading {
     font-size: 12px;
@@ -602,8 +629,10 @@ textarea.text-input {
 .theory-list li + li {
     margin-top: 4px;
 }
-.theory-table td {
-    padding: 2px 4px;
+/* Doubled class to win over the later .form-table cell padding. */
+.form-table.theory-table th,
+.form-table.theory-table td {
+    padding: 2px;
     white-space: nowrap;
 }
 .theory-ending {

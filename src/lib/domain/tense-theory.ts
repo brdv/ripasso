@@ -58,7 +58,7 @@ export const TENSE_THEORY: Record<Tense, TenseTheory> = {
       "Neem de presente van het hulpwerkwoord: avere (ho, hai, ha…) of essere (sono, sei, è…).",
       "Zet het voltooid deelwoord erachter: -are wordt -ato, -ere wordt -uto, -ire wordt -ito.",
     ],
-    models: [{ lemma: "parlare" }, { lemma: "credere" }, { lemma: "dormire" }, { lemma: "arrivare", auxiliary: "essere" }],
+    models: [{ lemma: "parlare" }, { lemma: "arrivare", auxiliary: "essere" }],
     notes: [
       "De meeste werkwoorden nemen avere.",
       "Essere hoort bij werkwoorden die een beweging naar een plek of een verandering van toestand uitdrukken (andare, venire, arrivare, partire, nascere, morire), bij essere en stare zelf, en bij wederkerende werkwoorden (mi sono alzato). Waar het Nederlands 'zijn' gebruikt (ik ben gegaan), is het in het Italiaans meestal ook essere, maar niet altijd.",

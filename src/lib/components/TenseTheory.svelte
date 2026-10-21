@@ -1,17 +1,29 @@
 <script lang="ts">
   import { conjugate } from "$lib/domain/conjugation";
-  import { PERSON_SHORT, PERSONS } from "$lib/domain/constants";
+  import { PERSON_SHORT, PERSONS, TENSE_LABEL } from "$lib/domain/constants";
   import { irregularExamples, TENSE_THEORY } from "$lib/domain/tense-theory";
   import type { Tense } from "$lib/domain/types";
 
   let { tense }: { tense: Tense } = $props();
 
+  let dialog: HTMLDialogElement;
   const theory = $derived(TENSE_THEORY[tense]);
   const irregulars = $derived(irregularExamples(theory.irregular));
+  const titleId = $derived(`theory-title-${tense}`);
+
+  function closeOnBackdrop(event: MouseEvent) {
+    // A click on the dialog element itself, not on its content, is a click on the backdrop.
+    if (event.target === dialog) dialog.close();
+  }
 </script>
 
-<details class="theory">
-  <summary>Hoe vorm je deze tijd?</summary>
+<button class="linkbtn theory-open" type="button" onclick={() => dialog.showModal()}>Hoe vorm je deze tijd?</button>
+
+<dialog bind:this={dialog} class="theory" aria-labelledby={titleId} onclick={closeOnBackdrop}>
+  <div class="theory-header">
+    <h2 id={titleId} class="theory-title">Hoe vorm je de {TENSE_LABEL[tense]}?</h2>
+    <button class="btn btn-ghost compact-button" type="button" onclick={() => dialog.close()}>Sluiten</button>
+  </div>
   <div class="theory-body">
     <p>{theory.use}</p>
     <p>{theory.dutch}</p>
@@ -23,7 +35,7 @@
       {/each}
     </ol>
 
-    <div class="grid-scroll">
+    <div class="theory-scroll">
       <table class="form-table theory-table">
         <thead>
           <tr>
@@ -78,4 +90,4 @@
       {/each}
     </dl>
   </div>
-</details>
+</dialog>

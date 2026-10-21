@@ -565,6 +565,56 @@ textarea.text-input {
     align-items: baseline;
     gap: 8px;
 }
+.theory {
+    margin: 0 8px 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+}
+.theory summary {
+    cursor: pointer;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--accent);
+}
+.theory-body {
+    padding: 0 10px 10px;
+    font-size: 14px;
+}
+.theory-body p {
+    margin: 0 0 8px;
+}
+.theory-body .grid-scroll {
+    padding: 0 0 8px;
+}
+.theory-heading {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 12px 0 6px;
+}
+.theory-list {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+.theory-list li + li {
+    margin-top: 4px;
+}
+.theory-table td {
+    padding: 2px 4px;
+    white-space: nowrap;
+}
+.theory-ending {
+    color: var(--accent);
+}
+.theory .hint-dl dt {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 14px;
+    color: var(--ink);
+}
 .grid-scroll {
     overflow-x: auto;
     padding: 0 8px 8px;

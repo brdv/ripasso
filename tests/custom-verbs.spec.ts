@@ -22,7 +22,10 @@ test("creates a verb with one tense and practises only that tense", async ({ pag
   await expect(page.getByText("Vul ook het Nederlands in.")).toBeVisible();
   await expect(page.getByText(/half ingevuld/)).toBeVisible();
 
-  // The grid fits at phone width; only its own container may scroll.
+  await page.getByText("Hoe vorm je deze tijd?").first().click();
+  await expect(page.getByRole("cell", { name: "finisco", exact: true })).toBeVisible();
+
+  // The grid and the theory fit at phone width; only their own containers may scroll.
   const overflowing = await page.evaluate(() =>
     [...document.querySelectorAll<HTMLElement>("body *")]
       .filter((element) => !element.closest(".grid-scroll"))

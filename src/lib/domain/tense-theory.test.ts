@@ -3,12 +3,21 @@ import { describe, expect, it } from "vitest";
 import { TENSES } from "./constants";
 import { irregularExamples, TENSE_THEORY } from "./tense-theory";
 
-const wiktionary = JSON.parse(readFileSync("src/lib/domain/conjugation.fixtures.json", "utf8")) as Record<string, unknown>;
+const wiktionary = JSON.parse(readFileSync("src/lib/domain/conjugation.fixtures.json", "utf8")) as Record<
+  string,
+  { auxiliary: string; isc: boolean }
+>;
 
 describe("tense theory", () => {
-  it("only shows model verbs whose generated forms are checked against Wiktionary", () => {
+  it("only shows model verbs conjugated exactly as checked against Wiktionary", () => {
     for (const tense of TENSES) {
-      for (const model of TENSE_THEORY[tense].models) expect(Object.keys(wiktionary)).toContain(model.lemma);
+      for (const model of TENSE_THEORY[tense].models) {
+        expect(wiktionary[model.lemma]).toEqual({
+          auxiliary: model.auxiliary ?? "avere",
+          isc: model.isc ?? false,
+          forms: expect.anything(),
+        });
+      }
     }
   });
 

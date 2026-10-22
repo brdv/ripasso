@@ -10,6 +10,8 @@
     --good-weak: #dcebe0;
     --bad: #9e4a3a;
     --bad-weak: #f0ded9;
+    --change: #8a5a14;
+    --change-weak: #f4e6cb;
     --radius: 12px;
     --serif: Georgia, "Iowan Old Style", "Times New Roman", serif;
     --sans:
@@ -564,6 +566,210 @@ textarea.text-input {
     justify-content: space-between;
     align-items: baseline;
     gap: 8px;
+}
+.linkbtn.theory-open {
+    display: block;
+    margin: 0 12px 8px;
+    font-size: 13px;
+    color: var(--accent);
+}
+.theory {
+    width: min(680px, calc(100% - 12px));
+    max-height: calc(100dvh - 16px);
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+}
+.theory::backdrop {
+    background: rgb(34 32 25 / 0.45);
+}
+html:has(.theory[open]) {
+    overflow: hidden;
+}
+.theory-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+}
+.theory-heading-group {
+    flex: 1;
+    min-width: 0;
+}
+.theory-title {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 24px;
+    line-height: 1.2;
+}
+.theory-tagline {
+    margin: 2px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+.theory-body {
+    padding: 14px 12px 20px;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.theory-body p {
+    margin: 0 0 10px;
+}
+.theory-section {
+    margin-top: 22px;
+}
+.theory-section-title {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 600;
+}
+.theory-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-size: 14px;
+    color: var(--muted);
+}
+.theory-legend strong {
+    color: var(--ink);
+}
+.theory-scroll {
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
+.theory-table,
+.theory-grid {
+    width: 100%;
+    border-collapse: collapse;
+}
+.theory-table th,
+.theory-table td,
+.theory-grid th,
+.theory-grid td {
+    padding: 5px 2px;
+    text-align: left;
+    white-space: nowrap;
+    font-weight: normal;
+}
+.theory-table thead th,
+.theory-grid thead th {
+    vertical-align: bottom;
+    border-bottom: 1px solid var(--line);
+}
+.theory-table thead .lang-it {
+    display: block;
+    font-size: 16px;
+}
+.theory-col-label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+}
+.theory-table tbody th,
+.theory-grid thead th {
+    font-size: 14px;
+    color: var(--muted);
+}
+.theory-table td {
+    font-size: 16px;
+}
+.theory-highlight td {
+    background: rgb(47 111 102 / 0.08);
+}
+/* When a table scrolls sideways on a phone, the person or verb column stays in view. */
+.theory-table tr > :first-child {
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+}
+.theory-grid tr > :first-child {
+    position: sticky;
+    left: 0;
+    background: var(--bg);
+}
+.theory-aux {
+    color: var(--muted);
+}
+.theory-chip {
+    border-radius: 3px;
+    padding: 0 1px;
+}
+.theory-chip-ending {
+    background: var(--accent-weak);
+    color: var(--accent);
+    font-weight: 600;
+}
+.theory-chip-change {
+    background: var(--change-weak);
+    color: var(--change);
+    font-weight: 600;
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
+}
+.theory-chip-irregular {
+    background: var(--bad-weak);
+    color: var(--bad);
+    font-weight: 600;
+    text-decoration: underline wavy;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+.theory-notes {
+    margin: 0;
+    padding-left: 20px;
+}
+.theory-notes li + li {
+    margin-top: 6px;
+}
+.theory-card {
+    overflow-x: auto;
+    margin-bottom: 10px;
+    padding: 6px 12px 8px;
+    border-radius: var(--radius);
+    background: var(--bg);
+}
+.theory-grid tbody th {
+    font-weight: 700;
+    padding-right: 12px;
+}
+.theory-grid th,
+.theory-grid td {
+    padding-right: 12px;
+}
+.theory-regular {
+    color: var(--muted);
+}
+@media (max-width: 479px) {
+    .theory-table th,
+    .theory-table td {
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+    .theory-table td {
+        font-size: 14px;
+    }
+    .theory-table thead .lang-it {
+        font-size: 15px;
+    }
+    .theory-col-label {
+        white-space: normal;
+    }
+}
+.theory-signals {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 24px;
+    margin: 0;
+}
+.theory-signals dd {
+    margin: 0;
 }
 .grid-scroll {
     overflow-x: auto;

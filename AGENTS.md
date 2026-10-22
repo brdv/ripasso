@@ -91,6 +91,9 @@ The same commands run in GitHub Actions on every PR and push to `main`
 ## Tests
 
 - Domain logic: `*.test.ts` next to the module (node environment).
+- `conjugation.test.ts` checks every verb form in `seed/data.json` against the conjugation rules.
+  When you add or change a seed verb, name its irregularities in `IRREGULAR_VERBS`
+  (`src/lib/domain/conjugation.ts`); do not loosen the test.
 - Server code: `src/lib/server/**/*.test.ts` (node environment). Tests that need a database call
   `createTestDatabase()` from `src/lib/server/testing/d1.ts`: it starts wrangler's platform proxy
   with a temporary persistence directory, applies every file in `migrations/`, and returns the

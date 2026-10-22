@@ -1,0 +1,465 @@
+{
+  "_meta": {
+    "source": "English Wiktionary conjugation tables (en.wiktionary.org, fetched 2026-10-21). Stress marks removed; the first variant kept where Wiktionary lists two. passato_prossimo is composed from Wiktionary's auxiliary and past participle."
+  },
+  "parlare": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "parlo",
+        "tu": "parli",
+        "lui_lei": "parla",
+        "noi": "parliamo",
+        "voi": "parlate",
+        "loro": "parlano"
+      },
+      "imperfetto": {
+        "io": "parlavo",
+        "tu": "parlavi",
+        "lui_lei": "parlava",
+        "noi": "parlavamo",
+        "voi": "parlavate",
+        "loro": "parlavano"
+      },
+      "futuro_semplice": {
+        "io": "parlerò",
+        "tu": "parlerai",
+        "lui_lei": "parlerà",
+        "noi": "parleremo",
+        "voi": "parlerete",
+        "loro": "parleranno"
+      },
+      "condizionale_presente": {
+        "io": "parlerei",
+        "tu": "parleresti",
+        "lui_lei": "parlerebbe",
+        "noi": "parleremmo",
+        "voi": "parlereste",
+        "loro": "parlerebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho parlato",
+        "tu": "hai parlato",
+        "lui_lei": "ha parlato",
+        "noi": "abbiamo parlato",
+        "voi": "avete parlato",
+        "loro": "hanno parlato"
+      }
+    },
+    "isc": false
+  },
+  "credere": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "credo",
+        "tu": "credi",
+        "lui_lei": "crede",
+        "noi": "crediamo",
+        "voi": "credete",
+        "loro": "credono"
+      },
+      "imperfetto": {
+        "io": "credevo",
+        "tu": "credevi",
+        "lui_lei": "credeva",
+        "noi": "credevamo",
+        "voi": "credevate",
+        "loro": "credevano"
+      },
+      "futuro_semplice": {
+        "io": "crederò",
+        "tu": "crederai",
+        "lui_lei": "crederà",
+        "noi": "crederemo",
+        "voi": "crederete",
+        "loro": "crederanno"
+      },
+      "condizionale_presente": {
+        "io": "crederei",
+        "tu": "crederesti",
+        "lui_lei": "crederebbe",
+        "noi": "crederemmo",
+        "voi": "credereste",
+        "loro": "crederebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho creduto",
+        "tu": "hai creduto",
+        "lui_lei": "ha creduto",
+        "noi": "abbiamo creduto",
+        "voi": "avete creduto",
+        "loro": "hanno creduto"
+      }
+    },
+    "isc": false
+  },
+  "dormire": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "dormo",
+        "tu": "dormi",
+        "lui_lei": "dorme",
+        "noi": "dormiamo",
+        "voi": "dormite",
+        "loro": "dormono"
+      },
+      "imperfetto": {
+        "io": "dormivo",
+        "tu": "dormivi",
+        "lui_lei": "dormiva",
+        "noi": "dormivamo",
+        "voi": "dormivate",
+        "loro": "dormivano"
+      },
+      "futuro_semplice": {
+        "io": "dormirò",
+        "tu": "dormirai",
+        "lui_lei": "dormirà",
+        "noi": "dormiremo",
+        "voi": "dormirete",
+        "loro": "dormiranno"
+      },
+      "condizionale_presente": {
+        "io": "dormirei",
+        "tu": "dormiresti",
+        "lui_lei": "dormirebbe",
+        "noi": "dormiremmo",
+        "voi": "dormireste",
+        "loro": "dormirebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho dormito",
+        "tu": "hai dormito",
+        "lui_lei": "ha dormito",
+        "noi": "abbiamo dormito",
+        "voi": "avete dormito",
+        "loro": "hanno dormito"
+      }
+    },
+    "isc": false
+  },
+  "finire": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "finisco",
+        "tu": "finisci",
+        "lui_lei": "finisce",
+        "noi": "finiamo",
+        "voi": "finite",
+        "loro": "finiscono"
+      },
+      "imperfetto": {
+        "io": "finivo",
+        "tu": "finivi",
+        "lui_lei": "finiva",
+        "noi": "finivamo",
+        "voi": "finivate",
+        "loro": "finivano"
+      },
+      "futuro_semplice": {
+        "io": "finirò",
+        "tu": "finirai",
+        "lui_lei": "finirà",
+        "noi": "finiremo",
+        "voi": "finirete",
+        "loro": "finiranno"
+      },
+      "condizionale_presente": {
+        "io": "finirei",
+        "tu": "finiresti",
+        "lui_lei": "finirebbe",
+        "noi": "finiremmo",
+        "voi": "finireste",
+        "loro": "finirebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho finito",
+        "tu": "hai finito",
+        "lui_lei": "ha finito",
+        "noi": "abbiamo finito",
+        "voi": "avete finito",
+        "loro": "hanno finito"
+      }
+    },
+    "isc": true
+  },
+  "cercare": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "cerco",
+        "tu": "cerchi",
+        "lui_lei": "cerca",
+        "noi": "cerchiamo",
+        "voi": "cercate",
+        "loro": "cercano"
+      },
+      "imperfetto": {
+        "io": "cercavo",
+        "tu": "cercavi",
+        "lui_lei": "cercava",
+        "noi": "cercavamo",
+        "voi": "cercavate",
+        "loro": "cercavano"
+      },
+      "futuro_semplice": {
+        "io": "cercherò",
+        "tu": "cercherai",
+        "lui_lei": "cercherà",
+        "noi": "cercheremo",
+        "voi": "cercherete",
+        "loro": "cercheranno"
+      },
+      "condizionale_presente": {
+        "io": "cercherei",
+        "tu": "cercheresti",
+        "lui_lei": "cercherebbe",
+        "noi": "cercheremmo",
+        "voi": "cerchereste",
+        "loro": "cercherebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho cercato",
+        "tu": "hai cercato",
+        "lui_lei": "ha cercato",
+        "noi": "abbiamo cercato",
+        "voi": "avete cercato",
+        "loro": "hanno cercato"
+      }
+    },
+    "isc": false
+  },
+  "pagare": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "pago",
+        "tu": "paghi",
+        "lui_lei": "paga",
+        "noi": "paghiamo",
+        "voi": "pagate",
+        "loro": "pagano"
+      },
+      "imperfetto": {
+        "io": "pagavo",
+        "tu": "pagavi",
+        "lui_lei": "pagava",
+        "noi": "pagavamo",
+        "voi": "pagavate",
+        "loro": "pagavano"
+      },
+      "futuro_semplice": {
+        "io": "pagherò",
+        "tu": "pagherai",
+        "lui_lei": "pagherà",
+        "noi": "pagheremo",
+        "voi": "pagherete",
+        "loro": "pagheranno"
+      },
+      "condizionale_presente": {
+        "io": "pagherei",
+        "tu": "pagheresti",
+        "lui_lei": "pagherebbe",
+        "noi": "pagheremmo",
+        "voi": "paghereste",
+        "loro": "pagherebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho pagato",
+        "tu": "hai pagato",
+        "lui_lei": "ha pagato",
+        "noi": "abbiamo pagato",
+        "voi": "avete pagato",
+        "loro": "hanno pagato"
+      }
+    },
+    "isc": false
+  },
+  "mangiare": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "mangio",
+        "tu": "mangi",
+        "lui_lei": "mangia",
+        "noi": "mangiamo",
+        "voi": "mangiate",
+        "loro": "mangiano"
+      },
+      "imperfetto": {
+        "io": "mangiavo",
+        "tu": "mangiavi",
+        "lui_lei": "mangiava",
+        "noi": "mangiavamo",
+        "voi": "mangiavate",
+        "loro": "mangiavano"
+      },
+      "futuro_semplice": {
+        "io": "mangerò",
+        "tu": "mangerai",
+        "lui_lei": "mangerà",
+        "noi": "mangeremo",
+        "voi": "mangerete",
+        "loro": "mangeranno"
+      },
+      "condizionale_presente": {
+        "io": "mangerei",
+        "tu": "mangeresti",
+        "lui_lei": "mangerebbe",
+        "noi": "mangeremmo",
+        "voi": "mangereste",
+        "loro": "mangerebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho mangiato",
+        "tu": "hai mangiato",
+        "lui_lei": "ha mangiato",
+        "noi": "abbiamo mangiato",
+        "voi": "avete mangiato",
+        "loro": "hanno mangiato"
+      }
+    },
+    "isc": false
+  },
+  "studiare": {
+    "auxiliary": "avere",
+    "forms": {
+      "presente": {
+        "io": "studio",
+        "tu": "studi",
+        "lui_lei": "studia",
+        "noi": "studiamo",
+        "voi": "studiate",
+        "loro": "studiano"
+      },
+      "imperfetto": {
+        "io": "studiavo",
+        "tu": "studiavi",
+        "lui_lei": "studiava",
+        "noi": "studiavamo",
+        "voi": "studiavate",
+        "loro": "studiavano"
+      },
+      "futuro_semplice": {
+        "io": "studierò",
+        "tu": "studierai",
+        "lui_lei": "studierà",
+        "noi": "studieremo",
+        "voi": "studierete",
+        "loro": "studieranno"
+      },
+      "condizionale_presente": {
+        "io": "studierei",
+        "tu": "studieresti",
+        "lui_lei": "studierebbe",
+        "noi": "studieremmo",
+        "voi": "studiereste",
+        "loro": "studierebbero"
+      },
+      "passato_prossimo": {
+        "io": "ho studiato",
+        "tu": "hai studiato",
+        "lui_lei": "ha studiato",
+        "noi": "abbiamo studiato",
+        "voi": "avete studiato",
+        "loro": "hanno studiato"
+      }
+    },
+    "isc": false
+  },
+  "arrivare": {
+    "auxiliary": "essere",
+    "forms": {
+      "presente": {
+        "io": "arrivo",
+        "tu": "arrivi",
+        "lui_lei": "arriva",
+        "noi": "arriviamo",
+        "voi": "arrivate",
+        "loro": "arrivano"
+      },
+      "imperfetto": {
+        "io": "arrivavo",
+        "tu": "arrivavi",
+        "lui_lei": "arrivava",
+        "noi": "arrivavamo",
+        "voi": "arrivavate",
+        "loro": "arrivavano"
+      },
+      "futuro_semplice": {
+        "io": "arriverò",
+        "tu": "arriverai",
+        "lui_lei": "arriverà",
+        "noi": "arriveremo",
+        "voi": "arriverete",
+        "loro": "arriveranno"
+      },
+      "condizionale_presente": {
+        "io": "arriverei",
+        "tu": "arriveresti",
+        "lui_lei": "arriverebbe",
+        "noi": "arriveremmo",
+        "voi": "arrivereste",
+        "loro": "arriverebbero"
+      },
+      "passato_prossimo": {
+        "io": "sono arrivato/arrivata",
+        "tu": "sei arrivato/arrivata",
+        "lui_lei": "è arrivato/arrivata",
+        "noi": "siamo arrivati/arrivate",
+        "voi": "siete arrivati/arrivate",
+        "loro": "sono arrivati/arrivate"
+      }
+    },
+    "isc": false
+  },
+  "partire": {
+    "auxiliary": "essere",
+    "forms": {
+      "presente": {
+        "io": "parto",
+        "tu": "parti",
+        "lui_lei": "parte",
+        "noi": "partiamo",
+        "voi": "partite",
+        "loro": "partono"
+      },
+      "imperfetto": {
+        "io": "partivo",
+        "tu": "partivi",
+        "lui_lei": "partiva",
+        "noi": "partivamo",
+        "voi": "partivate",
+        "loro": "partivano"
+      },
+      "futuro_semplice": {
+        "io": "partirò",
+        "tu": "partirai",
+        "lui_lei": "partirà",
+        "noi": "partiremo",
+        "voi": "partirete",
+        "loro": "partiranno"
+      },
+      "condizionale_presente": {
+        "io": "partirei",
+        "tu": "partiresti",
+        "lui_lei": "partirebbe",
+        "noi": "partiremmo",
+        "voi": "partireste",
+        "loro": "partirebbero"
+      },
+      "passato_prossimo": {
+        "io": "sono partito/partita",
+        "tu": "sei partito/partita",
+        "lui_lei": "è partito/partita",
+        "noi": "siamo partiti/partite",
+        "voi": "siete partiti/partite",
+        "loro": "sono partiti/partite"
+      }
+    },
+    "isc": false
+  }
+}

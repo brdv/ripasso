@@ -1,4 +1,5 @@
 <script lang="ts">
+  import TenseTheory from "$lib/components/TenseTheory.svelte";
   import { PERSON_NL, PERSON_SHORT, PERSONS, TENSE_LABEL, TENSES } from "$lib/domain/constants";
   import {
     AUXILIARIES,
@@ -123,6 +124,7 @@
             {TENSE_LABEL[tense]}
             <span class="list-row-meta">{filledPerTense[tense]} / {PERSONS.length}</span>
           </summary>
+          <TenseTheory {tense} />
           <div class="grid-scroll">
             <table class="form-table">
               <thead>
